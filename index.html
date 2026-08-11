@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#14110f" />
+  <title>RPG — Ficha & Dados</title>
+  <style>
+    :root{
+      --bg:#0f0d0c;
+      --panel:#171310;
+      --panel2:#211b16;
+      --line:#3a2d23;
+      --text:#f6eadc;
+      --muted:#bda995;
+      --gold:#d7a84f;
+      --gold2:#f1cc7b;
+      --red:#b94d45;
+      --green:#5f9f69;
+      --shadow:0 12px 30px rgba(0,0,0,.28);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      min-height:100vh;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 15% 0%, rgba(215,168,79,.12), transparent 32rem),
+        radial-gradient(circle at 90% 25%, rgba(112,47,42,.12), transparent 28rem),
+        linear-gradient(180deg,#100d0b,#0b0908 70%);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    button,input,textarea,select{font:inherit}
+    button{cursor:pointer}
+    .app{max-width:1180px;margin:auto;padding:22px 16px 48px}
+    .hero{
+      display:flex;gap:18px;align-items:flex-end;justify-content:space-between;
+      padding:22px;border:1px solid var(--line);border-radius:24px;
+      background:linear-gradient(145deg,rgba(35,28,22,.96),rgba(19,15,12,.96));
+      box-shadow:var(--shadow);position:relative;overflow:hidden;
+    }
+    .hero:after{
+      content:"";position:absolute;inset:auto -70px -90px auto;width:250px;height:250px;
+      border:1px solid rgba(215,168,79,.16);border-radius:50%;
+      box-shadow:0 0 0 32px rgba(215,168,79,.025),0 0 0 64px rgba(215,168,79,.018);
+      pointer-events:none;
+    }
+    h1{font-family:Georgia,serif;margin:0;font-size:clamp(29px,4vw,48px);letter-spacing:.02em}
+    .subtitle{color:var(--muted);margin:7px 0 0;max-width:650px;line-height:1.45}
+    .hero-actions{display:flex;gap:8px;flex-wrap:wrap;z-index:2}
+    .btn{
+      border:1px solid var(--line);background:#201913;color:var(--text);
+      border-radius:12px;padding:10px 13px;transition:.18s;
+    }
+    .btn:hover{transform:translateY(-1px);border-color:#72563c}
+    .btn.primary{background:linear-gradient(180deg,var(--gold2),var(--gold));color:#24170b;border:none;font-weight:800}
+    .btn.danger{color:#ffc5c0;border-color:#653631}
+    .grid{display:grid;grid-template-columns:1.25fr .75fr;gap:16px;margin-top:16px}
+    .stack{display:grid;gap:16px}
+    .card{
+      border:1px solid var(--line);border-radius:var(--radius);
+      background:linear-gradient(180deg,rgba(29,23,18,.97),rgba(20,16,13,.97));
+      box-shadow:var(--shadow);padding:17px;
+    }
+    .card h2{margin:0 0 14px;font:700 18px Georgia,serif;color:#f6deb0}
+    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    label{display:grid;gap:6px;color:var(--muted);font-size:12px}
+    input,textarea,select{
+      width:100%;background:#100d0b;color:var(--text);border:1px solid #413329;
+      border-radius:10px;padding:10px 11px;outline:none;
+    }
+    input:focus,textarea:focus,select:focus{border-color:#94703f;box-shadow:0 0 0 3px rgba(215,168,79,.08)}
+    textarea{resize:vertical;min-height:95px}
+    .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+    .stat{
+      background:#120f0d;border:1px solid #3b2f26;border-radius:14px;padding:10px;text-align:center;
+    }
+    .stat label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.08em}
+    .stat input{margin-top:7px;text-align:center;font-size:21px;font-weight:800;padding:7px}
+    .derived{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:9px}
+    .pill{
+      border:1px solid #443329;background:#120e0c;border-radius:14px;padding:10px;text-align:center
+    }
+    .pill .k{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+    .pill input{border:0;background:transparent;text-align:center;font-size:20px;font-weight:800;padding:4px 0 0}
+    .hpbox{display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:10px}
+    .hpbox .slash{padding-bottom:11px;color:var(--muted)}
+    .hpbar{height:12px;background:#0d0a09;border:1px solid #3f2f29;border-radius:999px;overflow:hidden;margin-top:10px}
+    .hpfill{height:100%;width:100%;background:linear-gradient(90deg,#7f302c,#cd5a50);transition:.25s}
+    .quickhp{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:9px}
+    .quickhp button{padding:8px;border-radius:10px;border:1px solid #433229;background:#15100d;color:var(--text)}
+    .dice-area{display:grid;gap:12px}
+    .dice-buttons{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}
+    .die{
+      padding:12px 5px;border-radius:12px;border:1px solid #4b392c;background:#15100d;color:#efddb9;font-weight:800
+    }
+    .die.active{background:#332519;border-color:#a77c42;box-shadow:0 0 0 2px rgba(215,168,79,.08)}
+    .roll-config{display:grid;grid-template-columns:80px 1fr 90px;gap:8px}
+    .roll-result{
+      min-height:112px;display:grid;place-items:center;text-align:center;border:1px dashed #5a4535;
+      border-radius:16px;background:
+        radial-gradient(circle at center,rgba(215,168,79,.07),transparent 65%),
+        #110e0c;
+    }
+    .roll-number{font:800 54px Georgia,serif;color:#f5cf7e;line-height:1}
+    .roll-meta{color:var(--muted);font-size:12px;margin-top:5px}
+    .critical{color:#9ee0a8!important;text-shadow:0 0 20px rgba(95,159,105,.3)}
+    .fumble{color:#ff8d84!important;text-shadow:0 0 20px rgba(185,77,69,.3)}
+    .history{display:grid;gap:7px;max-height:260px;overflow:auto}
+    .history-item{
+      display:grid;grid-template-columns:1fr auto;gap:12px;padding:9px 10px;border-radius:11px;
+      background:#120f0d;border:1px solid #342920;font-size:13px;
+    }
+    .history-item small{color:var(--muted)}
+    .inventory{display:grid;gap:8px}
+    .inv-row{display:grid;grid-template-columns:1fr 72px 38px;gap:8px}
+    .iconbtn{border:1px solid #4e302c;background:#1b1110;color:#ffafa7;border-radius:10px}
+    .coins{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .section-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px}
+    .section-head h2{margin:0}
+    .tabs{display:flex;gap:7px;overflow:auto;padding:3px 0 9px}
+    .tabbtn{white-space:nowrap}
+    .tabbtn.active{background:#34261b;border-color:#725439;color:#f3d495}
+    .tab{display:none}.tab.active{display:block}
+    .save-note{font-size:11px;color:var(--muted);text-align:right;margin-top:10px}
+    .toast{
+      position:fixed;left:50%;bottom:24px;transform:translate(-50%,15px);
+      opacity:0;pointer-events:none;background:#f0cf8b;color:#24170b;font-weight:800;
+      padding:10px 15px;border-radius:999px;transition:.25s;z-index:20;box-shadow:var(--shadow)
+    }
+    .toast.show{opacity:1;transform:translate(-50%,0)}
+    @media(max-width:820px){
+      .grid{grid-template-columns:1fr}
+      .hero{align-items:flex-start;flex-direction:column}
+      .hero-actions{width:100%}.hero-actions .btn{flex:1}
+      .dice-buttons{grid-template-columns:repeat(3,1fr)}
+    }
+    @media(max-width:520px){
+      .app{padding:10px 10px 34px}
+      .hero{padding:17px;border-radius:18px}
+      .card{padding:14px}
+      .fields{grid-template-columns:1fr}
+      .stats{grid-template-columns:repeat(2,1fr)}
+      .derived{grid-template-columns:repeat(3,1fr)}
+      .roll-config{grid-template-columns:68px 1fr 76px}
+      .coins{grid-template-columns:repeat(3,1fr)}
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <header class="hero">
+    <div>
+      <h1>Crônicas do D20</h1>
+      <p class="subtitle">Ficha do personagem, dados, inventário e registro da aventura. O Mestre é o ChatGPT — este painel é o seu lado da mesa.</p>
+    </div>
+    <div class="hero-actions">
+      <button class="btn" id="copySummary">Copiar resumo p/ Mestre</button>
+      <button class="btn danger" id="resetAll">Resetar ficha</button>
+    </div>
+  </header>
+
+  <div class="grid">
+    <main class="stack">
+      <section class="card">
+        <div class="tabs">
+          <button class="btn tabbtn active" data-tab="ficha">Ficha</button>
+          <button class="btn tabbtn" data-tab="inventario">Inventário</button>
+          <button class="btn tabbtn" data-tab="notas">Notas</button>
+        </div>
+
+        <div class="tab active" id="ficha">
+          <div class="section-head"><h2>Personagem</h2></div>
+          <div class="fields">
+            <label>Nome<input id="name" value="Caio Vilar" placeholder="Nome do personagem"></label>
+            <label>Classe / Arquétipo<input id="class" value="Sobrevivente" placeholder="Ex.: Guerreiro, Mago, Caçador"></label>
+            <label>Raça / Origem<input id="race" value="Humano" placeholder="Ex.: Humano, Elfo, Anão"></label>
+            <label>Nível<input id="level" type="number" min="1" value="1"></label>
+          </div>
+
+          <h2 style="margin-top:18px">Atributos</h2>
+          <div class="stats">
+            <div class="stat"><label>Força</label><input id="str" type="number" value="12"></div>
+            <div class="stat"><label>Destreza</label><input id="dex" type="number" value="14"></div>
+            <div class="stat"><label>Constituição</label><input id="con" type="number" value="13"></div>
+            <div class="stat"><label>Inteligência</label><input id="int" type="number" value="14"></div>
+            <div class="stat"><label>Sabedoria</label><input id="wis" type="number" value="10"></div>
+            <div class="stat"><label>Carisma</label><input id="cha" type="number" value="8"></div>
+          </div>
+
+          <div class="derived">
+            <div class="pill"><div class="k">Defesa</div><input id="def" type="number" value="12"></div>
+            <div class="pill"><div class="k">Iniciativa</div><input id="init" type="number" value="2"></div>
+            <div class="pill"><div class="k">XP</div><input id="xp" type="number" value="0"></div>
+          </div>
+
+          <h2 style="margin-top:18px">Vida</h2>
+          <div class="hpbox">
+            <label>Atual<input id="hp" type="number" value="12"></label>
+            <div class="slash">/</div>
+            <label>Máxima<input id="hpMax" type="number" value="12"></label>
+          </div>
+          <div class="hpbar"><div class="hpfill" id="hpfill"></div></div>
+          <div class="quickhp">
+            <button data-hp="-5">-5</button>
+            <button data-hp="-1">-1</button>
+            <button data-hp="1">+1</button>
+            <button data-hp="5">+5</button>
+          </div>
+
+          <label style="margin-top:14px">Condições / Estados
+            <input id="conditions" placeholder="Ex.: envenenado, cansado, inspirado">
+          </label>
+        </div>
+
+        <div class="tab" id="inventario">
+          <div class="section-head">
+            <h2>Inventário</h2>
+            <button class="btn" id="addItem">+ Item</button>
+          </div>
+          <div class="coins">
+            <label>Ouro<input id="gold" type="number" value="0"></label>
+            <label>Prata<input id="silver" type="number" value="0"></label>
+            <label>Cobre<input id="copper" type="number" value="0"></label>
+          </div>
+          <div id="inventory" class="inventory" style="margin-top:12px"></div>
+        </div>
+
+        <div class="tab" id="notas">
+          <h2>Anotações da aventura</h2>
+          <label>Objetivos, NPCs, pistas e lembretes
+            <textarea id="notes" rows="12" placeholder="Tudo que você não quer esquecer durante a campanha..."></textarea>
+          </label>
+        </div>
+        <div class="save-note">Salvamento automático neste navegador.</div>
+      </section>
+    </main>
+
+    <aside class="stack">
+      <section class="card">
+        <h2>Rolador de dados</h2>
+        <div class="dice-area">
+          <div class="dice-buttons" id="diceButtons">
+            <button class="die" data-die="4">d4</button>
+            <button class="die active" data-die="20">d20</button>
+            <button class="die" data-die="6">d6</button>
+            <button class="die" data-die="8">d8</button>
+            <button class="die" data-die="10">d10</button>
+            <button class="die" data-die="12">d12</button>
+          </div>
+          <div class="roll-config">
+            <label>Qtd.<input id="qty" type="number" min="1" max="20" value="1"></label>
+            <label>Motivo<input id="reason" placeholder="Ex.: ataque, furtividade"></label>
+            <label>Bônus<input id="bonus" type="number" value="0"></label>
+          </div>
+          <button class="btn primary" id="roll">GIRAR DADO</button>
+          <div class="roll-result">
+            <div>
+              <div class="roll-number" id="rollNumber">—</div>
+              <div class="roll-meta" id="rollMeta">Escolha o dado e faça sua jogada.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <h2>Histórico</h2>
+          <button class="btn" id="clearHistory">Limpar</button>
+        </div>
+        <div class="history" id="history"></div>
+      </section>
+    </aside>
+  </div>
+</div>
+
+<div class="toast" id="toast">Copiado!</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const KEY = 'chatgpt_rpg_sheet_v1';
+let selectedDie = 20;
+let history = [];
+let inventory = [
+  {name:'Celular — 37% de bateria', qty:1},
+  {name:'Carteira — R$ 43', qty:1},
+  {name:'Chave de casa', qty:1},
+  {name:'Canivete pequeno', qty:1},
+  {name:'Fone de ouvido', qty:1},
+  {name:'Bilhete de ônibus amassado', qty:1}
+];
+
+const ids = ['name','class','race','level','str','dex','con','int','wis','cha','def','init','xp',
+             'hp','hpMax','conditions','gold','silver','copper','notes'];
+
+function randInt(max){
+  if (window.crypto && crypto.getRandomValues){
+    const arr = new Uint32Array(1);
+    crypto.getRandomValues(arr);
+    return (arr[0] % max) + 1;
+  }
+  return Math.floor(Math.random()*max)+1;
+}
+
+function escapeHtml(v=''){
+  return String(v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+}
+
+function save(){
+  const data = {};
+  ids.forEach(id => data[id] = $('#'+id).value);
+  data.selectedDie = selectedDie;
+  data.history = history;
+  data.inventory = inventory;
+  localStorage.setItem(KEY, JSON.stringify(data));
+  updateHP();
+}
+
+function load(){
+  const raw = localStorage.getItem(KEY);
+  if(!raw){ renderInventory(); renderHistory(); updateHP(); return; }
+  try{
+    const d = JSON.parse(raw);
+    ids.forEach(id => { if(d[id] !== undefined) $('#'+id).value = d[id]; });
+    selectedDie = d.selectedDie || 20;
+    history = Array.isArray(d.history) ? d.history : [];
+    inventory = Array.isArray(d.inventory) ? d.inventory : [];
+  }catch(e){}
+  $$('.die').forEach(b => b.classList.toggle('active', Number(b.dataset.die) === selectedDie));
+  renderInventory(); renderHistory(); updateHP();
+}
+
+function updateHP(){
+  const hp = Number($('#hp').value)||0;
+  const max = Math.max(1, Number($('#hpMax').value)||1);
+  const pct = Math.max(0,Math.min(100,(hp/max)*100));
+  $('#hpfill').style.width = pct+'%';
+}
+
+function renderHistory(){
+  const el = $('#history');
+  if(!history.length){
+    el.innerHTML = '<div style="color:var(--muted);font-size:13px">Nenhuma rolagem ainda.</div>';
+    return;
+  }
+  el.innerHTML = history.slice(0,30).map(h => `
+    <div class="history-item">
+      <div><b>${escapeHtml(h.reason || h.expr)}</b><br><small>${escapeHtml(h.expr)} → [${h.rolls.join(', ')}] ${h.bonusText}</small></div>
+      <div style="font-size:20px;font-weight:800;color:#f2ce83">${h.total}</div>
+    </div>
+  `).join('');
+}
+
+function renderInventory(){
+  const el = $('#inventory');
+  if(!inventory.length){
+    el.innerHTML = '<div style="color:var(--muted);font-size:13px">A mochila está vazia.</div>';
+    return;
+  }
+  el.innerHTML = inventory.map((item,i)=>`
+    <div class="inv-row">
+      <input data-inv-name="${i}" value="${escapeHtml(item.name)}" placeholder="Item">
+      <input data-inv-qty="${i}" type="number" min="0" value="${Number(item.qty)||1}">
+      <button class="iconbtn" data-inv-del="${i}">×</button>
+    </div>
+  `).join('');
+  $$('[data-inv-name]').forEach(inp => inp.oninput = e => { inventory[+e.target.dataset.invName].name=e.target.value; save(); });
+  $$('[data-inv-qty]').forEach(inp => inp.oninput = e => { inventory[+e.target.dataset.invQty].qty=e.target.value; save(); });
+  $$('[data-inv-del]').forEach(btn => btn.onclick = e => { inventory.splice(+e.target.dataset.invDel,1); renderInventory(); save(); });
+}
+
+$$('.tabbtn').forEach(btn => btn.onclick = () => {
+  $$('.tabbtn').forEach(b=>b.classList.remove('active'));
+  $$('.tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  $('#'+btn.dataset.tab).classList.add('active');
+});
+
+$$('.die').forEach(btn => btn.onclick = () => {
+  selectedDie = Number(btn.dataset.die);
+  $$('.die').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  save();
+});
+
+$('#roll').onclick = () => {
+  const qty = Math.max(1,Math.min(20,Number($('#qty').value)||1));
+  const bonus = Number($('#bonus').value)||0;
+  const reason = $('#reason').value.trim();
+  const rolls = Array.from({length:qty},()=>randInt(selectedDie));
+  const raw = rolls.reduce((a,b)=>a+b,0);
+  const total = raw + bonus;
+  const expr = `${qty}d${selectedDie}${bonus===0?'':bonus>0?'+'+bonus:bonus}`;
+  const bonusText = bonus ? (bonus>0?`+ ${bonus}`:`- ${Math.abs(bonus)}`) : '';
+  const item = {expr, rolls, total, reason, bonusText, ts:Date.now()};
+  history.unshift(item);
+  history = history.slice(0,100);
+  const num = $('#rollNumber');
+  num.className='roll-number';
+  if(qty===1 && selectedDie===20 && rolls[0]===20) num.classList.add('critical');
+  if(qty===1 && selectedDie===20 && rolls[0]===1) num.classList.add('fumble');
+  num.textContent=total;
+  $('#rollMeta').textContent = `${expr} • rolou ${rolls.join(', ')}${reason?' • '+reason:''}`;
+  renderHistory(); save();
+};
+
+$('#clearHistory').onclick = () => {
+  history=[]; renderHistory(); save();
+  $('#rollNumber').textContent='—'; $('#rollMeta').textContent='Histórico limpo.';
+};
+
+$('#addItem').onclick = () => {
+  inventory.push({name:'',qty:1}); renderInventory(); save();
+  setTimeout(()=>{ const arr=$$('[data-inv-name]'); arr[arr.length-1]?.focus(); },20);
+};
+
+$$('[data-hp]').forEach(btn => btn.onclick = () => {
+  $('#hp').value = (Number($('#hp').value)||0)+Number(btn.dataset.hp);
+  save();
+});
+
+ids.forEach(id => $('#'+id).addEventListener('input', save));
+
+function mod(v){ return Math.floor((Number(v)-10)/2); }
+function fmtMod(v){ const m=mod(v); return m>=0?`+${m}`:`${m}`; }
+
+$('#copySummary').onclick = async () => {
+  const recent = history.slice(0,10).map(h=>`- ${h.reason||h.expr}: ${h.total} (${h.expr}; dados ${h.rolls.join(', ')})`).join('\n') || '- Nenhuma';
+  const inv = inventory.filter(x=>x.name.trim()).map(x=>`- ${x.name} x${x.qty}`).join('\n') || '- Vazio';
+  const text =
+`=== PERSONAGEM ===
+Nome: ${$('#name').value || 'Sem nome'}
+Classe/Arquétipo: ${$('#class').value || '-'}
+Raça/Origem: ${$('#race').value || '-'}
+Nível: ${$('#level').value}
+
+ATRIBUTOS
+FOR ${$('#str').value} (${fmtMod($('#str').value)})
+DES ${$('#dex').value} (${fmtMod($('#dex').value)})
+CON ${$('#con').value} (${fmtMod($('#con').value)})
+INT ${$('#int').value} (${fmtMod($('#int').value)})
+SAB ${$('#wis').value} (${fmtMod($('#wis').value)})
+CAR ${$('#cha').value} (${fmtMod($('#cha').value)})
+
+Vida: ${$('#hp').value}/${$('#hpMax').value}
+Defesa: ${$('#def').value}
+Iniciativa: ${$('#init').value}
+XP: ${$('#xp').value}
+Condições: ${$('#conditions').value || 'Nenhuma'}
+
+MOEDAS
+Ouro ${$('#gold').value} | Prata ${$('#silver').value} | Cobre ${$('#copper').value}
+
+INVENTÁRIO
+${inv}
+
+ÚLTIMAS ROLAGENS
+${recent}
+
+NOTAS
+${$('#notes').value || '-'}`;
+  try{
+    await navigator.clipboard.writeText(text);
+    showToast('Resumo copiado!');
+  }catch(e){
+    prompt('Copie o resumo:',text);
+  }
+};
+
+$('#resetAll').onclick = () => {
+  if(!confirm('Apagar toda a ficha, inventário e histórico?')) return;
+  localStorage.removeItem(KEY);
+  location.reload();
+};
+
+function showToast(msg){
+  const t=$('#toast'); t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),1700);
+}
+
+load();
+</script>
+</body>
+</html>
