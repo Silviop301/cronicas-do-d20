@@ -366,18 +366,31 @@ function escapeHtml(v=''){
   return String(v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 }
 
+/* Armazenamento tolerante: alguns navegadores (aba anônima, página dentro de
+   iframe) bloqueiam o localStorage. Nesses casos o jogo continua rodando em
+   memória, só não sobrevive a um recarregamento. */
+const memoria = {};
+const store = {
+  get(k){ try{ return localStorage.getItem(k); }catch(e){ return k in memoria ? memoria[k] : null; } },
+  set(k,v){ try{ localStorage.setItem(k, v); }catch(e){ memoria[k] = String(v); } },
+  del(k){ try{ localStorage.removeItem(k); }catch(e){ delete memoria[k]; } }
+};
+function confirmar(msg){
+  try{ return confirm(msg); }catch(e){ return true; }
+}
+
 function save(){
   const data = {};
   ids.forEach(id => data[id] = $('#'+id).value);
   data.selectedDie = selectedDie;
   data.history = history;
   data.inventory = inventory;
-  localStorage.setItem(KEY, JSON.stringify(data));
+  store.set(KEY, JSON.stringify(data));
   updateHP();
 }
 
 function load(){
-  const raw = localStorage.getItem(KEY);
+  const raw = store.get(KEY);
   if(!raw){ renderInventory(); renderHistory(); updateHP(); return; }
   try{
     const d = JSON.parse(raw);
@@ -523,13 +536,13 @@ ${$('#notes').value || '-'}`;
     await navigator.clipboard.writeText(text);
     showToast('Resumo copiado!');
   }catch(e){
-    prompt('Copie o resumo:',text);
+    try{ prompt('Copie o resumo:',text); }catch(err){ showToast('Não foi possível copiar aqui.'); }
   }
 };
 
 $('#resetAll').onclick = () => {
-  if(!confirm('Apagar toda a ficha, inventário e histórico?')) return;
-  localStorage.removeItem(KEY);
+  if(!confirmar('Apagar toda a ficha, inventário e histórico?')) return;
+  store.del(KEY); store.del(GKEY);
   location.reload();
 };
 
@@ -623,7 +636,7 @@ function logJogo(msg, tipo=''){
 }
 function pontos(n){
   G.pontos += n;
-  if(G.pontos > G.recorde){ G.recorde = G.pontos; localStorage.setItem(BKEY, G.recorde); }
+  if(G.pontos > G.recorde){ G.recorde = G.pontos; store.set(BKEY, G.recorde); }
 }
 
 /* ---------- geração do andar ---------- */
@@ -672,7 +685,7 @@ function revelar(){
 function novoJogo(msg='Você desce os degraus úmidos. O ar cheira a ferro velho.'){
   G = {
     andar:1, pontos:0, abates:0, foco:0, bencao:null,
-    recorde: Number(localStorage.getItem(BKEY)||0),
+    recorde: Number(store.get(BKEY)||0),
     grid:[], pos:0, inimigo:null, log:[], morto:false
   };
   G.foco = focoMax();
@@ -681,15 +694,15 @@ function novoJogo(msg='Você desce os degraus úmidos. O ar cheira a ferro velho
   salvarJogo(); renderJogo();
 }
 
-function salvarJogo(){ localStorage.setItem(GKEY, JSON.stringify(G)); }
+function salvarJogo(){ store.set(GKEY, JSON.stringify(G)); }
 
 function carregarJogo(){
   try{
-    const dados = JSON.parse(localStorage.getItem(GKEY));
+    const dados = JSON.parse(store.get(GKEY));
     if(dados && Array.isArray(dados.grid) && dados.grid.length === N*N){
       G = dados;
       G.log = Array.isArray(G.log) ? G.log : [];
-      G.recorde = Math.max(Number(G.recorde)||0, Number(localStorage.getItem(BKEY)||0));
+      G.recorde = Math.max(Number(G.recorde)||0, Number(store.get(BKEY)||0));
       renderJogo();
       return;
     }
@@ -963,7 +976,7 @@ function renderJogo(){
 }
 
 $('#newRun').onclick = () => {
-  if(!confirm('Começar uma masmorra nova? O progresso desta run será perdido.')) return;
+  if(!confirmar('Começar uma masmorra nova? O progresso desta run será perdido.')) return;
   setVida(vidaMax());
   novoJogo();
 };
