@@ -52,7 +52,8 @@
     }
     button,input,textarea,select{font:inherit}
     button{cursor:pointer}
-    .app{max-width:1180px;margin:auto;padding:22px 16px 48px}
+    .app{max-width:1180px;margin:auto;
+      padding:calc(28px + env(safe-area-inset-top)) 16px calc(48px + env(safe-area-inset-bottom))}
     .hero{
       display:flex;gap:18px;align-items:flex-end;justify-content:space-between;
       padding:22px;border:1px solid var(--line);border-radius:24px;
@@ -272,6 +273,27 @@
 
     /* ===== Criar herói ===== */
     .namefield{gap:6px;text-align:left}
+    /* ===== Home enxuta ===== */
+    .atalhos{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+    .atalho{
+      display:grid;gap:2px;justify-items:center;padding:11px 4px;border-radius:14px;
+      border:1px solid var(--line);background:#171310;color:var(--muted);
+      font-size:11px;line-height:1.25;text-align:center;touch-action:manipulation;
+    }
+    .atalho span{font-size:21px;line-height:1}
+    .atalho b{font-size:10.5px;color:#f3d190;font-variant-numeric:tabular-nums;min-height:13px}
+    .atalho:active{background:#211a14}
+    .btn.primary.grande{width:100%;padding:14px;font-size:17px;display:grid;gap:1px;line-height:1.2}
+    .btn.primary.grande small{font-weight:600;font-size:12px;color:#6b4a19}
+    .mais{margin-top:2px}
+    .mais summary{
+      list-style:none;cursor:pointer;text-align:center;font-size:12.5px;color:var(--muted);padding:8px;
+    }
+    .mais summary::-webkit-details-marker{display:none}
+    .mais summary::after{content:' ▾'}
+    .mais[open] summary::after{content:' ▴'}
+    .mais .entry-btns{margin-top:4px}
+    @media(max-width:360px){ .atalhos{grid-template-columns:repeat(2,1fr)} }
     #novoRestam b{font-variant-numeric:tabular-nums}
     #novoRestam .pt-sobra{color:var(--gold2)}
     #novoRestam .pt-zero{color:#8fd39a;font-size:13px}
@@ -565,7 +587,7 @@
       .hero-actions{width:100%}.hero-actions .btn{flex:1}
     }
     @media(max-width:520px){
-      .app{padding:10px 10px 34px}
+      .app{padding:calc(24px + env(safe-area-inset-top)) 12px calc(34px + env(safe-area-inset-bottom))}
       .hero{padding:17px;border-radius:18px}
       .card{padding:14px}
     }
@@ -576,38 +598,34 @@
   <header class="hero">
     <div>
       <h1>Climbix</h1>
-      <p class="subtitle">Escolha uma masmorra, desça os andares e enfrente o guardião do fundo. O dado decide a força de cada golpe. Cada queda te deixa mais forte para a próxima.</p>
-    </div>
-    <div class="hero-actions">
-      <button class="btn primary" id="heroPlay">▶ Jogar</button>
+      <p class="subtitle">Desça a masmorra, role o dado, volte vivo.</p>
     </div>
   </header>
 
         <section class="card" id="aventura">
           <div class="launch">
-            <div id="resumeBox"></div>
-            <div class="howto">
-              <div><span>👣</span><span>Toque numa <b>sala vizinha</b> para andar. Elas escondem inimigos, baús, materiais e forjas.</span></div>
-              <div><span>🎲</span><span>Na hora do golpe o dado aparece: <b>quanto maior o número, maior o estrago</b>. Tirou 20, o dano é cinco vezes.</span></div>
-              <div><span>⚒️</span><span>Junte <b>ouro e materiais</b> para forjar armas e armaduras nas forjas espalhadas pelo caminho.</span></div>
-              <div><span>👑</span><span>Cada região termina com um <b>guardião</b>. No andar 10 está o confronto final.</span></div>
-            </div>
             <div id="dicaTelaCheia"></div>
+            <div id="resumeBox"></div>
+            <button class="btn primary" id="btnStart" style="padding:15px;font-size:17px">⚔️ Nova jornada</button>
             <div id="missaoBox"></div>
             <div id="metaBox"></div>
-            <button class="btn primary" id="btnStart" style="padding:15px;font-size:17px">⚔️ Nova jornada</button>
+            <div class="atalhos">
+              <button class="atalho" id="btnRelics"><span>✨</span>Relíquias<b id="lbRelCount"></b></button>
+              <button class="atalho" id="btnBestiary"><span>📖</span>Bestiário<b id="lbBestCount"></b></button>
+              <button class="atalho" id="btnAchieve"><span>🏆</span>Conquistas<b id="lbAchCount"></b></button>
+              <button class="atalho" id="btnTutorial"><span>❓</span>Como jogar<b></b></button>
+            </div>
             <div class="scoreline">
-              <span>Recorde: <b id="lbBest">0</b> pontos</span>
-              <span>Jornadas vencidas: <b id="lbWins">0</b></span>
+              <span>Recorde: <b id="lbBest">0</b></span>
+              <span>Vencidas: <b id="lbWins">0</b></span>
             </div>
-            <div class="entry-btns">
-              <button class="btn" id="btnRelics">✨ Relíquias <b id="lbRelCount"></b></button>
-              <button class="btn" id="btnBestiary">📖 Bestiário</button>
-              <button class="btn" id="btnAchieve">🏆 Conquistas</button>
-              <button class="btn" id="btnTutorial">❓ Como jogar</button>
-              <button class="btn" id="btnSave">💾 Salvar / trocar de aparelho</button>
-              <button class="btn danger" id="btnZerar">🗑️ Apagar todo o progresso</button>
-            </div>
+            <details class="mais">
+              <summary>Mais opções</summary>
+              <div class="entry-btns">
+                <button class="btn" id="btnSave">💾 Salvar / trocar de aparelho</button>
+                <button class="btn danger" id="btnZerar">🗑️ Apagar todo o progresso</button>
+              </div>
+            </details>
           </div>
         </section>
 </div>
@@ -2678,15 +2696,22 @@ function render(){
   const temJogo = !!G;
   $('#lbBest').textContent = META.recorde;
   const achadas = RELIQUIAS.filter(r => nivelRel(r.id) > 0).length;
-  $('#lbRelCount').textContent = achadas ? `${achadas}/${RELIQUIAS.length}` : '';
+  $('#lbRelCount').textContent = `${achadas}/${RELIQUIAS.length}`;
+  $('#lbBestCount').textContent = `${Object.keys(META.bestiario||{}).length}/${BESTIARIO.length}`;
+  $('#lbAchCount').textContent = `${Object.keys(META.conquistas||{}).length}/${CONQUISTAS.length}`;
   desenharDicaTelaCheia();
   desenharMissao();
   desenharProximaMeta();
   ligarArte($('#aventura'));
   $('#lbWins').textContent = META.vitorias;
   $('#resumeBox').innerHTML = temJogo
-    ? `<button class="btn primary" id="btnResume" style="padding:15px;font-size:17px;width:100%">▶ Continuar — ${escapeHtml(G.nome)}${G.masmorra ? `, andar ${G.andar}/${G.masmorra.andares}` : ' no acampamento'}</button>`
+    ? `<button class="btn primary grande" id="btnResume">▶ Continuar<small>${escapeHtml(G.nome)}${
+        G.masmorra ? ` • andar ${G.andar}/${G.masmorra.andares}` : ' • no acampamento'}</small></button>`
     : '';
+  /* Com uma jornada em andamento, começar outra é a opção secundária. */
+  const bStart = $('#btnStart');
+  bStart.classList.toggle('primary', !temJogo);
+  bStart.textContent = temJogo ? '⚔️ Começar outra jornada' : '⚔️ Começar';
   const resume = $('#btnResume');
   if(resume) resume.onclick = abrirJogo;
   if(!temJogo) return;
@@ -3170,7 +3195,6 @@ $('#novoComecar').onclick = () => {
   abrirJogo();
 };
 $('#btnStart').onclick = abrirNovoHeroi;
-$('#heroPlay').onclick = () => { if(G) abrirJogo(); else abrirNovoHeroi(); };
 $('#btnRelics').onclick = abrirReliquias;
 $('#btnBestiary').onclick = abrirBestiario;
 $('#btnAchieve').onclick = abrirConquistas;
