@@ -178,7 +178,14 @@
     @keyframes breathe{0%,100%{opacity:.82}50%{opacity:1}}
     .play-mid{background:radial-gradient(circle at 50% 45%,var(--luz,transparent),transparent 68%)}
     .foe{display:grid;gap:12px;justify-items:center;text-align:center;width:100%}
-    .foe-icon{font-size:clamp(62px,20vw,104px);line-height:1;filter:drop-shadow(0 10px 22px rgba(0,0,0,.55))}
+    .foe-icon{
+      font-size:clamp(62px,20vw,104px);line-height:1;filter:drop-shadow(0 10px 22px rgba(0,0,0,.55));
+      display:grid;place-items:center;
+    }
+    .foe-icon:has(.foe-art){
+      background:radial-gradient(circle at 50% 55%,var(--luz,rgba(215,168,79,.14)),transparent 68%);
+      border-radius:50%;padding:6px;
+    }
     .foe-icon.hurt{animation:shake .32s}
     @keyframes shake{25%{transform:translateX(-9px)}50%{transform:translateX(8px)}75%{transform:translateX(-4px)}}
     .foe-name{font:700 clamp(20px,5.5vw,28px) Georgia,serif;color:#ffd3ae;margin:0}
@@ -335,13 +342,26 @@
     .recipe-txt small{font-size:11px;color:var(--muted)}
     .recipe-cost{font-size:11px;color:#f3d190;white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums}
     .beasts{display:grid;gap:6px}
-    .beast{display:grid;grid-template-columns:30px 1fr auto;gap:9px;align-items:center;background:#141010;border:1px solid #2f251d;border-radius:11px;padding:8px 10px}
+    .beast{display:grid;grid-template-columns:36px 1fr auto;gap:9px;align-items:center;background:#141010;border:1px solid #2f251d;border-radius:11px;padding:8px 10px}
     .beast.oculto{opacity:.45}
-    .beast-ico{font-size:19px;text-align:center;line-height:1}
-    .beast-art{width:26px;height:26px;object-fit:contain;display:block;margin:auto;image-rendering:auto}
-    .item-art{width:20px;height:20px;object-fit:contain;display:block;margin:auto}
+    .beast-ico{
+      font-size:19px;text-align:center;line-height:1;width:36px;height:36px;border-radius:9px;
+      display:grid;place-items:center;
+      background:radial-gradient(circle at 50% 38%,#2c231b,#191412 78%);border:1px solid #35291f;
+    }
+    .beast-art{
+      width:32px;height:32px;object-fit:contain;display:block;
+      filter:drop-shadow(0 0 2px rgba(0,0,0,.85)) drop-shadow(0 0 5px rgba(241,204,123,.28));
+    }
+    .item-art{
+      width:22px;height:22px;object-fit:contain;display:block;margin:auto;
+      filter:drop-shadow(0 0 2px rgba(0,0,0,.8)) drop-shadow(0 0 4px rgba(241,204,123,.22));
+    }
     .mat-art{width:15px;height:15px;object-fit:contain;display:inline-block;vertical-align:-2px}
-    .foe-art{width:clamp(84px,26vw,132px);height:clamp(84px,26vw,132px);object-fit:contain;display:block}
+    .foe-art{
+      width:clamp(96px,30vw,150px);height:clamp(96px,30vw,150px);object-fit:contain;display:block;
+      filter:drop-shadow(0 6px 14px rgba(0,0,0,.7)) drop-shadow(0 0 16px rgba(241,204,123,.22));
+    }
     .beast-txt{display:grid;min-width:0}
     .beast-txt b{font-size:13px}
     .beast-txt small{font-size:11px;color:var(--muted)}
@@ -1931,6 +1951,7 @@ function mostrarFaixa(reg){
   el.classList.add('on');
   clearTimeout(mostrarFaixa._t);
   mostrarFaixa._t = setTimeout(() => el.classList.remove('on'), 2200);
+  if(G.modo !== 'mapa') el.classList.remove('on');
 }
 
 /* ---------- desenho da tela ---------- */
@@ -1973,6 +1994,7 @@ function render(){
     <span class="chip">🪙 <b>${G.ouro}</b></span>`;
 
   const mid = $('#playMid'), acts = $('#pActs');
+  if(G.modo !== 'mapa') $('#banner').classList.remove('on');
 
   if(G.modo === 'hub'){
     const pronto = Math.round(poderReliquias()*100);
