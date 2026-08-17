@@ -2190,7 +2190,7 @@ function baixarSave(){
     a.download = 'cronicas-do-d20-save.txt';
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 2000);
-    $('#saveMsg').textContent = 'Arquivo gerado.';
+    $('#saveMsg').textContent = 'Se o download não começar, use "Copiar código" — alguns visualizadores bloqueiam downloads.';
   }catch(e){
     $('#saveMsg').textContent = 'Este navegador não deixou baixar. Use o botão de copiar.';
   }
