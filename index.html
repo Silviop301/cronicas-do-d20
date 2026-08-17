@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#14110f" />
-  <title>RPG — Ficha & Dados</title>
+  <title>Climbix</title>
   <style>
     :root{
       --bg:#0f0d0c;
@@ -347,7 +347,7 @@
 <div class="app">
   <header class="hero">
     <div>
-      <h1>Crônicas do D20</h1>
+      <h1>Climbix</h1>
       <p class="subtitle">Escolha uma masmorra, desça os andares e enfrente o guardião do fundo. O dado decide a força de cada golpe. Cada queda te deixa mais forte para a próxima.</p>
     </div>
     <div class="hero-actions">
@@ -819,8 +819,25 @@ function abrirConquistas(){
   $('#achOv').classList.add('on');
 }
 
-const GKEY = 'chatgpt_rpg_game_v3';
-const MKEY = 'chatgpt_rpg_meta_v1';
+const GKEY = 'climbix_jogo_v1';
+const MKEY = 'climbix_meta_v1';
+const TKEY = 'climbix_tutorial';
+
+/* Quem já jogava quando o jogo tinha outro nome não perde nada: na primeira
+   abertura o progresso antigo é copiado para as chaves novas. */
+function migrarSaveAntigo(){
+  const pares = [['chatgpt_rpg_game_v3', GKEY], ['chatgpt_rpg_meta_v1', MKEY], ['chatgpt_rpg_tutorial', TKEY]];
+  pares.forEach(([velha, nova]) => {
+    const dado = store.get(velha);
+    if(dado !== null && store.get(nova) === null) store.set(nova, dado);
+    store.del(velha);
+  });
+  store.del('chatgpt_rpg_sheet_v1');   // a ficha de RPG que o jogo não usa mais
+  store.del('chatgpt_rpg_game_best');
+  store.del('chatgpt_rpg_game_v1');
+  store.del('chatgpt_rpg_game_v2');
+}
+migrarSaveAntigo();
 const N = 6;
 
 let G = null;
@@ -1803,7 +1820,7 @@ function desenharTutorial(){
 }
 function avancarTutorial(){
   if(passoTutorial < TUTORIAL.length - 1){ passoTutorial++; desenharTutorial(); }
-  else { $('#tutOv').classList.remove('on'); store.set('chatgpt_rpg_tutorial','1'); }
+  else { $('#tutOv').classList.remove('on'); store.set(TKEY,'1'); }
 }
 
 /* ---------- exportar e importar o save ---------- */
@@ -1831,7 +1848,7 @@ function baixarSave(){
     const blob = new Blob([codigoDoSave()], {type:'text/plain'});
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'cronicas-do-d20-save.txt';
+    a.download = 'climbix-save.txt';
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 2000);
     $('#saveMsg').textContent = 'Se o download não começar, use "Copiar código" — alguns visualizadores bloqueiam downloads.';
@@ -1873,7 +1890,6 @@ function desenharClasses(){
   $$('[data-classe]').forEach(b => b.onclick = () => {
     classeEscolhida = b.dataset.classe;
     desenharClasses();
-if(!store.get('chatgpt_rpg_tutorial')) setTimeout(() => abrirTutorial(0), 400);
   });
 }
 
@@ -1892,7 +1908,7 @@ $('#btnTutorial').onclick = () => abrirTutorial(0);
 $('#btnSave').onclick = abrirSave;
 $('#tutNext').onclick = avancarTutorial;
 $('#tutBack').onclick = () => { if(passoTutorial){ passoTutorial--; desenharTutorial(); } };
-$('#tutSkip').onclick = () => { $('#tutOv').classList.remove('on'); store.set('chatgpt_rpg_tutorial','1'); };
+$('#tutSkip').onclick = () => { $('#tutOv').classList.remove('on'); store.set(TKEY,'1'); };
 $('#saveCopy').onclick = copiarSave;
 $('#saveDownload').onclick = baixarSave;
 $('#saveImport').onclick = importarSave;
@@ -1925,7 +1941,7 @@ document.addEventListener('keydown', e => {
 });
 
 desenharClasses();
-if(!store.get('chatgpt_rpg_tutorial')) setTimeout(() => abrirTutorial(0), 400);
+if(!store.get(TKEY)) setTimeout(() => abrirTutorial(0), 400);
 
 
 carregarJogo();

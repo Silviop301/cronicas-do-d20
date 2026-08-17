@@ -1,4 +1,4 @@
-# Publicando as Crônicas do D20 no seu domínio
+# Publicando o Climbix no seu domínio
 
 O jogo é um arquivo só (`index.html`), sem servidor, sem banco de dados e sem
 dependências. Publicar é copiar arquivo.
