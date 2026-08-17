@@ -106,7 +106,7 @@
       overscroll-behavior:contain;touch-action:manipulation;position:fixed;
     }
     .play.on{display:flex}
-    .play-top{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center}
+    .play-top{display:grid;grid-template-columns:auto 1fr auto auto;gap:8px;align-items:center}
     .icon-btn{
       width:42px;height:42px;flex:none;border-radius:13px;border:1px solid var(--line);
       background:#1a1410;color:var(--text);font-size:17px;display:grid;place-items:center;touch-action:manipulation;
@@ -215,8 +215,34 @@
     .log-line.bad{border-left-color:var(--red)}
     .log-line.gold{border-left-color:var(--gold)}
 
-    /* ===== Classes, relíquias e acampamento ===== */
+    /* ===== Criar herói ===== */
     .namefield{gap:6px;text-align:left}
+    #novoRestam b{font-variant-numeric:tabular-nums}
+    #novoRestam .pt-sobra{color:var(--gold2)}
+    #novoRestam .pt-zero{color:#8fd39a;font-size:13px}
+    .pontos{display:grid;gap:8px}
+    .pt-linha{
+      display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:center;
+      background:#141010;border:1px solid #2f251d;border-radius:12px;padding:9px 11px;
+    }
+    .pt-ico{font-size:20px;text-align:center}
+    .pt-txt{display:grid;gap:1px;min-width:0}
+    .pt-txt b{font-size:13.5px}
+    .pt-txt small{font-size:11px;color:var(--muted)}
+    .pt-ctrl{display:flex;align-items:center;gap:4px}
+    .pt-btn{
+      width:38px;height:38px;border-radius:10px;border:1px solid #4a382b;background:#1e1712;
+      color:var(--text);font-size:20px;line-height:1;display:grid;place-items:center;touch-action:manipulation;
+    }
+    .pt-btn:active{background:#2b211a}
+    .pt-btn:disabled{opacity:.3}
+    .pt-n{width:22px;text-align:center;font-variant-numeric:tabular-nums;color:#f3d190;font-size:15px}
+    .resumo{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-top:14px;
+      padding-top:13px;border-top:1px solid var(--line);font-size:13px}
+    .resumo-nota{color:var(--muted);font-size:11px;width:100%}
+    .sheet-acoes{display:grid;grid-template-columns:auto 1fr;gap:9px;margin-top:4px}
+
+    /* ===== Classes, relíquias e acampamento ===== */
     .classes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
     .classcard{
       display:grid;gap:4px;justify-items:center;text-align:center;padding:11px 7px;border-radius:14px;
@@ -237,6 +263,15 @@
     .relic-txt b{font-size:13px;font-weight:700;display:flex;justify-content:space-between;gap:8px}
     .relic-txt i{font-style:normal;color:#f3d190;font-variant-numeric:tabular-nums}
     .relic-txt small{font-size:11px;color:var(--muted)}
+    .relic-txt small b.rel-hoje{display:inline;font-size:11px;color:#8fd39a;font-weight:700}
+    .relic-txt small.rel-nada{color:#8a7a67}
+    .rel-intro{margin:0 0 12px;font-size:13px;line-height:1.55;color:#d9c9b2}
+    .conta{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0 4px}
+    .conta-l{background:#141010;border:1px solid #2f251d;border-radius:11px;padding:9px 11px;display:grid;gap:3px}
+    .conta-top{font-size:13px;color:#e9d9be}
+    .conta-top b{color:#f3d190;font-size:16px;font-variant-numeric:tabular-nums;margin-left:3px}
+    .conta-l small{font-size:11px;color:var(--muted);line-height:1.45}
+    .chip.vazio{opacity:.42}
     .relic-bar{height:5px;border-radius:999px;background:#241c17;overflow:hidden}
     .relic-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2))}
 
@@ -268,6 +303,8 @@
     .banner-ico{font-size:26px}
     .banner b{display:block;font:700 15px Georgia,serif;color:#f6deb0}
     .banner small{color:var(--muted);font-size:12px}
+    .chip.seq{border-color:#8a4a2a;color:#ffb987;background:#1d1210}
+    .chip.seq i{font-style:normal;font-size:11px;opacity:.85}
     .chip.nivel{border-color:var(--nc);color:var(--nc)}
     .chip.nivel b,.chip.nivel i{color:inherit}
     .chip.nivel i{font-style:normal;text-transform:uppercase;font-size:10px;letter-spacing:.08em}
@@ -388,22 +425,16 @@
               <div><span>⚒️</span><span>Junte <b>ouro e materiais</b> para forjar armas e armaduras nas forjas espalhadas pelo caminho.</span></div>
               <div><span>👑</span><span>Cada região termina com um <b>guardião</b>. No andar 10 está o confronto final.</span></div>
             </div>
-            <label class="namefield">Nome do herói
-              <input id="heroName" maxlength="22" placeholder="Como querem te chamar?">
-            </label>
-            <div class="classes" id="classPick"></div>
-            <button class="btn primary" id="btnStart" style="padding:15px;font-size:17px">Começar jornada</button>
+            <button class="btn primary" id="btnStart" style="padding:15px;font-size:17px">⚔️ Nova jornada</button>
             <div class="scoreline">
               <span>Recorde: <b id="lbBest">0</b> pontos</span>
               <span>Jornadas vencidas: <b id="lbWins">0</b></span>
             </div>
-            <h3 style="margin:6px 0 0;font:700 15px Georgia,serif;color:#f6deb0">Relíquias</h3>
-            <p style="font-size:12px">Elas ficam com você mesmo quando o herói cai — e são o que torna uma masmorra Demônio vencível.</p>
-            <div class="relics" id="lbRelics"></div>
             <div class="entry-btns">
-              <button class="btn" id="btnTutorial">❓ Como jogar</button>
+              <button class="btn" id="btnRelics">✨ Relíquias <b id="lbRelCount"></b></button>
               <button class="btn" id="btnBestiary">📖 Bestiário</button>
               <button class="btn" id="btnAchieve">🏆 Conquistas</button>
+              <button class="btn" id="btnTutorial">❓ Como jogar</button>
               <button class="btn" id="btnSave">💾 Salvar / trocar de aparelho</button>
             </div>
           </div>
@@ -417,6 +448,7 @@
       <div class="life-top"><span>Vida</span><b><span id="pHp">20</span> / <span id="pHpMax">20</span></b></div>
       <div class="life-bar"><div class="life-fill" id="pLife"></div></div>
     </div>
+    <button class="icon-btn" id="playRelics" aria-label="Relíquias">✨</button>
     <button class="icon-btn" id="playDiary" aria-label="Diário da aventura">📜</button>
   </div>
 
@@ -455,6 +487,36 @@
     <h3>🎒 Mochila</h3>
     <div class="sheet-body" id="bagBody"></div>
     <button class="btn" data-fechar="bagOv">Fechar</button>
+  </div>
+</div>
+
+<!-- ===== Criar herói ===== -->
+<div class="ov" id="novoOv">
+  <div class="sheet">
+    <h3>⚔️ Novo herói</h3>
+    <div class="sheet-body">
+      <label class="namefield">Nome do herói
+        <input id="novoNome" maxlength="22" placeholder="Como querem te chamar?">
+      </label>
+      <h4>Escolha um jeito de jogar</h4>
+      <div class="classes" id="novoClasses"></div>
+      <h4>Distribua <span id="novoRestam"></span></h4>
+      <div class="pontos" id="novoPontos"></div>
+      <div class="resumo" id="novoResumo"></div>
+    </div>
+    <div class="sheet-acoes">
+      <button class="btn" data-fechar="novoOv">Cancelar</button>
+      <button class="btn primary" id="novoComecar">Começar jornada</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Relíquias ===== -->
+<div class="ov" id="relOv">
+  <div class="sheet">
+    <h3>✨ Relíquias</h3>
+    <div class="sheet-body" id="relBody"></div>
+    <button class="btn" data-fechar="relOv">Fechar</button>
   </div>
 </div>
 
@@ -727,10 +789,16 @@ const RELIQUIAS = [
   {id:'sorte',   nome:'Olho da Sorte',       icone:'🍀', desc:n => `crítico a partir de ${critDesde(n)} no dado`},
   {id:'martelo', nome:'Martelo Ancestral',   icone:'🔨', desc:n => `+${n} de golpe em toda jornada`},
   {id:'coracao', nome:'Coração de Pedra',    icone:'💗', desc:n => `+${n*3} de vida máxima`},
-  {id:'escama',  nome:'Escama do Dragonete', icone:'🐲', desc:n => `+${Math.floor(n/2)} de defesa`},
+  {id:'escama',  nome:'Escama do Dragonete', icone:'🐲', desc:n => `+${defesaDaEscama(n)} de defesa`},
   {id:'bolsa',   nome:'Bolsa Sem Fundo',     icone:'👝', desc:n => `começa com +${n*15} de ouro`},
-  {id:'frasco',  nome:'Frasco Eterno',       icone:'⚗️', desc:n => `começa com +${Math.floor(n/3)} poções`}
+  {id:'frasco',  nome:'Frasco Eterno',       icone:'⚗️',
+   desc:n => `começa com +${pocoesDoFrasco(n)} ${pocoesDoFrasco(n) === 1 ? 'poção' : 'poções'}`}
 ];
+/* Arredondando para cima, e não para baixo: com floor, achar a relíquia
+   dava +0 e ela parecia quebrada. Toda relíquia vale alguma coisa já no
+   primeiro nível. */
+const defesaDaEscama = n => Math.ceil(n/2);
+const pocoesDoFrasco = n => Math.ceil(n/3);
 const nivelRel = id => Math.min(REL_MAX, (META.reliquias && META.reliquias[id]) || 0);
 const critDesde = n => 20 - Math.floor(n/2);
 
@@ -949,14 +1017,17 @@ function pontuar(n){
 function salvar(){ store.set(GKEY, JSON.stringify(G)); }
 
 /* ---------- começar e carregar ---------- */
-function novaAventura(nome, classeId){
+function novaAventura(nome, classeId, pontos){
   const c = CLASSES.find(x => x.id === classeId) || CLASSES[0];
+  /* Guardado no herói para que renascer refaça a mesma distribuição —
+     quem morre volta com o build que escolheu, não com o padrão. */
+  const p = {vida:0, golpe:0, defesa:0, ...(pontos || {})};
   G = {
     nome: (nome || '').trim() || 'Herói sem nome',
-    classe: c.id,
-    andar: 0, pontos: 0, abates: 0, limpas: 0,
-    vida: c.vida, vidaMax: c.vida,
-    golpeBase: c.golpe, defesaBase: c.defesa,
+    classe: c.id, pontosExtras: p,
+    andar: 0, pontos: 0, abates: 0, limpas: 0, sequencia: 0,
+    vida: c.vida + p.vida*4, vidaMax: c.vida + p.vida*4,
+    golpeBase: c.golpe + p.golpe, defesaBase: c.defesa + p.defesa,
     pocoes: c.pocoes, ouro: c.ouro,
     equip: {arma:null, elmo:null, peito:null, escudo:null},
     mats: {ferro:0, couro:0, cristal:0, erva:0},
@@ -966,9 +1037,9 @@ function novaAventura(nome, classeId){
   G.vidaMax += nivelRel('coracao')*3;
   G.vida = G.vidaMax;
   G.golpeBase += nivelRel('martelo');
-  G.defesaBase += Math.floor(nivelRel('escama')/2);
+  G.defesaBase += defesaDaEscama(nivelRel('escama'));
   G.ouro += nivelRel('bolsa')*15;
-  G.pocoes += Math.floor(nivelRel('frasco')/3);
+  G.pocoes += pocoesDoFrasco(nivelRel('frasco'));
 
   sortearOfertas();
   anotar(`${c.icone} ${G.nome}, ${c.nome}, chega ao acampamento. Escolha uma masmorra.`, 'gold');
@@ -1035,6 +1106,7 @@ function entrarNaMasmorra(idx){
   if(n.final && !confirmar('Esta é uma masmorra Demônio: dez andares e o Dragonete de Ferro no fim. Vencer aqui encerra o jogo — e quase ninguém consegue sem as relíquias no máximo.\n\nEntrar mesmo assim?')) return;
   G.masmorra = {nivel:n.id, regiao:of.regiao, andares:n.andares};
   G.andar = 1;
+  G.sequencia = 0;
   gerarAndar();
   const reg = regiaoAtual();
   anotar(`${n.icone} Você entra numa masmorra <b>${n.nome}</b> — ${reg.nome}, ${n.andares} andares.`, 'gold');
@@ -1057,6 +1129,7 @@ function voltarAoAcampamento(motivo){
   G.andar = 0;
   G.modo = 'hub';
   G.vida = G.vidaMax;
+  G.sequencia = 0;
   sortearOfertas();
   anotar(`🏕️ ${motivo} Você volta ao acampamento com <b>${premio} de ouro</b> e descansa até recuperar toda a vida.`, 'gold');
 }
@@ -1366,18 +1439,28 @@ function contraAtaque(){
 
 function vencer(){
   const inim = G.inimigo;
-  const ouro = entre([4,10]) + G.andar*2 + (inim.chefe ? 40 : 0);
+  /* A sequência é o que torna caçar melhor que desviar: cada abate seguido
+     engorda a recompensa do próximo, e fugir zera tudo. */
+  G.sequencia = (G.sequencia || 0) + 1;
+  const bonus = bonusDeSequencia();
+  const ouroBase = Math.round(inim.pts * .8) + entre([3,8]) + G.andar*2 + (inim.chefe ? 45 : 0);
+  const ouro = Math.round(ouroBase * (1 + bonus));
+  const pts = Math.round(inim.pts * (1 + bonus));
   G.inimigo = null;
   G.abates++;
   G.ouro += ouro;
-  pontuar(inim.pts);
+  pontuar(pts);
   registrarBicho(inim.id);
   G.grid[G.pos].limpo = true;
-  anotar(`🏆 <b>${inim.nome} derrotado!</b> +${inim.pts} pontos e ${ouro} de ouro.`, 'gold');
+  const selo = bonus ? ` <b>Sequência ${G.sequencia}</b> (+${Math.round(bonus*100)}%)` : '';
+  anotar(`🏆 <b>${inim.nome} derrotado!</b> +${pts} pontos e ${ouro} de ouro.${selo}`, 'gold');
   vibrar([15,50,25]);
   marcarOuro(); checarConquistas();
 
-  if(Math.random() < .3){
+  /* Material caía em 30% dos abates — pouco demais para compensar o risco
+     de brigar, já que dá para atravessar a masmorra desviando de todo mundo. */
+  const quedas = inim.chefe ? 3 : (Math.random() < .55 ? 1 : 0);
+  for(let k=0;k<quedas;k++){
     const m = sorteio(COLHEITA[regiaoAtual().id]);
     G.mats[m] = (G.mats[m]||0) + 1;
     anotar(`${MATERIAIS[m].icone} Ele deixou cair 1 ${MATERIAIS[m].nome}.`, 'gold');
@@ -1386,11 +1469,22 @@ function vencer(){
     const n = nivelAtual();
     if(Math.random() < n.chance) for(let k=0;k<n.frags;k++) ganharReliquia();
     else anotar('✨ Desta vez o chefe não guardava nenhuma relíquia.', '');
-  }else if(Math.random() < .04) ganharReliquia();
+  }else if(Math.random() < .08) ganharReliquia();
 
   if(inim.final){ vitoria(); return; }
   G.modo = 'mapa';
   if(inim.chefe) voltarAoAcampamento(`👑 ${inim.nome} caiu e a masmorra está limpa.`);
+}
+
+/* +12% por abate seguido, até dobrar. A partir do segundo abate, para o
+   primeiro não parecer que a conta está errada. */
+function bonusDeSequencia(){
+  return Math.min(1, Math.max(0, ((G.sequencia || 0) - 1)) * .12);
+}
+function quebrarSequencia(motivo){
+  if(!G.sequencia) return;
+  if(G.sequencia >= 3) anotar(`💨 A sequência de ${G.sequencia} abates se perdeu — ${motivo}.`, 'bad');
+  G.sequencia = 0;
 }
 
 function vitoria(){
@@ -1438,6 +1532,7 @@ async function fugir(){
   if(faixa.ok){
     G.inimigo = null;
     G.modo = 'mapa';
+    quebrarSequencia('você fugiu');
     anotar('🏃 Você escapa e some no escuro.', 'good');
   }else{
     anotar('🏃 Ele fecha o caminho antes de você sair.', 'bad');
@@ -1523,26 +1618,63 @@ function abrirMochila(){
         <span class="slot-val">${e ? (k === 'arma' ? '+'+e.valor+' golpe' : '+'+e.valor+' defesa') : ''}</span>
       </div>`;
   }).join('');
-  const mats = Object.entries(MATERIAIS).map(([k,m]) =>
-    `<span class="chip">${arteItem('mat-'+k, m.icone, 'mat-art')} ${m.nome} <b>${G.mats[k]||0}</b></span>`
-  ).join('');
+  const mats = Object.entries(MATERIAIS).map(([k,m]) => {
+    const q = G.mats[k]||0;
+    return `<span class="chip ${q?'':'vazio'}">${arteItem('mat-'+k, m.icone, 'mat-art')} ${m.nome} <b>${q}</b></span>`;
+  }).join('');
+  const cls = CLASSES.find(c => c.id === G.classe);
+
+  /* De onde sai cada número: sem isso o jogador vê "Golpe 7" e não faz ideia
+     do que veio da classe, do que veio da arma e do que veio da relíquia. */
+  const armaV = G.equip.arma?.valor || 0;
+  const armaduraV = ['elmo','peito','escudo'].reduce((s,k) => s + (G.equip[k]?.valor || 0), 0);
+  const relMartelo = nivelRel('martelo');
+  const relEscama = defesaDaEscama(nivelRel('escama'));
+  const parcelas = (base, itens) => itens.filter(p => p[1]).map(p => `${p[0]} ${p[1]}`).join(' + ') || base;
+
   $('#bagBody').innerHTML = `
     <div class="bag-head">
-      <div class="bag-hero">${CLASSES.find(c=>c.id===G.classe).icone} <b>${escapeHtml(G.nome)}</b><small>${CLASSES.find(c=>c.id===G.classe).nome}</small></div>
+      <div class="bag-hero">${cls.icone} <b>${escapeHtml(G.nome)}</b><small>${cls.nome}</small></div>
       <div class="chips">
-        <span class="chip">⚔️ Golpe <b>${golpeTotal()}</b></span>
-        <span class="chip">🛡️ Defesa <b>${defesaTotal()}</b></span>
         <span class="chip">🧪 Poções <b>${G.pocoes}</b></span>
         <span class="chip">🪙 <b>${G.ouro}</b></span>
       </div>
     </div>
+    <div class="conta">
+      <div class="conta-l">
+        <span class="conta-top">⚔️ Golpe <b>${golpeTotal()}</b></span>
+        <small>${parcelas('só a base', [['base',G.golpeBase - relMartelo],['🔨 relíquia',relMartelo],['🗡️ arma',armaV]])}</small>
+      </div>
+      <div class="conta-l">
+        <span class="conta-top">🛡️ Defesa <b>${defesaTotal()}</b></span>
+        <small>${parcelas('nenhuma ainda', [['base',G.defesaBase - relEscama],['🐲 relíquia',relEscama],['🛡️ armadura',armaduraV]])}</small>
+      </div>
+    </div>
+    <h4>Equipamento</h4>
     <div class="slots">${slots}</div>
-    <h4>Materiais</h4>
+    <h4>Materiais <small class="fade">para forjar</small></h4>
     <div class="chips">${mats}</div>
-    <h4>Relíquias <small class="fade">ficam com você mesmo se cair</small></h4>
-    <div class="relics">${tirinhaReliquias(true)}</div>`;
+    <button class="btn" id="bagRel" style="width:100%;margin-top:14px">✨ Ver relíquias</button>`;
   $('#bagOv').classList.add('on');
+  $('#bagRel').onclick = () => { $('#bagOv').classList.remove('on'); abrirReliquias(); };
   ligarArte($('#bagOv'));
+}
+
+/* ---------- relíquias ---------- */
+function abrirReliquias(){
+  const total = RELIQUIAS.reduce((s,r) => s + nivelRel(r.id), 0);
+  const teto = RELIQUIAS.length * REL_MAX;
+  const achadas = RELIQUIAS.filter(r => nivelRel(r.id) > 0).length;
+  $('#relBody').innerHTML = `
+    <p class="rel-intro">Não se perdem quando o herói cai — é o que faz a próxima
+    jornada começar mais forte. Caem dos guardiões, e às vezes de criaturas comuns.</p>
+    <div class="chips">
+      <span class="chip">✨ Encontradas <b>${achadas}/${RELIQUIAS.length}</b></span>
+      <span class="chip">📈 Poder <b>${Math.round((total/teto)*100)}%</b></span>
+    </div>
+    <div class="relics" style="margin-top:12px">${tirinhaReliquias(true)}</div>`;
+  $('#relOv').classList.add('on');
+  ligarArte($('#relOv'));
 }
 
 /* ---------- bestiário ---------- */
@@ -1574,13 +1706,28 @@ function abrirBestiario(){
 }
 
 function renascer(){
-  const nome = G.nome, classe = G.classe;
-  novaAventura(nome, classe);
+  const nome = G.nome, classe = G.classe, pontos = G.pontosExtras;
+  novaAventura(nome, classe, pontos);
   anotar('🕯️ Um novo herói pega a estrada com as relíquias que você já conquistou.', 'gold');
   salvar(); render();
 }
 
 /* ---------- relíquias na tela ---------- */
+/* Mostra o efeito de agora e o do próximo nível lado a lado: sem isso a
+   relíquia recém-achada parecia quebrada, porque só dizia o número atual. */
+function efeitoRel(r, n){
+  if(!n) return `<small class="rel-nada">não encontrada · daria ${r.desc(1)}</small>`;
+  const hoje = r.desc(n);
+  if(n >= REL_MAX) return `<small><b class="rel-hoje">${hoje}</b> · no máximo</small>`;
+  /* Algumas relíquias só melhoram de dois em dois níveis. Anunciar
+     "próximo: +1 de defesa" quando já se tem +1 parece defeito, então
+     procuramos o nível em que o efeito de fato muda. */
+  let m = n + 1;
+  while(m <= REL_MAX && r.desc(m) === hoje) m++;
+  if(m > REL_MAX) return `<small><b class="rel-hoje">${hoje}</b> · não sobe mais</small>`;
+  const quando = m === n + 1 ? 'próximo' : `nível ${m}`;
+  return `<small><b class="rel-hoje">${hoje}</b> · ${quando}: ${r.desc(m)}</small>`;
+}
 function tirinhaReliquias(detalhe=false){
   return RELIQUIAS.map(r => {
     const n = nivelRel(r.id);
@@ -1590,7 +1737,7 @@ function tirinhaReliquias(detalhe=false){
         <span class="relic-ico">${arteItem(r.id, r.icone, 'item-art')}</span>
         <span class="relic-txt">
           <b>${r.nome} <i>${n}/${REL_MAX}</i></b>
-          ${detalhe ? `<small>${n ? r.desc(n) : 'ainda não encontrada'}</small>` : ''}
+          ${detalhe ? efeitoRel(r, n) : ''}
           <span class="relic-bar"><i style="width:${pct}%"></i></span>
         </span>
       </div>`;
@@ -1617,7 +1764,8 @@ const ICONES = {
 function render(){
   const temJogo = !!G;
   $('#lbBest').textContent = META.recorde;
-  $('#lbRelics').innerHTML = tirinhaReliquias(true);
+  const achadas = RELIQUIAS.filter(r => nivelRel(r.id) > 0).length;
+  $('#lbRelCount').textContent = achadas ? `${achadas}/${RELIQUIAS.length}` : '';
   ligarArte($('#aventura'));
   $('#lbWins').textContent = META.vitorias;
   $('#resumeBox').innerHTML = temJogo
@@ -1641,7 +1789,11 @@ function render(){
   const chipLocal = G.masmorra
     ? `<span class="chip nivel" style="--nc:${n.cor}">${n.icone} ${n.nome} • Andar <b>${G.andar}/${G.masmorra.andares}</b>${ultimoAndar()?' <i>final</i>':''}</span>`
     : '';
-  $('#pChips').innerHTML = chipLocal + `
+  const b = bonusDeSequencia();
+  const chipSeq = b
+    ? `<span class="chip seq" title="recompensa maior enquanto você não fugir">🔥 <b>${G.sequencia}</b> <i>+${Math.round(b*100)}%</i></span>`
+    : '';
+  $('#pChips').innerHTML = chipLocal + chipSeq + `
     <span class="chip">⭐ <b>${G.pontos}</b></span>
     <span class="chip">⚔️ <b>${golpeTotal()}</b></span>
     <span class="chip">🛡️ <b>${defesaTotal()}</b></span>
@@ -1684,7 +1836,7 @@ function render(){
     acts.innerHTML = `
       <button class="act main" data-act="procurar">🧭 Procurar outras<small>troca as três entradas</small></button>
       <button class="act" data-act="forja">⚒️ Forja<small>gaste ouro e materiais</small></button>
-      <button class="act" data-act="mochila">🎒 Mochila<small>equipamento e relíquias</small></button>
+      <button class="act" data-act="mochila">🎒 Mochila<small>equipamento e materiais</small></button>
       <button class="act" data-act="conquistas">🏆 Conquistas<small>${Object.keys(META.conquistas||{}).length}/${CONQUISTAS.length} desbloqueadas</small></button>`;
   }else if(G.modo === 'vitoria'){
     mid.innerHTML = `
@@ -1725,7 +1877,11 @@ function render(){
       <button class="act main" data-act="atacar">⚔️ Atacar<small>gira o dado</small></button>
       <button class="act" data-act="defender">🛡️ Defender<small>sofre metade do dano</small></button>
       <button class="act" data-act="pocao" ${G.pocoes>0?'':'disabled'}>🧪 Poção<small>${G.pocoes} restantes • +${curaDaPocao()} de vida</small></button>
-      <button class="act" data-act="fugir" ${inim.chefe?'disabled':''}>🏃 Fugir<small>${inim.chefe?'não dá para fugir de um guardião':'precisa tirar '+(G.classe==='cacador'?8:11)+' ou mais'}</small></button>`;
+      <button class="act" data-act="fugir" ${inim.chefe?'disabled':''}>🏃 Fugir<small>${
+        inim.chefe ? 'não dá para fugir de um guardião'
+        : (G.sequencia > 1 ? `perde a sequência de ${G.sequencia}`
+                           : 'precisa tirar '+(G.classe==='cacador'?8:11)+' ou mais')
+      }</small></button>`;
   }else{
     mid.innerHTML = `<div class="map" id="map" style="grid-template-columns:repeat(${N},1fr)"></div>`;
     $('#map').innerHTML = G.grid.map((c,i) => {
@@ -1928,30 +2084,92 @@ function importarSave(){
   render();
 }
 
-/* ---------- tela de entrada ---------- */
-function desenharClasses(){
-  $('#classPick').innerHTML = CLASSES.map(c => `
-    <button class="classcard ${c.id===classeEscolhida?'sel':''}" data-classe="${c.id}">
-      <span class="cc-ico">${c.icone}</span>
-      <b>${c.nome}</b>
-      <small>${c.dica}</small>
-      <span class="cc-stats">❤️ ${c.vida} • ⚔️ ${c.golpe} • 🛡️ ${c.defesa} • 🧪 ${c.pocoes}</span>
-    </button>`).join('');
-  $$('[data-classe]').forEach(b => b.onclick = () => {
-    classeEscolhida = b.dataset.classe;
-    desenharClasses();
-  });
+/* ---------- criar o herói ---------- */
+const PONTOS_TOTAL = 3;
+/* O que cada ponto vale. Vida rende mais por ponto porque 1 de vida
+   pesa muito menos numa briga do que 1 de golpe. */
+const GASTOS = [
+  {id:'vida',   nome:'Vida',   icone:'❤️', passo:4, texto:'+4 de vida máxima'},
+  {id:'golpe',  nome:'Golpe',  icone:'⚔️', passo:1, texto:'+1 de dano por golpe'},
+  {id:'defesa', nome:'Defesa', icone:'🛡️', passo:1, texto:'+1 de defesa'}
+];
+let pontosGastos = {vida:0, golpe:0, defesa:0};
+const pontosRestantes = () => PONTOS_TOTAL - GASTOS.reduce((s,g) => s + pontosGastos[g.id], 0);
+
+function abrirNovoHeroi(){
+  if(G && G.modo !== 'fim' && G.modo !== 'vitoria'
+     && !confirmar('Começar uma jornada nova? A atual será perdida.')) return;
+  pontosGastos = {vida:0, golpe:0, defesa:0};
+  $('#novoNome').value = G ? G.nome : '';
+  desenharNovo();
+  $('#novoOv').classList.add('on');
 }
 
-$('#btnStart').onclick = () => {
-  if(G && G.modo !== 'fim' && G.modo !== 'vitoria' && !confirmar('Começar uma jornada nova? A atual será perdida.')) return;
-  novaAventura($('#heroName').value, classeEscolhida);
+function desenharNovo(){
+  const c = CLASSES.find(x => x.id === classeEscolhida);
+  const restam = pontosRestantes();
+
+  $('#novoClasses').innerHTML = CLASSES.map(x => `
+    <button class="classcard ${x.id===classeEscolhida?'sel':''}" data-classe="${x.id}">
+      <span class="cc-ico">${x.icone}</span>
+      <b>${x.nome}</b>
+      <small>${x.dica}</small>
+      <span class="cc-stats">❤️ ${x.vida} • ⚔️ ${x.golpe} • 🛡️ ${x.defesa} • 🧪 ${x.pocoes}</span>
+    </button>`).join('');
+  $$('#novoClasses [data-classe]').forEach(b => b.onclick = () => {
+    classeEscolhida = b.dataset.classe;
+    desenharNovo();
+  });
+
+  $('#novoRestam').innerHTML = restam
+    ? `<b class="pt-sobra">${restam}</b> ${restam === 1 ? 'ponto' : 'pontos'}`
+    : `<b class="pt-zero">tudo distribuído</b>`;
+
+  $('#novoPontos').innerHTML = GASTOS.map(g => {
+    const n = pontosGastos[g.id];
+    return `
+      <div class="pt-linha">
+        <span class="pt-ico">${g.icone}</span>
+        <span class="pt-txt"><b>${g.nome}</b><small>${g.texto}</small></span>
+        <span class="pt-ctrl">
+          <button class="pt-btn" data-menos="${g.id}" ${n?'':'disabled'} aria-label="tirar um ponto de ${g.nome}">−</button>
+          <b class="pt-n">${n}</b>
+          <button class="pt-btn" data-mais="${g.id}" ${restam?'':'disabled'} aria-label="pôr um ponto em ${g.nome}">+</button>
+        </span>
+      </div>`;
+  }).join('');
+  $$('#novoPontos [data-mais]').forEach(b => b.onclick = () => {
+    if(pontosRestantes() > 0){ pontosGastos[b.dataset.mais]++; desenharNovo(); }
+  });
+  $$('#novoPontos [data-menos]').forEach(b => b.onclick = () => {
+    if(pontosGastos[b.dataset.menos] > 0){ pontosGastos[b.dataset.menos]--; desenharNovo(); }
+  });
+
+  /* O resumo já soma as relíquias, senão o número aqui não bate com o
+     que aparece na barra assim que a jornada começa. */
+  const vida = c.vida + pontosGastos.vida*4 + nivelRel('coracao')*3;
+  const golpe = c.golpe + pontosGastos.golpe + nivelRel('martelo');
+  const defesa = c.defesa + pontosGastos.defesa + defesaDaEscama(nivelRel('escama'));
+  const pocoes = c.pocoes + pocoesDoFrasco(nivelRel('frasco'));
+  const ouro = c.ouro + nivelRel('bolsa')*15;
+  const comRel = RELIQUIAS.some(r => nivelRel(r.id) > 0);
+  $('#novoResumo').innerHTML = `
+    <span class="chip">❤️ <b>${vida}</b></span>
+    <span class="chip">⚔️ <b>${golpe}</b></span>
+    <span class="chip">🛡️ <b>${defesa}</b></span>
+    <span class="chip">🧪 <b>${pocoes}</b></span>
+    <span class="chip">🪙 <b>${ouro}</b></span>
+    ${comRel ? '<small class="resumo-nota">já contando suas relíquias</small>' : ''}`;
+}
+
+$('#novoComecar').onclick = () => {
+  $('#novoOv').classList.remove('on');
+  novaAventura($('#novoNome').value, classeEscolhida, pontosGastos);
   abrirJogo();
 };
-$('#heroPlay').onclick = () => {
-  if(G) abrirJogo();
-  else { $('#aventura').scrollIntoView({behavior:'smooth', block:'center'}); $('#heroName').focus(); }
-};
+$('#btnStart').onclick = abrirNovoHeroi;
+$('#heroPlay').onclick = () => { if(G) abrirJogo(); else abrirNovoHeroi(); };
+$('#btnRelics').onclick = abrirReliquias;
 $('#btnBestiary').onclick = abrirBestiario;
 $('#btnAchieve').onclick = abrirConquistas;
 $('#btnTutorial').onclick = () => abrirTutorial(0);
@@ -1963,6 +2181,7 @@ $('#saveCopy').onclick = copiarSave;
 $('#saveDownload').onclick = baixarSave;
 $('#saveImport').onclick = importarSave;
 $('#playExit').onclick = sairDoJogo;
+$('#playRelics').onclick = abrirReliquias;
 $('#playDiary').onclick = abrirDiario;
 $$('[data-fechar]').forEach(b => b.onclick = () => $('#'+b.dataset.fechar).classList.remove('on'));
 $$('.ov').forEach(ov => ov.addEventListener('click', e => {
@@ -1990,7 +2209,6 @@ document.addEventListener('keydown', e => {
   mover(iAt(nx, ny));
 });
 
-desenharClasses();
 if(!store.get(TKEY)) setTimeout(() => abrirTutorial(0), 400);
 
 
