@@ -1,0 +1,307 @@
+<title>Roteiro do Climbix</title>
+<style>
+  :root{
+    --bg:#13100c; --surface:#1c1712; --surface-2:#241d16; --line:#362a20;
+    --ink:#f4ead9; --muted:#a4917a; --dim:#7d6c58;
+    --gold:#d7a84f; --gold-lit:#f1cc7b;
+    --f1:#8fc264; --f2:#dba658; --f3:#7ecbee; --f4:#ef7a58;
+    --ok:#7fbf8a; --meio:#d9a95a;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;padding:0 18px 80px}
+  ::selection{background:var(--gold);color:#1a1109}
+
+  /* ---- abertura ---- */
+  header.topo{padding:44px 0 26px;border-bottom:1px solid var(--line)}
+  .sobre{font:600 11px var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin:0 0 14px}
+  h1{font-family:var(--serif);font-size:clamp(32px,8.5vw,52px);line-height:1.08;margin:0 0 16px;text-wrap:balance;letter-spacing:.01em}
+  .tese{font-size:clamp(16px,4.2vw,18.5px);color:var(--ink);margin:0;max-width:56ch;line-height:1.55}
+  .tese b{color:var(--gold-lit);font-weight:600}
+
+  h2{font-family:var(--serif);font-size:clamp(22px,5.5vw,28px);margin:0 0 6px;letter-spacing:.01em}
+  h3{font-family:var(--serif);font-size:20px;margin:44px 0 4px}
+
+  /* ---- diagnóstico ---- */
+  .diag{margin:38px 0 0}
+  .diag-intro{color:var(--muted);margin:0 0 20px;font-size:15px;max-width:58ch}
+  ol.buracos{list-style:none;counter-reset:b;margin:0;padding:0;display:grid;gap:2px}
+  ol.buracos li{
+    counter-increment:b;display:grid;grid-template-columns:34px 1fr;gap:14px;
+    padding:15px 0;border-top:1px solid var(--line);align-items:start;
+  }
+  ol.buracos li:last-child{border-bottom:1px solid var(--line)}
+  ol.buracos li::before{
+    content:counter(b);font-family:var(--serif);font-size:19px;color:var(--dim);
+    line-height:1.35;font-variant-numeric:tabular-nums;
+  }
+  ol.buracos b{display:block;font-size:16px;color:var(--gold-lit);font-weight:600;margin-bottom:2px}
+  ol.buracos span{color:var(--muted);font-size:14.5px}
+
+  /* ---- fases ---- */
+  .fases{margin-top:56px}
+  .fase{position:relative;padding-left:26px;margin-bottom:52px}
+  .fase::before{
+    content:"";position:absolute;left:0;top:9px;bottom:-52px;width:2px;
+    background:linear-gradient(180deg,var(--cor),transparent 88%);border-radius:2px;
+  }
+  .fase:last-child::before{bottom:14px}
+  .fase::after{
+    content:"";position:absolute;left:-4px;top:9px;width:10px;height:10px;
+    border-radius:50%;background:var(--cor);
+  }
+  .fase-n{
+    font:700 11px var(--sans);letter-spacing:.15em;text-transform:uppercase;
+    color:var(--cor);margin:0 0 3px;
+  }
+  .fase > p.porque-fase{color:var(--muted);margin:0 0 20px;font-size:14.5px;max-width:54ch}
+
+  /* ---- itens ---- */
+  .item{
+    background:var(--surface);border:1px solid var(--line);border-radius:14px;
+    padding:16px 17px;margin-bottom:11px;
+  }
+  .item-topo{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:8px;flex-wrap:wrap}
+  .item h4{font-family:var(--serif);font-size:18px;margin:0;color:var(--gold-lit)}
+  .esforco{
+    flex:none;font:600 10.5px var(--sans);letter-spacing:.09em;text-transform:uppercase;
+    border-radius:999px;padding:3px 10px;border:1px solid currentColor;
+  }
+  .esforco.p{color:var(--ok)}
+  .esforco.m{color:var(--meio)}
+  .item p{margin:0 0 9px;font-size:14.5px;color:var(--ink)}
+  .item p:last-child{margin-bottom:0}
+  .item p.motivo{color:var(--muted);font-size:13.5px;border-left:2px solid var(--line);padding-left:11px}
+  .item p.motivo b{color:var(--gold);font-weight:600}
+  ul.ex{list-style:none;margin:11px 0 0;padding:0;display:grid;gap:6px}
+  ul.ex li{
+    font-size:13.5px;color:var(--muted);padding-left:15px;position:relative;line-height:1.5;
+  }
+  ul.ex li::before{content:"";position:absolute;left:2px;top:9px;width:4px;height:4px;border-radius:50%;background:var(--dim)}
+  ul.ex b{color:var(--ink);font-weight:600}
+
+  /* ---- fecho ---- */
+  .fecho{
+    margin-top:52px;padding:24px 20px;border-radius:16px;
+    background:var(--surface-2);border:1px solid var(--line);
+  }
+  .fecho h2{margin-bottom:12px}
+  .fecho p{margin:0 0 12px;font-size:15px;color:var(--ink)}
+  .fecho p:last-child{margin-bottom:0}
+  .fecho b{color:var(--gold-lit)}
+  .fecho .grande{font-family:var(--serif);font-size:19px;line-height:1.45;color:var(--gold-lit)}
+
+  @media(max-width:430px){
+    .fase{padding-left:20px}
+    ol.buracos li{grid-template-columns:26px 1fr;gap:10px}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="topo">
+    <p class="sobre">Climbix · plano de gameplay</p>
+    <h1>Roteiro do Climbix</h1>
+    <p class="tese">O esqueleto de roguelite já está de pé: acampamento, masmorras sorteadas,
+    relíquias que sobrevivem à morte. O que falta é o que faz alguém apertar
+    <b>“de novo”</b> às onze da noite — e isso tem causa específica, não é falta de conteúdo.</p>
+  </header>
+
+  <section class="diag">
+    <h2>Onde o jogo ainda não fisga</h2>
+    <p class="diag-intro">Cinco buracos, em ordem de importância. Os quatro primeiros são
+    sobre a partida em si; o último é sobre amanhã.</p>
+    <ol class="buracos">
+      <li><b>Toda run é igual</b><span>Escolhida a classe, nenhuma decisão muda como aquela
+        partida joga. Um roguelite vive de você montar algo diferente a cada tentativa —
+        hoje a segunda run numa masmorra Comum é idêntica à primeira.</span></li>
+      <li><b>O combate tem uma decisão só</b><span>Atacar é quase sempre a resposta certa.
+        Defender e fugir são saídas de emergência, não escolhas de verdade. O dado dá
+        variação, mas variação não é decisão.</span></li>
+      <li><b>Andar pelo mapa não é decisão</b><span>Revelar sala não tem risco nem troca.
+        Agora que matar compensa, falta o mapa oferecer escolhas — hoje ele é só um
+        caminho até a saída.</span></li>
+      <li><b>A progressão permanente não tem escolha</b><span>As seis relíquias só sobem de
+        nível. Você nunca decide nada sobre elas: acumula e pronto.</span></li>
+      <li><b>Nada marca amanhã</b><span>Não existe meta que renove, então não existe motivo
+        pra abrir o Climbix especificamente hoje em vez de daqui a duas semanas.</span></li>
+    </ol>
+  </section>
+
+  <div class="fases">
+
+    <section class="fase" style="--cor:var(--f1)">
+      <p class="fase-n">Fase 1</p>
+      <h2>Cada run diferente</h2>
+      <p class="porque-fase">É a fase que resolve o buraco nº 1, e nada mais funciona direito
+      antes dela: missão diária sem variedade de run só faz a pessoa repetir algo chato.</p>
+
+      <article class="item">
+        <div class="item-topo"><h4>Bênçãos do caminho</h4><span class="esforco m">médio</span></div>
+        <p>Ao terminar cada andar, três cartas aparecem e você fica com uma, até o fim da run.</p>
+        <p class="motivo"><b>Por quê:</b> é a mudança que mais muda o jogo. Duas partidas na
+        mesma masmorra deixam de ser iguais, e você passa a jogar atrás de combinações.
+        Umas 24 bênçãos já dão variedade de sobra — e são só modificadores aplicados às
+        contas que já existem.</p>
+        <ul class="ex">
+          <li><b>Sede de Sangue</b> — +4 de golpe, −5 de vida máxima</li>
+          <li><b>Vampirismo</b> — cura 2 a cada abate</li>
+          <li><b>Golpe Duplo</b> — quando o dado dá 20, você ataca de novo</li>
+          <li><b>Tudo ou Nada</b> — crítico já em 18, mas erra em 1, 2 e 3</li>
+          <li><b>Frenesi</b> — cada abate da sequência dá +1 de golpe até o fim da run</li>
+          <li><b>Pacto do Faminto</b> — metade da vida máxima, o dobro de ouro e material</li>
+        </ul>
+      </article>
+
+      <article class="item">
+        <div class="item-topo"><h4>Habilidade de classe</h4><span class="esforco p">pequeno</span></div>
+        <p>Cada classe ganha um golpe especial com recarga de três turnos.</p>
+        <p class="motivo"><b>Por quê:</b> hoje as três classes são três conjuntos de números.
+        Isso dá personalidade a cada uma e coloca uma decisão em toda briga, não só na
+        criação do herói.</p>
+        <ul class="ex">
+          <li><b>Guerreiro · Investida</b> — dano dobrado, mas você não pode defender no turno seguinte</li>
+          <li><b>Caçador · Tiro Certeiro</b> — rola dois dados e fica com o melhor</li>
+          <li><b>Alquimista · Bomba de Ácido</b> — 8 de dano garantido, sem dado</li>
+        </ul>
+      </article>
+
+      <article class="item">
+        <div class="item-topo"><h4>Resumo da run</h4><span class="esforco p">pequeno</span></div>
+        <p>Na tela de morte, mostrar o que a partida rendeu de permanente: níveis de relíquia
+        ganhos, criaturas novas no bestiário, quanto faltou pro andar seguinte.</p>
+        <p class="motivo"><b>Por quê:</b> morrer precisa parecer progresso, não perda. É o que
+        separa “perdi meia hora” de “faltou pouco, vou de novo”.</p>
+      </article>
+    </section>
+
+    <section class="fase" style="--cor:var(--f2)">
+      <p class="fase-n">Fase 2</p>
+      <h2>Motivo pra voltar amanhã</h2>
+      <p class="porque-fase">Com a run já variada, aqui entra o que lembra a pessoa de jogar
+      hoje. É a fase mais barata e a que mais mexe em retorno.</p>
+
+      <article class="item">
+        <div class="item-topo"><h4>Missão do dia</h4><span class="esforco p">pequeno</span></div>
+        <p>Uma missão que troca todo dia e paga bem.</p>
+        <p class="motivo"><b>Por quê:</b> é o gancho de retorno mais barato e mais eficaz que
+        existe. Dá ao jogo uma razão de ser aberto hoje.</p>
+        <ul class="ex">
+          <li>Derrote 15 criaturas</li>
+          <li>Limpe uma masmorra Rara ou melhor</li>
+          <li>Chegue ao andar 5 sem beber poção</li>
+          <li>Forje três itens numa só jornada</li>
+        </ul>
+      </article>
+
+      <article class="item">
+        <div class="item-topo"><h4>Metas à vista</h4><span class="esforco p">pequeno</span></div>
+        <p>Mostrar na home a conquista mais perto de cair — “Caçador de feras, 22 de 25 criaturas”.</p>
+        <p class="motivo"><b>Por quê:</b> uma meta a três abates de distância puxa muito mais
+        do que dezenove metas invisíveis atrás de um botão.</p>
+      </article>
+
+      <article class="item">
+        <div class="item-topo"><h4>Coisas pra destravar</h4><span class="esforco m">médio</span></div>
+        <p>Classes novas e relíquias extras, presas atrás de conquistas.</p>
+        <p class="motivo"><b>Por quê:</b> destravar dá o motivo mais concreto que existe pra
+        voltar — tem coisa nova pra experimentar, e experimentar exige uma run inteira.</p>
+        <ul class="ex">
+          <li><b>Ladino</b> — foge sempre, mais ouro, pouca vida · limpe 5 masmorras</li>
+          <li><b>Clérigo</b> — cura sozinho, defesa alta, golpe fraco · derrube 3 guardiões</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="fase" style="--cor:var(--f3)">
+      <p class="fase-n">Fase 3</p>
+      <h2>O mapa vira decisão</h2>
+      <p class="porque-fase">Resolve o buraco nº 3. Tudo aqui é barato e some junto: o mapa
+      deixa de ser corredor e vira uma sequência de apostas pequenas.</p>
+
+      <article class="item">
+        <div class="item-topo"><h4>Escada visível desde o começo</h4><span class="esforco p">pequeno</span></div>
+        <p>A saída do andar aparece no mapa desde que você entra.</p>
+        <p class="motivo"><b>Por quê:</b> hoje você anda até achar a saída, e explorar é
+        obrigação. Com a escada à vista, cada sala que você abre vira escolha sua: arriscar
+        por mais loot ou descer logo.</p>
+      </article>
+
+      <article class="item">
+        <div class="item-topo"><h4>Salas de elite</h4><span class="esforco p">pequeno</span></div>
+        <p>Salas marcadas com criatura mais forte e recompensa garantida.</p>
+        <p class="motivo"><b>Por quê:</b> risco visível com prêmio visível é a decisão mais
+        limpa que um mapa pode oferecer.</p>
+      </article>
+
+      <article class="item">
+        <div class="item-topo"><h4>Altar da aposta</h4><span class="esforco p">pequeno</span></div>
+        <p>Uma sala que oferece um lance de dado: 15 ou mais, nível de relíquia; menos que
+        isso, perde metade do ouro.</p>
+        <p class="motivo"><b>Por quê:</b> decisão pura, sem combate — e usa o dado, que já é
+        a assinatura do jogo.</p>
+      </article>
+
+      <article class="item">
+        <div class="item-topo"><h4>Porta trancada</h4><span class="esforco m">médio</span></div>
+        <p>Um baú bom atrás de uma porta cuja chave está com alguma criatura do andar.</p>
+        <p class="motivo"><b>Por quê:</b> força o encontro em vez de premiar quem desvia —
+        na mesma direção da sequência de abates que já entrou.</p>
+      </article>
+    </section>
+
+    <section class="fase" style="--cor:var(--f4)">
+      <p class="fase-n">Fase 4</p>
+      <h2>Profundidade de longo prazo</h2>
+      <p class="porque-fase">Para quem já jogou bastante. Só faz sentido depois que as três
+      primeiras estiverem de pé — antes disso, é profundidade sem base.</p>
+
+      <article class="item">
+        <div class="item-topo"><h4>Relíquia com evolução</h4><span class="esforco m">médio</span></div>
+        <p>No nível 5, cada relíquia oferece dois caminhos. A Escama vira “+1 de defesa a cada
+        dois níveis” ou “ignora o primeiro golpe de cada briga”.</p>
+        <p class="motivo"><b>Por quê:</b> resolve o buraco nº 4 — a progressão permanente
+        passa a ter escolha, e dois jogadores com as mesmas relíquias deixam de ter o mesmo herói.</p>
+      </article>
+
+      <article class="item">
+        <div class="item-topo"><h4>Efeitos de estado</h4><span class="esforco m">médio</span></div>
+        <p>Veneno, sangramento e atordoar — nas criaturas e nas suas bênçãos.</p>
+        <p class="motivo"><b>Por quê:</b> dá textura ao combate sem complicar a regra do dado,
+        que é o que mantém o jogo amigável pra quem não joga RPG.</p>
+      </article>
+
+      <article class="item">
+        <div class="item-topo"><h4>Masmorra do dia</h4><span class="esforco m">médio</span></div>
+        <p>Uma masmorra de semente fixa, igual pra todo mundo naquele dia, com o placar do seu
+        próprio melhor.</p>
+        <p class="motivo"><b>Por quê:</b> transforma a missão diária em desafio com comparação
+        — e comparação é o que faz alguém tentar de novo no mesmo dia.</p>
+      </article>
+
+      <article class="item">
+        <div class="item-topo"><h4>Modo sem fim</h4><span class="esforco m">médio</span></div>
+        <p>Andares infinitos que só ficam mais duros, com recorde próprio.</p>
+        <p class="motivo"><b>Por quê:</b> dá teto pra perseguir pra quem já derrubou o
+        Dragonete e ficou sem objetivo.</p>
+      </article>
+    </section>
+
+  </div>
+
+  <section class="fecho">
+    <h2>Por onde começar</h2>
+    <p class="grande">Se der pra fazer uma coisa só, faça as bênçãos.</p>
+    <p>É a diferença entre um jogo que a pessoa termina e um jogo que a pessoa repete. Todo o
+    resto do plano rende mais depois que ela existir.</p>
+    <p>Se der pra fazer duas: <b>bênçãos + missão do dia</b>. A primeira faz valer a pena
+    repetir; a segunda lembra de repetir. Juntas elas cobrem o buraco nº 1 e o nº 5, que são
+    os dois que realmente seguram alguém.</p>
+  </section>
+</div>
