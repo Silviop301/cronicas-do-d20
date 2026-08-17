@@ -1768,14 +1768,31 @@ function dimensionarMapa(){
   mid.classList.toggle('rolavel', lado > cabe);
 }
 
+/* A área do meio ainda muda de tamanho depois do render: o Safari recolhe
+   a barra de endereço, e dentro de uma moldura o visualizador redimensiona
+   o quadro quando bem entende. Em vez de tentar adivinhar o momento certo
+   de medir, observamos a área e redimensionamos sempre que ela mudar. */
+let olhoNoMeio = null;
+function observarMeio(){
+  const mid = $('#playMid');
+  if(!mid || olhoNoMeio || typeof ResizeObserver === 'undefined') return;
+  olhoNoMeio = new ResizeObserver(() => dimensionarMapa());
+  olhoNoMeio.observe(mid);
+}
+
 /* ---------- entrar e sair do modo de jogo ---------- */
 function medirTela(){
-  const alt = window.visualViewport?.height || window.innerHeight;
+  /* Dentro de uma moldura o visualViewport às vezes devolve a altura da
+     página de fora, que é maior — o menor dos dois é sempre o seguro. */
+  const vv = window.visualViewport?.height || 0;
+  const jan = window.innerHeight || 0;
+  const alt = (vv && jan) ? Math.min(vv, jan) : (vv || jan || document.documentElement.clientHeight);
   document.documentElement.style.setProperty('--appvh', alt + 'px');
 }
 medirTela();
+observarMeio();
 window.addEventListener('resize', () => { medirTela(); dimensionarMapa(); });
-window.addEventListener('orientationchange', medirTela);
+window.addEventListener('orientationchange', () => { medirTela(); dimensionarMapa(); });
 window.visualViewport?.addEventListener('resize', () => { medirTela(); dimensionarMapa(); });
 
 function abrirJogo(){
