@@ -1,0 +1,918 @@
+<title>Arte do Climbix</title>
+<style>
+  :root{
+    --bg:#0f0d0c; --panel:#171310; --line:#3a2d23; --text:#f6eadc; --muted:#bda995;
+    --gold:#d7a84f; --gold2:#f1cc7b;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(180deg,#100d0b,#0b0908 70%);color:var(--text);
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.55}
+  .wrap{max-width:860px;margin:auto;padding:28px 16px 60px}
+  h1{font-family:Georgia,serif;font-size:clamp(27px,5vw,40px);margin:0 0 6px;text-wrap:balance}
+  .sub{color:var(--muted);margin:0 0 22px;max-width:60ch}
+  .box{border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,rgba(29,23,18,.97),rgba(20,16,13,.97));padding:16px 18px;margin-bottom:18px}
+  .box h2{font:700 17px Georgia,serif;color:#f6deb0;margin:0 0 8px}
+  .box p{margin:0 0 8px;color:#e7d8c2;font-size:14px}
+  .box ol{margin:6px 0 0;padding-left:20px;color:#e7d8c2;font-size:14px}
+  .box li{margin-bottom:5px}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;background:#0f0c0a;border:1px solid #33281f;border-radius:6px;padding:1px 6px;color:#f3d190}
+  .box.aviso{border-color:#653631;background:linear-gradient(180deg,rgba(60,28,25,.5),rgba(20,16,13,.97))}
+  .box.aviso h2{color:#ffc0b8}
+  .estilo{font-size:13px;color:#e7d8c2;background:#0f0c0a;border:1px solid #33281f;border-radius:10px;padding:11px 13px;margin-top:8px}
+  h3.reg{font:700 18px Georgia,serif;color:#f6deb0;margin:26px 0 10px;border-bottom:1px solid var(--line);padding-bottom:7px}
+  h3.reg small{font-weight:400;font-size:12px;color:var(--muted);font-family:Inter,sans-serif}
+  .grid{display:grid;gap:9px}
+  .card{border:1px solid #2f251d;border-radius:12px;background:#141010;padding:11px 13px}
+  .card-head{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:6px}
+  .file{background:#0f0c0a}
+  .nome{font-weight:700;font-size:14px;color:#f3d190}
+  .tag{font-size:10px;text-transform:uppercase;letter-spacing:.08em;border-radius:999px;padding:2px 8px;border:1px solid #7a5a33;color:#f3d190}
+  .tag.final{border-color:#a8453a;color:#ff9a90}
+  .prompt-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start}
+  .prompt{margin:0;font-size:12.5px;color:#d9c9b2;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;line-height:1.5;word-break:break-word}
+  .copy{border:1px solid var(--line);background:#201913;color:var(--text);border-radius:9px;padding:6px 11px;font-size:12px;cursor:pointer;white-space:nowrap}
+  .copy:hover{border-color:#72563c}
+  .copy.ok{background:linear-gradient(180deg,var(--gold2),var(--gold));color:#24170b;border:none}
+  @media(max-width:560px){ .prompt-row{grid-template-columns:1fr} .copy{justify-self:start} }
+</style>
+
+<div class="wrap">
+  <h1>Arte do Climbix</h1>
+  <p class="sub">51 criaturas e 20 itens, com o nome de arquivo que o jogo procura para cada um. Gere no seu gerador preferido e jogue os arquivos na pasta certa — o que faltar continua aparecendo como emoji.</p>
+
+  <div class="box">
+    <h2>Enquadramento: busto</h2>
+    <p>Todas as criaturas são <b>cabeça, ombros e peito</b>, em três quartos, olhando para quem joga — não corpo inteiro. No bestiário a criatura aparece com 32 pixels de altura, e nesse tamanho um corpo inteiro vira mancha: cabeça, olhos e presas são o que ainda se lê. O importante é que as 50 sigam o mesmo enquadramento.</p>
+  </div>
+
+  <div class="box">
+    <h2>Como usar</h2>
+    <ol>
+      <li>Gere a imagem com o prompt do item.</li>
+      <li>Salve com <b>exatamente</b> o nome de arquivo indicado (tudo minúsculo, sem acento).</li>
+      <li>Suba as criaturas em <code>public_html/img/</code> e os itens em <code>public_html/img/itens/</code>.</li>
+      <li>Recarregue o jogo. Quem tiver imagem aparece com imagem; o resto segue com emoji.</li>
+    </ol>
+    <p style="margin-top:10px">Formato: <b>PNG quadrado com fundo transparente</b>, 512×512 dá e sobra (o jogo exibe entre 20 e 132 pixels). Se o seu gerador não fizer transparência, gere com fundo liso bem escuro e recorte depois.</p>
+  </div>
+
+  <div class="box aviso">
+    <h2>Três erros que estragam o ícone</h2>
+    <p><b>Imagem deitada.</b> As molduras do jogo são quadradas: uma imagem em paisagem encolhe para caber na largura e sobra vazio em cima e embaixo. Peça <b>quadrada, 1:1</b>.</p>
+    <p><b>Fundo branco.</b> Contra a interface escura, vira um retângulo claro. Tem que ser <b>PNG com transparência</b> de verdade — se o gerador não fizer, tire o fundo depois.</p>
+    <p><b>Cenário junto do bicho.</b> Coluna, chão, grama e afins parecem bonitos grandes, mas no bestiário o espaço é de 26 pixels: o cenário vira borrão e rouba metade da área da criatura. <b>Só a criatura, preenchendo o quadro.</b></p>
+  </div>
+
+  <div class="box">
+    <h2>Formato: Midjourney tag-based</h2>
+    <p>Os prompts estão otimizados para <b>Midjourney</b>. Use-os exatamente como aparecem aqui — não precisa traduzir para português, Midjourney entende melhor em inglês. Copie o prompt inteiro, cole no chat do Midjourney, e peça a imagem.</p>
+    <p>Os parâmetros <code>--ar 1:1</code> forçam quadrado (essencial), e <code>--s 750</code> controla o estilo — ajuste conforme necessário. Prefira valores entre 600–800 para mais consistência visual entre as criaturas.</p>
+  </div>
+
+  <div class="box">
+    <h2>Qualidade e consistência</h2>
+    <p>Todas as 71 imagens usam a mesma estrutura: busto (cabeça e ombros), enquadramento quadrado, fundo preto sólido, sem cenário. O tamanho final no jogo é 32 pixels, então tudo deve ser nítido e legível em escala reduzida.</p>
+    <p><b>Dica:</b> Gere em lotes de 5–10 similares (mesma região) para manter coesão visual. Se uma imagem não combinar, regenere com <code>--s 700</code> ou <code>--s 800</code> para ajustar o grau de fidelidade ao prompt.</p>
+  </div>
+
+  <div class="box">
+    <h2>Estrutura dos prompts</h2>
+    <p>Cada prompt segue este padrão: descrição da criatura → estilo de jogo → enquadramento → efeitos de luz → paleta de cores → qualidade + parâmetros Midjourney.</p>
+    <div class="estilo">[descrição da criatura em poucas palavras], dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</div>
+  </div>
+
+  <h2 style="font:700 21px Georgia,serif;color:#f6deb0;margin:30px 0 0">Criaturas</h2>
+  
+  <h3 class="reg">🌿 Campo Aberto <small>11 criaturas</small></h3>
+  <div class="grid">
+    
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/rato.png</code>
+      <span class="nome">Rato Gigante</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a mangy giant rat head and shoulders, matted fur, long yellow teeth, twitching whiskers, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a mangy giant rat head and shoulders, matted fur, long yellow teeth, twitching whiskers, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/morcegoc.png</code>
+      <span class="nome">Morcego do Campo</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a giant field bat head and shoulders, huge ears, snarling fanged face, wings folded tight against the body, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a giant field bat head and shoulders, huge ears, snarling fanged face, wings folded tight against the body, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/goblin.png</code>
+      <span class="nome">Goblin Batedor</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a scrawny goblin scout with oversized ears, rusty dagger, leather scraps, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a scrawny goblin scout with oversized ears, rusty dagger, leather scraps, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/cobra.png</code>
+      <span class="nome">Cobra do Mato</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a grass snake head rearing, green scales, forked tongue, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a grass snake head rearing, green scales, forked tongue, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/abelha.png</code>
+      <span class="nome">Abelha Rainha</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a monstrous queen bee head and thorax, amber compound eyes, fuzzy collar, tiny crown, wings folded back, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a monstrous queen bee head and thorax, amber compound eyes, fuzzy collar, tiny crown, wings folded back, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/sapo.png</code>
+      <span class="nome">Sapo Venenoso</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a bloated poison toad head and shoulders, warty purple-spotted skin, dripping venom, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a bloated poison toad head and shoulders, warty purple-spotted skin, dripping venom, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/aranhamato.png</code>
+      <span class="nome">Aranha do Mato</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a mossy forest spider head and forelegs, eight red eyes, hairy green-brown body, cobweb strands across it, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a mossy forest spider head and forelegs, eight red eyes, hairy green-brown body, cobweb strands across it, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/corvo.png</code>
+      <span class="nome">Corvo Ladrão</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a thieving crow head and chest, glossy black feathers, a gold coin in its beak, wings folded, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a thieving crow head and chest, glossy black feathers, a gold coin in its beak, wings folded, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/lobo.png</code>
+      <span class="nome">Lobo Faminto</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a gaunt hungry wolf head and shoulders, snarling with bared fangs, ears laid back, matted grey fur with a mossy tint, hungry yellow eyes, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a gaunt hungry wolf head and shoulders, snarling with bared fangs, ears laid back, matted grey fur with a mossy tint, hungry yellow eyes, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/urso.png</code>
+      <span class="nome">Urso Pardo</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a brown bear head and shoulders, thick shaggy fur, open jaws, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a brown bear head and shoulders, thick shaggy fur, open jaws, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/javali.png</code>
+      <span class="nome">Javali Ancião</span>
+      <span class="tag chefe">chefe</span>
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">an ancient dire boar head and shoulders, enormous curved tusks, scarred hide, moss on its nape, boss variant more threatening than common creatures, older and more scarred, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="an ancient dire boar head and shoulders, enormous curved tusks, scarred hide, moss on its nape, boss variant more threatening than common creatures, older and more scarred, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  </div>
+  <h3 class="reg">🏜️ Deserto de Sal <small>10 criaturas</small></h3>
+  <div class="grid">
+    
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/lagarto.png</code>
+      <span class="nome">Lagarto de Sal</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a salt-crusted desert lizard, pale scales, long tail, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a salt-crusted desert lizard, pale scales, long tail, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/abutre.png</code>
+      <span class="nome">Abutre Faminto</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a starving vulture head and neck, bald wrinkled skin, hooked beak, ruff of ragged feathers, wings folded, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a starving vulture head and neck, bald wrinkled skin, hooked beak, ruff of ragged feathers, wings folded, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/escorpiao.png</code>
+      <span class="nome">Escorpião Dourado</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a golden desert scorpion, raised stinger, glossy carapace, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a golden desert scorpion, raised stinger, glossy carapace, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/besouro.png</code>
+      <span class="nome">Besouro de Bronze</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a bronze-shelled beetle, metallic plated back, mandibles, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a bronze-shelled beetle, metallic plated back, mandibles, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/camelo.png</code>
+      <span class="nome">Camelo Enfurecido</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">an enraged camel head and neck, foaming mouth, torn saddle straps, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="an enraged camel head and neck, foaming mouth, torn saddle straps, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/bandido.png</code>
+      <span class="nome">Bandido Mascarado</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a masked desert bandit, cloth wrap over face, curved scimitar, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a masked desert bandit, cloth wrap over face, curved scimitar, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/genio.png</code>
+      <span class="nome">Gênio Menor</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a lesser genie, smoky lower body, brass arm cuffs, glowing eyes, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a lesser genie, smoky lower body, brass arm cuffs, glowing eyes, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/mumia.png</code>
+      <span class="nome">Múmia Ressecada</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a dried mummy, cracked bandages, hollow glowing eye sockets, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a dried mummy, cracked bandages, hollow glowing eye sockets, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/verme.png</code>
+      <span class="nome">Verme das Areias</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a giant sandworm head, ringed segments, circular toothed maw open at the viewer, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a giant sandworm head, ringed segments, circular toothed maw open at the viewer, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/bronze.png</code>
+      <span class="nome">Colosso de Bronze</span>
+      <span class="tag chefe">chefe</span>
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a colossal bronze statue head and shoulders coming alive, cracked patina, glowing seams, boss variant more threatening than common creatures, older and more scarred, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a colossal bronze statue head and shoulders coming alive, cracked patina, glowing seams, boss variant more threatening than common creatures, older and more scarred, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  </div>
+  <h3 class="reg">❄️ Campos de Gelo <small>10 criaturas</small></h3>
+  <div class="grid">
+    
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/pinguim.png</code>
+      <span class="nome">Pinguim Berserker</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a furious battle penguin, tiny ice shard spear, puffed chest, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a furious battle penguin, tiny ice shard spear, puffed chest, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/foca.png</code>
+      <span class="nome">Foca Colossal</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a colossal seal, thick blubber, tusked, ice crusted whiskers, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a colossal seal, thick blubber, tusked, ice crusted whiskers, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/aranhagelo.png</code>
+      <span class="nome">Aranha de Gelo</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">an ice spider, translucent crystalline legs, frost on abdomen, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="an ice spider, translucent crystalline legs, frost on abdomen, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/lobobranco.png</code>
+      <span class="nome">Lobo Branco</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a white wolf with frost breath, pale blue eyes, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a white wolf with frost breath, pale blue eyes, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/ursoglacial.png</code>
+      <span class="nome">Urso Glacial</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a glacial polar bear, ice shards frozen into its fur, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a glacial polar bear, ice shards frozen into its fur, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/coruja.png</code>
+      <span class="nome">Coruja da Nevasca</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a blizzard owl head and chest, wide amber eyes, snow-dusted facial disc, wings folded, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a blizzard owl head and chest, wide amber eyes, snow-dusted facial disc, wings folded, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/alce.png</code>
+      <span class="nome">Alce Ancião</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">an ancient elk, huge frost-covered antlers, steam from nostrils, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="an ancient elk, huge frost-covered antlers, steam from nostrils, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/espectro.png</code>
+      <span class="nome">Espectro do Poço</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a well spectre, tattered translucent shroud, hollow face, dripping water, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a well spectre, tattered translucent shroud, hollow face, dripping water, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/cristalino.png</code>
+      <span class="nome">Golem Cristalino</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a crystal golem, angular blue-white shards, glowing core, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a crystal golem, angular blue-white shards, glowing core, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/gigante.png</code>
+      <span class="nome">Gigante de Gelo</span>
+      <span class="tag chefe">chefe</span>
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">an ice giant head and shoulders, frozen brow, frost beard, glacier club over the shoulder, boss variant more threatening than common creatures, older and more scarred, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="an ice giant head and shoulders, frozen brow, frost beard, glacier club over the shoulder, boss variant more threatening than common creatures, older and more scarred, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  </div>
+  <h3 class="reg">🕯️ A Masmorra <small>10 criaturas</small></h3>
+  <div class="grid">
+    
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/ratorei.png</code>
+      <span class="nome">Rato-Rei</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a rat king, many rats fused with tangled tails, tiny crooked crown, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a rat king, many rats fused with tangled tails, tiny crooked crown, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/aranhacripta.png</code>
+      <span class="nome">Aranha da Cripta</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a crypt spider on a dusty web, bone-pale markings, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a crypt spider on a dusty web, bone-pale markings, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/esqueleto.png</code>
+      <span class="nome">Esqueleto</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">an animated skeleton warrior, rusted sword, chipped bones, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="an animated skeleton warrior, rusted sword, chipped bones, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/cadaver.png</code>
+      <span class="nome">Cadáver Andante</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a shambling corpse, grave dirt, torn burial clothes, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a shambling corpse, grave dirt, torn burial clothes, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/sombra.png</code>
+      <span class="nome">Sombra Errante</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a wandering shadow, featureless dark humanoid, faint glowing eyes, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a wandering shadow, featureless dark humanoid, faint glowing eyes, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/vampiro.png</code>
+      <span class="nome">Vampiro Menor</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a lesser vampire, pale gaunt face, red-lined black cloak, fangs, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a lesser vampire, pale gaunt face, red-lined black cloak, fangs, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/golemtijolo.png</code>
+      <span class="nome">Golem de Tijolo</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a brick golem, crumbling masonry body, mortar cracks, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a brick golem, crumbling masonry body, mortar cracks, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/ogro.png</code>
+      <span class="nome">Ogro Faminto</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a hungry ogre, huge belly, crude club, tusked underbite, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a hungry ogre, huge belly, crude club, tusked underbite, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/necromante.png</code>
+      <span class="nome">Necromante Menor</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a minor necromancer, hooded robe, skull staff, green magic wisps, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a minor necromancer, hooded robe, skull staff, green magic wisps, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/cavaleiro.png</code>
+      <span class="nome">Cavaleiro Caído</span>
+      <span class="tag chefe">chefe</span>
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a fallen knight head and shoulders, dented black pauldrons, cracked helm with red glow, boss variant more threatening than common creatures, older and more scarred, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a fallen knight head and shoulders, dented black pauldrons, cracked helm with red glow, boss variant more threatening than common creatures, older and more scarred, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  </div>
+  <h3 class="reg">🐉 Covil do Dragonete <small>10 criaturas</small></h3>
+  <div class="grid">
+    
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/imp.png</code>
+      <span class="nome">Diabrete</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a small red imp, bat wings, forked tail, mischievous grin, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a small red imp, bat wings, forked tail, mischievous grin, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/salamandra.png</code>
+      <span class="nome">Salamandra Ígnea</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a fire salamander, molten cracks along its back, ember trail, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a fire salamander, molten cracks along its back, ember trail, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/filhote.png</code>
+      <span class="nome">Filhote de Dragão</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a dragon hatchling, oversized head, stubby wings, iron-grey scales, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a dragon hatchling, oversized head, stubby wings, iron-grey scales, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/basilisco.png</code>
+      <span class="nome">Basilisco</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a basilisk, long serpentine reptile, petrifying yellow stare, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a basilisk, long serpentine reptile, petrifying yellow stare, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/quimera.png</code>
+      <span class="nome">Quimera</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a chimera head and shoulders, lion face, goat head beside it, serpent rising behind, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a chimera head and shoulders, lion face, goat head beside it, serpent rising behind, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/wyvern.png</code>
+      <span class="nome">Wyvern</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a wyvern head and neck, horned skull, bared fangs, folded wing shoulders framing the head, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a wyvern head and neck, horned skull, bared fangs, folded wing shoulders framing the head, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/cerbero.png</code>
+      <span class="nome">Cão de Três Cabeças</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">three snarling hound heads over broad shoulders, black fur, ember eyes, iron collar, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="three snarling hound heads over broad shoulders, black fur, ember eyes, iron collar, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/golemlava.png</code>
+      <span class="nome">Golem de Lava</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a lava golem, cracked obsidian shell with molten glowing seams, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a lava golem, cracked obsidian shell with molten glowing seams, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/obsidiana.png</code>
+      <span class="nome">Guardião de Obsidiana</span>
+      <span class="tag chefe">chefe</span>
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">an obsidian guardian head and shoulders, polished black stone face, glowing red runes, boss variant more threatening than common creatures, older and more scarred, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="an obsidian guardian head and shoulders, polished black stone face, glowing red runes, boss variant more threatening than common creatures, older and more scarred, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/dragonete.png</code>
+      <span class="nome">Dragonete de Ferro</span>
+      <span class="tag final">chefe final</span>
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">the final boss: an iron drakeling head and neck, riveted metal plating over scales, glowing furnace throat, tattered metal wing edges behind, final boss more menacing and imposing than all others, dramatically larger, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="the final boss: an iron drakeling head and neck, riveted metal plating over scales, glowing furnace throat, tattered metal wing edges behind, final boss more menacing and imposing than all others, dramatically larger, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  </div>
+
+  <h2 style="font:700 21px Georgia,serif;color:#f6deb0;margin:34px 0 0">Itens</h2>
+  
+  <h3 class="reg">⚒️ Equipamento e poções <small>10 imagens</small></h3>
+  <div class="grid">
+    
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/itens/espada.png</code>
+      <span class="nome">Espada de Ferro</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">an iron short sword, simple crossguard, worn leather grip, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="an iron short sword, simple crossguard, worn leather grip, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/itens/machado.png</code>
+      <span class="nome">Machado Pesado</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a heavy two-handed battle axe, thick iron head, oak haft, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a heavy two-handed battle axe, thick iron head, oak haft, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/itens/lamina.png</code>
+      <span class="nome">Lâmina Rúnica</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a runic blade glowing with faint gold runes along the fuller, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a runic blade glowing with faint gold runes along the fuller, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/itens/elmocouro.png</code>
+      <span class="nome">Elmo de Couro</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a simple leather cap helmet with stitched seams, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a simple leather cap helmet with stitched seams, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/itens/elmoferro.png</code>
+      <span class="nome">Elmo de Ferro</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">an iron helmet with a nose guard, hammered surface, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="an iron helmet with a nose guard, hammered surface, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/itens/peitocouro.png</code>
+      <span class="nome">Peitoral de Couro</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a leather chest armor, buckled straps, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a leather chest armor, buckled straps, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/itens/peitoferro.png</code>
+      <span class="nome">Peitoral de Ferro</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">an iron breastplate, riveted plates, battle scratches, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="an iron breastplate, riveted plates, battle scratches, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/itens/escudo.png</code>
+      <span class="nome">Escudo Rúnico</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a round runic shield, iron rim, glowing engraved sigil, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a round runic shield, iron rim, glowing engraved sigil, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/itens/pocao.png</code>
+      <span class="nome">Poção de Cura</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a small round healing potion bottle, glowing red liquid, cork stopper, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a small round healing potion bottle, glowing red liquid, cork stopper, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/itens/elixir.png</code>
+      <span class="nome">Elixir de Vida</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">an ornate elixir flask, swirling pink light, gold filigree, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="an ornate elixir flask, swirling pink light, gold filigree, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  </div>
+  
+  <h3 class="reg">✨ Relíquias <small>6 imagens</small></h3>
+  <div class="grid">
+    
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/itens/sorte.png</code>
+      <span class="nome">Olho da Sorte</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a lucky eye amulet, green four-leaf clover set in a gold eye-shaped pendant, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a lucky eye amulet, green four-leaf clover set in a gold eye-shaped pendant, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/itens/martelo.png</code>
+      <span class="nome">Martelo Ancestral</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">an ancestral forge hammer, runed stone head, leather-wrapped handle, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="an ancestral forge hammer, runed stone head, leather-wrapped handle, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/itens/coracao.png</code>
+      <span class="nome">Coração de Pedra</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a heart carved from grey stone, faint red glow in its cracks, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a heart carved from grey stone, faint red glow in its cracks, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/itens/escama.png</code>
+      <span class="nome">Escama do Dragonete</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a single large dragon scale, iron-grey with green iridescence, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a single large dragon scale, iron-grey with green iridescence, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/itens/bolsa.png</code>
+      <span class="nome">Bolsa Sem Fundo</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a bottomless coin pouch, worn leather, gold coins spilling out, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a bottomless coin pouch, worn leather, gold coins spilling out, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/itens/frasco.png</code>
+      <span class="nome">Frasco Eterno</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">an eternal flask, alchemical glass with a never-emptying green brew, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="an eternal flask, alchemical glass with a never-emptying green brew, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  </div>
+  
+  <h3 class="reg">🔩 Materiais <small>4 imagens</small></h3>
+  <div class="grid">
+    
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/itens/mat-ferro.png</code>
+      <span class="nome">Ferro</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a raw iron ingot, rough forged surface, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a raw iron ingot, rough forged surface, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/itens/mat-couro.png</code>
+      <span class="nome">Couro</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a rolled piece of tanned leather, tied with cord, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a rolled piece of tanned leather, tied with cord, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/itens/mat-cristal.png</code>
+      <span class="nome">Cristal</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a blue magic crystal shard, faceted, inner glow, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a blue magic crystal shard, faceted, inner glow, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <code class="file">img/itens/mat-erva.png</code>
+      <span class="nome">Erva</span>
+      
+    </div>
+    <div class="prompt-row">
+      <p class="prompt">a bundle of green healing herbs tied with twine, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+      <button class="copy" data-copy="a bundle of green healing herbs tied with twine, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">copiar</button>
+    </div>
+  </div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('.copy').forEach(b => b.onclick = async () => {
+    try{
+      await navigator.clipboard.writeText(b.dataset.copy);
+      const antes = b.textContent;
+      b.textContent = 'copiado'; b.classList.add('ok');
+      setTimeout(() => { b.textContent = antes; b.classList.remove('ok'); }, 1400);
+    }catch(e){
+      const r = document.createRange(); r.selectNode(b.previousElementSibling);
+      getSelection().removeAllRanges(); getSelection().addRange(r);
+    }
+  });
+</script>
