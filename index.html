@@ -304,6 +304,20 @@
     .banner b{display:block;font:700 15px Georgia,serif;color:#f6deb0}
     .banner small{color:var(--muted);font-size:12px}
     .chip.seq{border-color:#8a4a2a;color:#ffb987;background:#1d1210}
+    .chip.ben{border-color:#6d5a8a;color:#cbb6ef;background:#171423}
+    /* A oferta de masmorra pinta a borda com a cor do nível; a de bênção não
+       tem nível, então traz a sua própria. */
+    .offer.bencao{--nc:#8f79bd;grid-template-columns:40px 1fr;gap:11px;align-items:center;padding:13px 13px}
+    .offer.bencao .offer-ico{font-size:26px;text-align:center;line-height:1}
+    .offer.bencao .offer-txt{display:grid;gap:2px;min-width:0}
+    .offer.bencao .offer-txt b{font-size:15px;color:#cbb6ef}
+    .offer.bencao .offer-txt small{font-size:12.5px;color:var(--muted);line-height:1.45}
+    .bencoes{display:grid;gap:7px}
+    .bencao-l{display:grid;grid-template-columns:26px 1fr;gap:9px;align-items:center;
+      background:#171423;border:1px solid #372e4a;border-radius:11px;padding:8px 10px}
+    .bencao-l > span:first-child{font-size:19px;text-align:center}
+    .bencao-l b{display:block;font-size:13px;color:#cbb6ef}
+    .bencao-l small{font-size:11px;color:var(--muted);line-height:1.4}
     .chip.seq i{font-style:normal;font-size:11px;opacity:.85}
     .chip.nivel{border-color:var(--nc);color:var(--nc)}
     .chip.nivel b,.chip.nivel i{color:inherit}
@@ -802,25 +816,82 @@ const pocoesDoFrasco = n => Math.ceil(n/3);
 const nivelRel = id => Math.min(REL_MAX, (META.reliquias && META.reliquias[id]) || 0);
 const critDesde = n => 20 - Math.floor(n/2);
 
+/* Bênçãos: escolhidas durante a masmorra e válidas só até voltar ao
+   acampamento. São elas que fazem duas descidas na mesma masmorra jogarem
+   diferente — as relíquias mudam o começo, as bênçãos mudam a partida.
+   Campos numéricos são somados automaticamente; os marcados com `truque`
+   têm efeito próprio no meio do combate. */
+const BENCAOS = [
+  // --- porrada ---
+  {id:'fio',       nome:'Fio Afiado',        icone:'🗡️', desc:'+2 de golpe', golpe:2},
+  {id:'sede',      nome:'Sede de Sangue',    icone:'🩸', desc:'+5 de golpe, mas −6 de vida máxima', golpe:5, vidaMax:-6},
+  {id:'duplo',     nome:'Golpe Duplo',       icone:'⚡', desc:'quando o dado dá 20, você ataca de novo', truque:1},
+  {id:'firme',     nome:'Mão Firme',         icone:'🎯', desc:'o dado nunca cai abaixo de 3', truque:1},
+  {id:'viciado',   nome:'Dado Viciado',      icone:'🎲', desc:'no ataque, rola dois dados e fica com o melhor', truque:1},
+  {id:'carniceiro',nome:'Carniceiro',        icone:'🪓', desc:'+50% de dano em criatura já ferida', truque:1},
+  {id:'tudo',      nome:'Tudo ou Nada',      icone:'🌗', desc:'crítico já em 18, mas erra de 1 a 3', truque:1},
+  // --- couro ---
+  {id:'couro',     nome:'Couro Grosso',      icone:'🦬', desc:'+2 de defesa', defesa:2},
+  {id:'folego',    nome:'Fôlego',            icone:'🫁', desc:'+14 de vida máxima', vidaMax:14},
+  {id:'pele',      nome:'Segunda Pele',      icone:'🕊️', desc:'uma vez por andar, sobrevive a um golpe fatal com 1 de vida', truque:1},
+  {id:'contra',    nome:'Contragolpe',       icone:'↩️', desc:'ao defender, devolve 4 de dano', contra:4},
+  // --- sustentação ---
+  {id:'vampiro',   nome:'Vampirismo',        icone:'🧛', desc:'cura 2 a cada abate', curaAbate:2},
+  {id:'bolso',     nome:'Bolso Fundo',       icone:'🎒', desc:'+1 poção a cada andar que você desce', pocaoAndar:1},
+  {id:'alquimia',  nome:'Alquimia Fina',     icone:'⚗️', desc:'poções curam o dobro', pocaoMult:1},
+  // --- bolso ---
+  {id:'faro',      nome:'Faro de Ouro',      icone:'💰', desc:'+50% de ouro', ouroPct:.5},
+  {id:'catador',   nome:'Catador',           icone:'🧲', desc:'material cai em todo abate', truque:1},
+  {id:'mercador',  nome:'Mercador',          icone:'⚖️', desc:'forja 25% mais barata', descontoPct:.25},
+  // --- as que definem a partida ---
+  {id:'frenesi',   nome:'Frenesi',           icone:'🔥', desc:'+1 de golpe por abate da sequência', truque:1},
+  {id:'teimoso',   nome:'Teimoso',           icone:'⛏️', desc:'+1 de golpe por andar que você já desceu', truque:1},
+  {id:'pacto',     nome:'Pacto do Faminto',  icone:'💀', desc:'metade da vida máxima, mas o dobro de ouro e material', truque:1},
+  {id:'leve',      nome:'Passo Leve',        icone:'🍃', desc:'fugir sempre dá certo, mas −2 de golpe', golpe:-2, truque:1},
+  {id:'muralha',   nome:'Muralha',           icone:'🧱', desc:'defender passa a aparar quase todo o golpe', truque:1}
+];
+const BENCAO = Object.fromEntries(BENCAOS.map(b => [b.id, b]));
+const temB = id => !!(G && G.bencaos && G.bencaos.includes(id));
+const somaB = campo => (G && G.bencaos ? G.bencaos : [])
+  .reduce((s,id) => s + ((BENCAO[id] || {})[campo] || 0), 0);
+
 /* As faixas do dado melhoram junto com o Olho da Sorte: a faixa de
    crítico vai descendo de 20 até 15 conforme a relíquia sobe. */
+/* As faixas são contíguas por construção — cada uma começa onde a anterior
+   termina —, então dá para omitir as vazias sem abrir buraco entre 1 e 20. */
 function faixasGolpe(){
-  const crit = critDesde(nivelRel('sorte'));
-  const brutalIni = Math.max(11, Math.min(18, crit-2));
-  const faixas = [
-    {min:1, max:1, mult:0, texto:'Errou feio!', cor:'ruim', legenda:'você erra o golpe'},
-    {min:2, max:9, mult:1, texto:'Acertou',     cor:'',     legenda:'dano normal'}
-  ];
-  if(brutalIni-1 >= 10) faixas.push({min:10, max:brutalIni-1, mult:2, texto:'Golpe forte!', cor:'bom', legenda:'dano em dobro'});
-  if(crit-1 >= brutalIni) faixas.push({min:brutalIni, max:crit-1, mult:3, texto:'Golpe brutal!', cor:'bom', legenda:'dano em triplo'});
-  faixas.push({min:crit, max:20, mult:5, texto:'CRÍTICO!', cor:'bom', legenda:'dano cinco vezes maior'});
+  const trava = (v,min,max) => Math.max(min, Math.min(max, v));
+  const erro = temB('tudo') ? 3 : 1;
+  const crit = trava(temB('tudo') ? Math.min(critDesde(nivelRel('sorte')), 18)
+                                  : critDesde(nivelRel('sorte')), erro+1, 20);
+  const brutal = trava(crit-2, erro+1, crit);
+  const forte  = trava(10,     erro+1, brutal);
+
+  const faixas = [];
+  const põe = (min, max, mult, texto, cor, legenda) => {
+    if(max >= min) faixas.push({min, max, mult, texto, cor, legenda});
+  };
+  põe(1,        erro,     0, 'Errou feio!',   'ruim', 'você erra o golpe');
+  põe(erro+1,   forte-1,  1, 'Acertou',       '',     'dano normal');
+  põe(forte,    brutal-1, 2, 'Golpe forte!',  'bom',  'dano em dobro');
+  põe(brutal,   crit-1,   3, 'Golpe brutal!', 'bom',  'dano em triplo');
+  põe(crit,     20,       5, 'CRÍTICO!',      'bom',  'dano cinco vezes maior');
   return faixas;
+}
+
+/* O dado do herói passa pelas bênçãos; o das outras rolagens não. */
+function dadoDoHeroi(){
+  let v = d20();
+  if(temB('viciado')) v = Math.max(v, d20());
+  if(temB('firme'))   v = Math.max(v, 3);
+  return v;
 }
 const FAIXAS_SORTE = [
   {min:1, max:7,  ok:false, texto:'Deu ruim...', cor:'ruim', legenda:'algo sai errado'},
   {min:8, max:20, ok:true,  texto:'Deu certo!',  cor:'bom',  legenda:'você se dá bem'}
 ];
 function faixasFuga(){
+  if(temB('leve')) return [{min:1, max:20, ok:true, texto:'Escapou!', cor:'bom', legenda:'com Passo Leve você sempre escapa'}];
   const alvo = G.classe === 'cacador' ? 8 : 11;
   return [
     {min:1, max:alvo-1,  ok:false, texto:'Não deu!', cor:'ruim', legenda:'ele te alcança'},
@@ -992,16 +1063,23 @@ function regiaoAtual(){
 }
 function nivelAtual(){ return G.masmorra ? nivelPorId(G.masmorra.nivel) : NIVEIS[0]; }
 function ultimoAndar(){ return G.masmorra ? G.andar >= G.masmorra.andares : false; }
-function golpeTotal(){ return G.golpeBase + (G.equip.arma?.valor || 0); }
+function golpeTotal(){
+  const frenesi = temB('frenesi') ? (G.sequencia || 0) : 0;
+  const teimoso = temB('teimoso') ? Math.max(0, (G.andar || 1) - 1) : 0;
+  return Math.max(1, G.golpeBase + (G.equip.arma?.valor || 0) + somaB('golpe') + frenesi + teimoso);
+}
 function defesaTotal(){
-  return G.defesaBase + ['elmo','peito','escudo'].reduce((s,k) => s + (G.equip[k]?.valor || 0), 0);
+  return G.defesaBase + ['elmo','peito','escudo'].reduce((s,k) => s + (G.equip[k]?.valor || 0), 0)
+       + somaB('defesa');
 }
 function curaDaPocao(){
   const base = Math.max(8, Math.round(G.vidaMax*.4));
-  return G.classe === 'alquimista' ? Math.round(base*1.3) : base;
+  const comClasse = G.classe === 'alquimista' ? Math.round(base*1.3) : base;
+  return comClasse * (1 + somaB('pocaoMult'));
 }
+function precoForja(r){ return Math.round(r.ouro * (1 - somaB('descontoPct'))); }
 function temMateriais(r){
-  return G.ouro >= r.ouro && Object.entries(r.mats).every(([k,q]) => (G.mats[k]||0) >= q);
+  return G.ouro >= precoForja(r) && Object.entries(r.mats).every(([k,q]) => (G.mats[k]||0) >= q);
 }
 
 /* ---------- diário e pontos ---------- */
@@ -1032,6 +1110,7 @@ function novaAventura(nome, classeId, pontos){
     equip: {arma:null, elmo:null, peito:null, escudo:null},
     mats: {ferro:0, couro:0, cristal:0, erva:0},
     defendendo: false, masmorra: null, ofertas: [],
+    bencaos: [], ofertaBencaos: [], vidaBencao: 0, peleUsada: false,
     grid: [], pos: 0, inimigo: null, log: [], msg: '', modo: 'hub'
   };
   G.vidaMax += nivelRel('coracao')*3;
@@ -1059,6 +1138,10 @@ function carregarJogo(){
       G.log = Array.isArray(G.log) ? G.log : [];
       G.mats = G.mats || {ferro:0, couro:0, cristal:0, erva:0};
       G.equip = G.equip || {arma:null, elmo:null, peito:null, escudo:null};
+      /* Saves de antes das bênçãos não têm estes campos. */
+      G.bencaos = Array.isArray(G.bencaos) ? G.bencaos : [];
+      G.ofertaBencaos = Array.isArray(G.ofertaBencaos) ? G.ofertaBencaos : [];
+      G.vidaBencao = G.vidaBencao || 0;
       render();
       return;
     }
@@ -1107,10 +1190,14 @@ function entrarNaMasmorra(idx){
   G.masmorra = {nivel:n.id, regiao:of.regiao, andares:n.andares};
   G.andar = 1;
   G.sequencia = 0;
+  G.bencaos = [];
+  G.vidaBencao = 0;
+  G.peleUsada = false;
   gerarAndar();
   const reg = regiaoAtual();
   anotar(`${n.icone} Você entra numa masmorra <b>${n.nome}</b> — ${reg.nome}, ${n.andares} andares.`, 'gold');
   mostrarFaixa(reg);
+  oferecerBencao();
   salvar(); render();
 }
 
@@ -1128,8 +1215,16 @@ function voltarAoAcampamento(motivo){
   G.masmorra = null;
   G.andar = 0;
   G.modo = 'hub';
-  G.vida = G.vidaMax;
   G.sequencia = 0;
+  /* As bênçãos morrem com a masmorra — é o que faz cada descida ser uma
+     partida própria em vez de um herói que só acumula poder para sempre.
+     Devolvemos só o que elas deram de vida; o +2 por andar descido fica. */
+  const tinha = G.bencaos.length;
+  G.bencaos = [];
+  G.vidaMax = Math.max(6, G.vidaMax - (G.vidaBencao || 0));
+  G.vidaBencao = 0;
+  G.vida = G.vidaMax;
+  if(tinha) anotar(`✨ As ${tinha} bênçãos da masmorra se dissipam no caminho de volta.`, '');
   sortearOfertas();
   anotar(`🏕️ ${motivo} Você volta ao acampamento com <b>${premio} de ouro</b> e descansa até recuperar toda a vida.`, 'gold');
 }
@@ -1184,7 +1279,7 @@ function revelar(){
 }
 
 /* ---------- o dado ---------- */
-function rolarDado({titulo, faixas}){
+function rolarDado({titulo, faixas, rolar}){
   return new Promise(resolve => {
     const ov = $('#diceOv'), face = $('#dieFace'), botao = $('#dieBtn');
     const veredito = $('#diceVerdict'), dica = $('#diceHint');
@@ -1208,7 +1303,7 @@ function rolarDado({titulo, faixas}){
       botao.classList.add('rolling');
       dica.textContent = '';
       vibrar(12);
-      const valor = d20();
+      const valor = (rolar || d20)();
       for(let t=0;t<9;t++){ face.textContent = randInt(20); await espera(58); }
       botao.classList.remove('rolling');
       botao.classList.add('done');
@@ -1372,9 +1467,60 @@ function descer(){
   G.andar++;
   G.vidaMax += 2;
   curar(Math.ceil(G.vidaMax*.25));
+  G.peleUsada = false;
+  const extra = somaB('pocaoAndar');
+  if(extra){
+    G.pocoes += extra;
+    anotar(`🎒 <b>Bolso Fundo:</b> +${extra} poção ao descer.`, 'gold');
+  }
   anotar(`🪜 Você desce para o <b>andar ${G.andar} de ${G.masmorra.andares}</b>${ultimoAndar()?' — o último':''}. +${ganho} pontos`, 'gold');
   gerarAndar();
   mostrarFaixa(regiaoAtual());
+  oferecerBencao();
+}
+
+/* ---------- bênçãos ---------- */
+/* Oferece três que o herói ainda não tem. Quando acabam as opções (só numa
+   masmorra muito longa), simplesmente não oferece mais. */
+function oferecerBencao(){
+  const livres = BENCAOS.filter(b => !G.bencaos.includes(b.id));
+  if(!livres.length) return;
+  const sorteadas = [];
+  const pote = livres.slice();
+  while(sorteadas.length < 3 && pote.length){
+    sorteadas.push(pote.splice(Math.floor(Math.random()*pote.length), 1)[0].id);
+  }
+  G.ofertaBencaos = sorteadas;
+  G.voltaPara = G.modo;
+  G.modo = 'bencao';
+}
+
+function escolherBencao(id){
+  if(ocupado || G.modo !== 'bencao') return;
+  const b = BENCAO[id];
+  if(!b || G.bencaos.includes(id)) return;
+  G.bencaos.push(id);
+
+  /* Efeitos de vida máxima valem na hora, e o quanto mexeram fica anotado
+     para ser desfeito no acampamento. O piso de 6 existe para o Pacto não
+     matar um herói que já estava por um fio. */
+  let delta = 0;
+  if(b.vidaMax) delta += b.vidaMax;
+  if(id === 'pacto') delta -= Math.round((G.vidaMax + delta)/2);
+  if(delta){
+    const novo = Math.max(6, G.vidaMax + delta);
+    G.vidaBencao = (G.vidaBencao || 0) + (novo - G.vidaMax);
+    G.vidaMax = novo;
+    G.vida = Math.min(G.vida, G.vidaMax);
+  }
+  if(G.vida < 1) G.vida = 1;
+
+  anotar(`${b.icone} <b>${b.nome}</b> — ${b.desc}.`, 'gold');
+  G.ofertaBencaos = [];
+  G.modo = G.voltaPara === 'combate' ? 'mapa' : (G.voltaPara || 'mapa');
+  G.voltaPara = null;
+  vibrar([12,30,12]);
+  salvar(); render();
 }
 
 /* ---------- vida ---------- */
@@ -1382,6 +1528,13 @@ function curar(n){ G.vida = Math.min(G.vidaMax, G.vida + n); }
 function machucar(bruto, ignoraArmadura=false){
   const dano = ignoraArmadura ? bruto : Math.max(1, bruto - defesaTotal());
   G.vida = Math.max(0, G.vida - dano);
+  /* Segunda Pele: uma vez por andar, o golpe que mataria deixa você em 1. */
+  if(G.vida <= 0 && temB('pele') && !G.peleUsada){
+    G.peleUsada = true;
+    G.vida = 1;
+    anotar('🕊️ <b>Segunda Pele!</b> O golpe que te mataria te deixa com 1 de vida.', 'gold');
+    return dano;
+  }
   if(G.vida <= 0) cair();
   return dano;
 }
@@ -1400,21 +1553,17 @@ function cair(){
 async function atacar(){
   if(G.modo !== 'combate' || ocupado) return;
   ocupado = true;
-  const inim = G.inimigo;
-  const {faixa} = await rolarDado({titulo:`Seu golpe no ${inim.nome}`, faixas:faixasGolpe()});
-  const dano = golpeTotal() * faixa.mult;
+  const acertou = await darUmGolpe(`Seu golpe no ${G.inimigo.nome}`);
+  if(!G.inimigo){ ocupado = false; salvar(); render(); return; }
 
-  if(dano > 0){
-    inim.vida -= dano;
-    anotar(`⚔️ ${faixa.texto} Você tira <b>${dano}</b> de vida do ${inim.nome}.`, 'good');
-    const ic = $('#foeIcon');
-    if(ic){ ic.classList.add('hurt'); setTimeout(()=>ic.classList.remove('hurt'), 340); }
-  }else{
-    anotar(`⚔️ ${faixa.texto} Seu golpe passa longe.`, 'bad');
+  /* Golpe Duplo: o 20 rende um segundo golpe de graça, antes do troco. */
+  if(acertou === 20 && temB('duplo')){
+    anotar('⚡ <b>Golpe Duplo!</b> O 20 te dá mais um golpe.', 'gold');
+    render();
+    await espera(500);
+    await darUmGolpe(`Golpe extra no ${G.inimigo.nome}`);
+    if(!G.inimigo){ ocupado = false; salvar(); render(); return; }
   }
-  render();
-
-  if(inim.vida <= 0){ vencer(); ocupado = false; salvar(); render(); return; }
 
   await espera(450);
   contraAtaque();
@@ -1422,15 +1571,46 @@ async function atacar(){
   salvar(); render();
 }
 
+/* Devolve o valor do dado, ou null se a criatura caiu no golpe. */
+async function darUmGolpe(titulo){
+  const inim = G.inimigo;
+  const {valor, faixa} = await rolarDado({titulo, faixas:faixasGolpe(), rolar:dadoDoHeroi});
+  let dano = golpeTotal() * faixa.mult;
+
+  /* Carniceiro: quem já está sangrando cai mais fácil. */
+  const ferida = inim.vida <= inim.vidaMax/2;
+  if(dano > 0 && ferida && temB('carniceiro')) dano = Math.round(dano*1.5);
+
+  if(dano > 0){
+    inim.vida -= dano;
+    const nota = ferida && temB('carniceiro') ? ' <b>(Carniceiro)</b>' : '';
+    anotar(`⚔️ ${faixa.texto} Você tira <b>${dano}</b> de vida do ${inim.nome}.${nota}`, 'good');
+    const ic = $('#foeIcon');
+    if(ic){ ic.classList.add('hurt'); setTimeout(()=>ic.classList.remove('hurt'), 340); }
+  }else{
+    anotar(`⚔️ ${faixa.texto} Seu golpe passa longe.`, 'bad');
+  }
+  render();
+  if(inim.vida <= 0){ vencer(); return null; }
+  return valor;
+}
+
 function contraAtaque(){
   const inim = G.inimigo;
   if(!inim || G.modo !== 'combate') return;
   let bruto = inim.golpe + Math.floor(Math.random()*3);
   if(G.defendendo){
-    bruto = Math.ceil(bruto/2);
+    bruto = temB('muralha') ? Math.ceil(bruto/5) : Math.ceil(bruto/2);
     G.defendendo = false;
     const dano = machucar(bruto);
     anotar(`🛡️ Você apara o golpe do ${inim.nome}: <b>−${dano} de vida</b> só.`, '');
+    /* Contragolpe só faz sentido quando você optou por defender. */
+    const troco = somaB('contra');
+    if(troco && G.modo === 'combate'){
+      inim.vida -= troco;
+      anotar(`↩️ <b>Contragolpe:</b> você devolve ${troco} de dano.`, 'good');
+      if(inim.vida <= 0) vencer();
+    }
   }else{
     const dano = machucar(bruto);
     anotar(`${inim.icone} O ${inim.nome} te acerta: <b>−${dano} de vida</b>.`, 'bad');
@@ -1444,7 +1624,8 @@ function vencer(){
   G.sequencia = (G.sequencia || 0) + 1;
   const bonus = bonusDeSequencia();
   const ouroBase = Math.round(inim.pts * .8) + entre([3,8]) + G.andar*2 + (inim.chefe ? 45 : 0);
-  const ouro = Math.round(ouroBase * (1 + bonus));
+  const ouroMult = 1 + bonus + somaB('ouroPct') + (temB('pacto') ? 1 : 0);
+  const ouro = Math.round(ouroBase * ouroMult);
   const pts = Math.round(inim.pts * (1 + bonus));
   G.inimigo = null;
   G.abates++;
@@ -1457,9 +1638,16 @@ function vencer(){
   vibrar([15,50,25]);
   marcarOuro(); checarConquistas();
 
+  const cura = somaB('curaAbate');
+  if(cura && G.vida < G.vidaMax){
+    curar(cura);
+    anotar(`🧛 Você drena <b>${cura} de vida</b> da criatura.`, 'good');
+  }
+
   /* Material caía em 30% dos abates — pouco demais para compensar o risco
      de brigar, já que dá para atravessar a masmorra desviando de todo mundo. */
-  const quedas = inim.chefe ? 3 : (Math.random() < .55 ? 1 : 0);
+  let quedas = inim.chefe ? 3 : ((temB('catador') || Math.random() < .55) ? 1 : 0);
+  if(temB('pacto')) quedas *= 2;
   for(let k=0;k<quedas;k++){
     const m = sorteio(COLHEITA[regiaoAtual().id]);
     G.mats[m] = (G.mats[m]||0) + 1;
@@ -1557,7 +1745,8 @@ function desenharForja(){
     const atual = r.slot === 'pocao' || r.slot === 'vida' ? null : G.equip[r.slot];
     const jaMelhor = atual && atual.valor >= r.valor;
     const pode = temMateriais(r) && !jaMelhor;
-    const custo = [`🪙 ${r.ouro}`].concat(
+    const preco = precoForja(r);
+    const custo = [preco < r.ouro ? `🪙 <s>${r.ouro}</s> ${preco}` : `🪙 ${preco}`].concat(
       Object.entries(r.mats).map(([k,q]) => `${MATERIAIS[k].icone} ${q}`)
     ).join('  ');
     let ganho;
@@ -1584,7 +1773,7 @@ function forjar(id){
   const atual = (r.slot === 'pocao' || r.slot === 'vida') ? null : G.equip[r.slot];
   if(atual && atual.valor >= r.valor) return;
 
-  G.ouro -= r.ouro;
+  G.ouro -= precoForja(r);
   Object.entries(r.mats).forEach(([k,q]) => G.mats[k] -= q);
 
   if(r.slot === 'pocao'){
@@ -1652,6 +1841,12 @@ function abrirMochila(){
     </div>
     <h4>Equipamento</h4>
     <div class="slots">${slots}</div>
+    ${G.bencaos.length ? `
+      <h4>Bênçãos <small class="fade">valem até voltar ao acampamento</small></h4>
+      <div class="bencoes">${G.bencaos.map(id => {
+        const b = BENCAO[id];
+        return `<div class="bencao-l"><span>${b.icone}</span><span><b>${b.nome}</b><small>${b.desc}</small></span></div>`;
+      }).join('')}</div>` : ''}
     <h4>Materiais <small class="fade">para forjar</small></h4>
     <div class="chips">${mats}</div>
     <button class="btn" id="bagRel" style="width:100%;margin-top:14px">✨ Ver relíquias</button>`;
@@ -1661,11 +1856,21 @@ function abrirMochila(){
 }
 
 /* ---------- relíquias ---------- */
+/* Uma tela só para "o que está me deixando forte agora": as bênçãos desta
+   masmorra em cima, as relíquias permanentes embaixo. */
 function abrirReliquias(){
   const total = RELIQUIAS.reduce((s,r) => s + nivelRel(r.id), 0);
   const teto = RELIQUIAS.length * REL_MAX;
   const achadas = RELIQUIAS.filter(r => nivelRel(r.id) > 0).length;
+  const ativas = (G && G.bencaos) ? G.bencaos : [];
   $('#relBody').innerHTML = `
+    ${ativas.length ? `
+      <h4 style="margin-top:0">Bênçãos desta masmorra <small class="fade">somem no acampamento</small></h4>
+      <div class="bencoes" style="margin-bottom:18px">${ativas.map(id => {
+        const b = BENCAO[id];
+        return `<div class="bencao-l"><span>${b.icone}</span><span><b>${b.nome}</b><small>${b.desc}</small></span></div>`;
+      }).join('')}</div>
+      <h4>Relíquias</h4>` : ''}
     <p class="rel-intro">Não se perdem quando o herói cai — é o que faz a próxima
     jornada começar mais forte. Caem dos guardiões, e às vezes de criaturas comuns.</p>
     <div class="chips">
@@ -1793,6 +1998,8 @@ function render(){
   const chipSeq = b
     ? `<span class="chip seq" title="recompensa maior enquanto você não fugir">🔥 <b>${G.sequencia}</b> <i>+${Math.round(b*100)}%</i></span>`
     : '';
+  /* Sem selo de bênção aqui: numa tela estreita ele quebra a linha dos
+     selos e o tabuleiro encolhe. A lista fica no botão ✨ da barra. */
   $('#pChips').innerHTML = chipLocal + chipSeq + `
     <span class="chip">⭐ <b>${G.pontos}</b></span>
     <span class="chip">⚔️ <b>${golpeTotal()}</b></span>
@@ -1801,9 +2008,30 @@ function render(){
 
   const mid = $('#playMid'), acts = $('#pActs');
   if(G.modo !== 'mapa') $('#banner').classList.remove('on');
-  mid.classList.toggle('rolavel', ['hub','fim','vitoria'].includes(G.modo));
+  mid.classList.toggle('rolavel', ['hub','fim','vitoria','bencao'].includes(G.modo));
 
-  if(G.modo === 'hub'){
+  if(G.modo === 'bencao'){
+    mid.innerHTML = `
+      <div class="hub">
+        <p class="hub-title">✨ Escolha uma bênção</p>
+        <p class="hub-sub">Vale até você voltar ao acampamento.</p>
+        <div class="offers">
+          ${(G.ofertaBencaos||[]).map(id => {
+            const b = BENCAO[id];
+            return `
+              <button class="offer bencao" data-bencao="${id}">
+                <span class="offer-ico">${b.icone}</span>
+                <span class="offer-txt">
+                  <b>${b.nome}</b>
+                  <small>${b.desc}</small>
+                </span>
+              </button>`;
+          }).join('')}
+        </div>
+      </div>`;
+    $$('[data-bencao]').forEach(x => x.onclick = () => escolherBencao(x.dataset.bencao));
+    acts.innerHTML = `<button class="act wide" data-act="nada" disabled>Escolha uma das três para seguir<small>elas somem quando você volta ao acampamento</small></button>`;
+  }else if(G.modo === 'hub'){
     const pronto = Math.round(poderReliquias()*100);
     mid.innerHTML = `
       <div class="hub">
