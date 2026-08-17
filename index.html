@@ -127,7 +127,7 @@
     .chip b{color:#f3d190;font-variant-numeric:tabular-nums}
     .play-mid{flex:1;min-height:0;display:grid;place-items:center;overflow:hidden}
     .play-mid.rolavel{place-items:start center;overflow-y:auto;overscroll-behavior:contain;padding:2px}
-    .map{display:grid;gap:5px;width:min(100%,92vw)}
+    .map{display:grid;gap:5px;width:min(100%,92vw);max-width:100%}
     .cell{
       aspect-ratio:1;border-radius:10px;border:1px solid #2f2419;background:#151110;
       display:grid;place-items:center;font-size:clamp(15px,4.4vw,22px);color:#6b5947;padding:0;
@@ -212,6 +212,24 @@
     @keyframes alerta{0%,100%{box-shadow:0 0 0 0 rgba(224,104,90,0)}50%{box-shadow:0 0 0 3px rgba(224,104,90,.45)}}
     @media(prefers-reduced-motion:reduce){.act.urgente{animation:none;box-shadow:0 0 0 3px rgba(224,104,90,.45)}}
     .recipe-falta{color:#e0a08a}
+    .grupo{border-top:1px solid var(--line);padding-top:11px;margin-top:11px}
+    .grupo:first-child{border-top:0;margin-top:0;padding-top:0}
+    .grupo-topo{display:flex;justify-content:space-between;align-items:baseline;gap:10px;
+      margin-bottom:7px;flex-wrap:wrap}
+    .grupo-nome{font:700 13px Georgia,serif;color:#f6deb0}
+    .grupo-atual{font-size:11.5px;color:var(--muted)}
+    .grupo-atual b{color:#e9d9be;font-variant-numeric:tabular-nums}
+    .grupo-topo-fim{margin:0;font-size:12px;color:#8fd39a}
+    .recipe-txt small .sobe{color:#8fd39a;font-size:12px}
+    .degraus{margin-top:7px}
+    .degraus summary{font-size:11.5px;color:var(--muted);cursor:pointer;list-style:none;padding:3px 0}
+    .degraus summary::-webkit-details-marker{display:none}
+    .degraus summary::before{content:'▸ ';color:#7a6a58}
+    .degraus[open] summary::before{content:'▾ '}
+    .degrau{display:grid;grid-template-columns:1fr auto;gap:4px 10px;padding:6px 0;
+      border-top:1px dashed #2b2119;font-size:11.5px;color:var(--muted)}
+    .degrau-g{color:#e9d9be;white-space:nowrap}
+    .degrau-c{grid-column:1/-1;font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#8a7a67}
     @media(min-width:620px){.acts{grid-template-columns:repeat(4,1fr)}.act.wide{grid-column:auto}}
 
     /* ===== Sobreposições: dado e diário ===== */
@@ -310,6 +328,11 @@
     .perde{display:flex;flex-wrap:wrap;gap:7px}
     .sheet .btn.danger{background:#3a1a17;border-color:#8a3b32;color:#ffc0b8}
     /* ===== Missão do dia e próxima meta ===== */
+    .dica-cheia{background:linear-gradient(180deg,#1a2430,#141a20);border:1px solid #3c5a72;
+      border-radius:15px;padding:13px 14px;display:grid;gap:10px;text-align:left;margin-bottom:10px}
+    .dica-cheia p{margin:0;font-size:13px;line-height:1.55;color:#d5e3ee}
+    .dica-cheia b{color:#8fc7ee}
+    .dica-cheia .btn{justify-self:start;padding:7px 14px;font-size:13px}
     .missao{background:linear-gradient(180deg,#231a24,#16121a);border:1px solid #4a3a58;
       border-radius:15px;padding:13px 14px;display:grid;gap:8px;text-align:left}
     .missao.feita{border-color:#4a6b4f;background:linear-gradient(180deg,#1a2419,#141a14)}
@@ -391,6 +414,8 @@
     .banner b{display:block;font:700 15px Georgia,serif;color:#f6deb0}
     .banner small{color:var(--muted);font-size:12px}
     .chip.seq{border-color:#8a4a2a;color:#ffb987;background:#1d1210}
+    .chip.cota{border-color:#6b5a3a;color:#e0cba0}
+    .chip.cota.ok{border-color:#4d7a55;color:#8fd39a}
     .chip.ben{border-color:#6d5a8a;color:#cbb6ef;background:#171423}
     /* A oferta de masmorra pinta a borda com a cor do nível; a de bênção não
        tem nível, então traz a sua própria. */
@@ -567,6 +592,7 @@
               <div><span>⚒️</span><span>Junte <b>ouro e materiais</b> para forjar armas e armaduras nas forjas espalhadas pelo caminho.</span></div>
               <div><span>👑</span><span>Cada região termina com um <b>guardião</b>. No andar 10 está o confronto final.</span></div>
             </div>
+            <div id="dicaTelaCheia"></div>
             <div id="missaoBox"></div>
             <div id="metaBox"></div>
             <button class="btn primary" id="btnStart" style="padding:15px;font-size:17px">⚔️ Nova jornada</button>
@@ -1475,7 +1501,7 @@ function novaAventura(nome, classeId, pontos){
     equip: {arma:null, elmo:null, peito:null, escudo:null},
     mats: {ferro:0, couro:0, cristal:0, erva:0, essencia:0}, pocaoNivel: 0,
     defendendo: false, masmorra: null, ofertas: [],
-    bencaos: [], ofertaBencaos: [], vidaBencao: 0, peleUsada: false,
+    bencaos: [], ofertaBencaos: [], vidaBencao: 0, peleUsada: false, fugasUsadas: 0, abatesNoAndar: 0,
     grid: [], pos: 0, inimigo: null, log: [], msg: '', modo: 'hub'
   };
   G.vidaMax += nivelRel('coracao')*3;
@@ -1561,11 +1587,66 @@ function entrarNaMasmorra(idx){
   G.bencaos = [];
   G.vidaBencao = 0;
   G.peleUsada = false;
+  G.fugasUsadas = 0;
+  G.abatesNoAndar = 0;
   gerarAndar();
   const reg = regiaoAtual();
   anotar(`${n.icone} Você entra numa masmorra <b>${n.nome}</b> — ${reg.nome}, ${n.andares} andares.`, 'gold');
   mostrarFaixa(reg);
   oferecerBencao();
+  salvar(); render();
+}
+
+/* ---------- escapar da masmorra ----------
+   Sem forja lá dentro, entrar numa masmorra virou um compromisso. A saída
+   é o dado: poucas tentativas, e quanto mais fundo, mais difícil. Sai com
+   o que juntou, mas sem o prêmio de ter limpado. */
+const FUGAS_POR_MASMORRA = 3;
+
+/* A escada só abre depois de limpar um tanto do andar. Sem isso dava para
+   atravessar a masmorra inteira desviando de todo mundo. */
+function cotaDoAndar(){
+  const dureza = NIVEIS.indexOf(nivelAtual());
+  return Math.min(7, 2 + Math.floor(dureza/2) + Math.floor((G.andar - 1)/3));
+}
+const faltaMatar = () => Math.max(0, cotaDoAndar() - (G.abatesNoAndar || 0));
+function alvoDaFuga(){
+  const n = nivelAtual();
+  const dureza = NIVEIS.indexOf(n);
+  return Math.min(19, 8 + dureza + Math.floor((G.andar - 1) / 2));
+}
+async function escaparDaMasmorra(){
+  if(ocupado || G.modo !== 'mapa' || !G.masmorra) return;
+  if((G.fugasUsadas || 0) >= FUGAS_POR_MASMORRA) return;
+  ocupado = true;
+  G.fugasUsadas = (G.fugasUsadas || 0) + 1;
+  const alvo = alvoDaFuga();
+  const faixas = [
+    {min:1, max:alvo-1, ok:false, texto:'A saída não abre!', cor:'ruim', legenda:'você se perde e leva um susto'},
+    {min:alvo, max:20,  ok:true,  texto:'Achou a saída!',    cor:'bom',  legenda:'você escapa com o que juntou'}
+  ];
+  const {faixa} = await rolarDado({titulo:`Escapar da masmorra (${FUGAS_POR_MASMORRA - G.fugasUsadas} depois desta)`, faixas});
+
+  if(faixa.ok){
+    const n = nivelPorId(G.masmorra.nivel);
+    G.masmorra = null; G.andar = 0; G.modo = 'hub';
+    G.sequencia = 0;
+    const tinha = G.bencaos.length;
+    G.bencaos = [];
+    G.vidaMax = Math.max(6, G.vidaMax - (G.vidaBencao || 0));
+    G.vidaBencao = 0;
+    G.fugasUsadas = 0;
+    sortearOfertas();
+    anotar(`🚪 Você sai da masmorra <b>${n.nome}</b> pelos fundos, com o ouro e os materiais no bolso — mas sem o prêmio de ter limpado.`, 'gold');
+    if(tinha) anotar(`✨ As ${tinha} bênçãos se dissipam no caminho de volta.`, '');
+  }else{
+    /* Falhar custa caro, senão bastaria tentar as três de uma vez sem risco. */
+    const tombo = Math.max(3, Math.round(G.vidaMax * .12));
+    anotar(`🚪 Você se perde nos corredores e volta machucado: <b>−${tombo} de vida</b>.`, 'bad');
+    machucar(tombo, true);
+    quebrarSequencia('você tentou fugir');
+  }
+  ocupado = false;
   salvar(); render();
 }
 
@@ -1592,6 +1673,7 @@ function voltarAoAcampamento(motivo){
   G.bencaos = [];
   G.vidaMax = Math.max(6, G.vidaMax - (G.vidaBencao || 0));
   G.vidaBencao = 0;
+  G.fugasUsadas = 0;
   G.vida = G.vidaMax;
   if(tinha) anotar(`✨ As ${tinha} bênçãos da masmorra se dissipam no caminho de volta.`, '');
   sortearOfertas();
@@ -1611,11 +1693,11 @@ function gerarAndar(){
   livres.sort(() => Math.random()-.5);
 
   const plano = [
-    ...Array(Math.min(8, 4+G.andar)).fill('inimigo'),
+    ...Array(Math.min(10, 5+G.andar)).fill('inimigo'),
     ...Array(3).fill('tesouro'),
     ...Array(3).fill('material'),
     ...Array(2).fill('armadilha'),
-    'fonte', 'altar', 'forja'
+    'fonte', 'altar'
   ];
   plano.forEach(tipo => { const i = livres.pop(); if(i !== undefined) grid[i].tipo = tipo; });
 
@@ -1787,13 +1869,6 @@ async function entrarNaSala(sala){
       anotar(`${MATERIAIS[mat].icone} Você recolhe <b>${qtd} ${MATERIAIS[mat].nome}</b> por aqui.`, 'good');
       break;
     }
-    case 'forja': {
-      sala.limpo = true;
-      anotar('⚒️ Uma forja abandonada, ainda quente. Dá para trabalhar aqui.', 'gold');
-      render();
-      abrirForja();
-      break;
-    }
     case 'armadilha': {
       sala.limpo = true;
       render();
@@ -1836,6 +1911,11 @@ async function entrarNaSala(sala){
       break;
     }
     case 'escada': {
+      const falta = faltaMatar();
+      if(falta > 0){
+        anotar(`🪜 A escada está trancada. Ainda faltam <b>${falta} ${falta===1?'criatura':'criaturas'}</b> neste andar.`, 'bad');
+        break;
+      }
       sala.limpo = true;
       descer();
       break;
@@ -1855,6 +1935,7 @@ function descer(){
      fração dela) virar uma fonte de cura sem fim. */
   curar(Math.ceil(G.vidaMax*.2));
   G.peleUsada = false;
+  G.abatesNoAndar = 0;
   if(G.classe === 'clerigo'){
     const reza = Math.ceil(G.vidaMax*.2);
     curar(reza);
@@ -2117,6 +2198,7 @@ function vencer(){
   G.inimigo = null;
   G.veneno = 0;
   G.abates++;
+  G.abatesNoAndar = (G.abatesNoAndar || 0) + 1;
   progredirMissao('abate');
   if(inim.chefe) progredirMissao('chefe');
   if(G.sequencia >= 8) progredirMissao('seq8');
@@ -2241,32 +2323,87 @@ function desenharForja(){
   $('#forgeMats').innerHTML = Object.entries(MATERIAIS).map(([k,m]) =>
     `<span class="chip">${arteItem('mat-'+k, m.icone, 'mat-art')} ${m.nome} <b>${G.mats[k]||0}</b></span>`
   ).join('');
-  $('#forgeList').innerHTML = RECEITAS.map(r => {
-    const consumivel = r.slot === 'pocao' || r.slot === 'qualidade';
-    const atual = consumivel ? null : G.equip[r.slot];
-    const jaMelhor = (atual && atual.valor >= r.valor)
-                  || (r.slot === 'qualidade' && (G.pocaoNivel||0) >= r.valor);
-    const pode = temMateriais(r) && !jaMelhor;
+  /* Dezenove receitas soltas numa lista só viravam parede de texto. Agora é
+     uma linha por espaço, mostrando o que você usa e o próximo degrau —
+     a escada inteira fica atrás do "ver degraus". */
+  const grupos = [
+    {slot:'arma',      titulo:'Arma',      unidade:'Golpe'},
+    {slot:'elmo',      titulo:'Elmo',      unidade:'Defesa'},
+    {slot:'peito',     titulo:'Peitoral',  unidade:'Defesa'},
+    {slot:'escudo',    titulo:'Escudo',    unidade:'Defesa'},
+    {slot:'qualidade', titulo:'Poções',    unidade:'Cura'}
+  ];
+  const linhaCusto = r => {
     const preco = precoForja(r);
-    const custo = [preco < r.ouro ? `🪙 <s>${r.ouro}</s> ${preco}` : `🪙 ${preco}`].concat(
-      Object.entries(r.mats).map(([k,q]) => `${MATERIAIS[k].icone} ${q}`)
-    ).join('  ');
-    let ganho;
-    if(r.slot === 'arma') ganho = `Golpe ${r.valor}`;
-    else if(r.slot === 'pocao') ganho = '+1 poção';
-    else if(r.slot === 'qualidade') ganho = `suas poções passam a curar ${FORCA_POCAO[r.valor]}`;
-    else ganho = `Defesa ${r.valor}`;
-    return `
-      <button class="recipe" data-forjar="${r.id}" ${pode?'':'disabled'}>
-        <span class="recipe-ico">${arteItem(r.id, r.icone, 'item-art')}</span>
+    return [preco < r.ouro ? `🪙 <s>${r.ouro}</s> ${preco}` : `🪙 ${preco}`]
+      .concat(Object.entries(r.mats).map(([k,q]) => `${MATERIAIS[k].icone} ${q}`)).join('  ');
+  };
+
+  let html = '';
+  for(const g of grupos){
+    const degraus = RECEITAS.filter(r => r.slot === g.slot).sort((a,b) => a.valor - b.valor);
+    const tenho = g.slot === 'qualidade' ? (G.pocaoNivel || 0) : (G.equip[g.slot]?.valor || 0);
+    const equipado = g.slot === 'qualidade'
+      ? NOME_POCAO[G.pocaoNivel || 0]
+      : (G.equip[g.slot]?.nome || 'nada equipado');
+    const proximo = degraus.find(r => r.valor > tenho);
+    const valorAtual = g.slot === 'qualidade' ? FORCA_POCAO[tenho] : tenho;
+
+    html += `
+      <div class="grupo" data-grupo="${g.slot}">
+        <div class="grupo-topo">
+          <span class="grupo-nome">${g.titulo}</span>
+          <span class="grupo-atual">${escapeHtml(equipado)} <b>${g.unidade} ${valorAtual}</b></span>
+        </div>`;
+    if(!proximo){
+      html += `<p class="grupo-topo-fim">✔ no melhor degrau</p>`;
+    }else{
+      const pode = temMateriais(proximo);
+      const falta = faltaPara(proximo);
+      const ganho = g.slot === 'qualidade'
+        ? `cura ${FORCA_POCAO[proximo.valor]}` : `${g.unidade} ${proximo.valor}`;
+      html += `
+        <button class="recipe" data-forjar="${proximo.id}" ${pode?'':'disabled'}>
+          <span class="recipe-ico">${arteItem(proximo.id, proximo.icone, 'item-art')}</span>
+          <span class="recipe-txt">
+            <b>${proximo.nome}</b>
+            <small>${valorAtual} → <b class="sobe">${g.slot==='qualidade'?FORCA_POCAO[proximo.valor]:proximo.valor}</b> de ${g.unidade.toLowerCase()}</small>
+            ${falta ? `<small class="recipe-falta">falta ${falta}</small>` : ''}
+          </span>
+          <span class="recipe-cost">${linhaCusto(proximo)}</span>
+        </button>`;
+      const acima = degraus.filter(r => r.valor > proximo.valor);
+      if(acima.length){
+        html += `<details class="degraus"><summary>ver os ${acima.length} degraus acima</summary>
+          ${acima.map(r => `<div class="degrau"><span>${r.icone} ${r.nome}</span>
+            <span class="degrau-g">${g.slot==='qualidade'?'cura '+FORCA_POCAO[r.valor]:g.unidade+' '+r.valor}</span>
+            <span class="degrau-c">${linhaCusto(r)}</span></div>`).join('')}
+        </details>`;
+      }
+    }
+    html += `</div>`;
+  }
+
+  // as poções avulsas ficam à parte: compra repetida, não é degrau
+  const pocao = RECEITAS.find(r => r.slot === 'pocao');
+  html += `
+    <div class="grupo">
+      <div class="grupo-topo">
+        <span class="grupo-nome">Repor poções</span>
+        <span class="grupo-atual">você tem <b>${G.pocoes}</b></span>
+      </div>
+      <button class="recipe" data-forjar="${pocao.id}" ${temMateriais(pocao)?'':'disabled'}>
+        <span class="recipe-ico">${arteItem(pocao.id, pocao.icone, 'item-art')}</span>
         <span class="recipe-txt">
-          <b>${r.nome}</b>
-          <small>${ganho}${jaMelhor ? ' • você já tem algo igual ou melhor' : ''}</small>
-          ${faltaPara(r) ? `<small class="recipe-falta">falta ${faltaPara(r)}</small>` : ''}
+          <b>${NOME_POCAO[G.pocaoNivel||0]}</b>
+          <small>+1 poção • cura ${curaDaPocao()}</small>
+          ${faltaPara(pocao) ? `<small class="recipe-falta">falta ${faltaPara(pocao)}</small>` : ''}
         </span>
-        <span class="recipe-cost">${custo}</span>
-      </button>`;
-  }).join('');
+        <span class="recipe-cost">${linhaCusto(pocao)}</span>
+      </button>
+    </div>`;
+
+  $('#forgeList').innerHTML = html;
   $$('[data-forjar]').forEach(b => b.onclick = () => forjar(b.dataset.forjar));
   ligarArte($('#forgeOv'));
 }
@@ -2471,6 +2608,27 @@ const ICONES = {
   armadilha:'⚠️', fonte:'⛲', altar:'🕯️', escada:'🪜', guardiao:'👑', chefefinal:'🐉', vazio:'·'
 };
 
+/* No Safari as duas barras comem uns 20% da altura e o tabuleiro encolhe.
+   Instalado na tela de início o jogo abre sem elas — vale avisar, mas uma
+   vez só e com opção de dispensar. */
+const DICA_KEY = 'climbix_dica_telacheia';
+function desenharDicaTelaCheia(){
+  const caixa = $('#dicaTelaCheia');
+  if(!caixa) return;
+  const ios = /iPhone|iPad|iPod/.test(navigator.userAgent);
+  const jaInstalado = window.navigator.standalone === true ||
+                      window.matchMedia('(display-mode: standalone)').matches;
+  if(!ios || jaInstalado || store.get(DICA_KEY)){ caixa.innerHTML = ''; return; }
+  caixa.innerHTML = `
+    <div class="dica-cheia">
+      <p><b>Jogue em tela cheia.</b> No Safari as barras encolhem o tabuleiro.
+      Toque em <b>Compartilhar</b> e depois em <b>Adicionar à Tela de Início</b> —
+      o Climbix abre como aplicativo, sem barra nenhuma.</p>
+      <button class="btn" id="dicaOk">Entendi</button>
+    </div>`;
+  $('#dicaOk').onclick = () => { store.set(DICA_KEY,'1'); desenharDicaTelaCheia(); };
+}
+
 function desenharMissao(){
   const est = estadoMissao();
   const m = MISSOES.find(x => x.id === est.id) || MISSOES[0];
@@ -2521,6 +2679,7 @@ function render(){
   $('#lbBest').textContent = META.recorde;
   const achadas = RELIQUIAS.filter(r => nivelRel(r.id) > 0).length;
   $('#lbRelCount').textContent = achadas ? `${achadas}/${RELIQUIAS.length}` : '';
+  desenharDicaTelaCheia();
   desenharMissao();
   desenharProximaMeta();
   ligarArte($('#aventura'));
@@ -2552,9 +2711,14 @@ function render(){
   const chipSeq = b
     ? `<span class="chip seq" title="recompensa maior enquanto você não fugir">🔥 <b>${G.sequencia}</b> <i>+${Math.round(b*100)}%</i></span>`
     : '';
+  const falta = G.masmorra && !ultimoAndar() ? faltaMatar() : 0;
+  const chipCota = G.masmorra && !ultimoAndar()
+    ? `<span class="chip cota ${falta?'':'ok'}" title="a escada só abre quando a cota do andar for cumprida">🪜 <b>${
+        falta ? `faltam ${falta}` : 'escada aberta'}</b></span>`
+    : '';
   /* Sem selo de bênção aqui: numa tela estreita ele quebra a linha dos
      selos e o tabuleiro encolhe. A lista fica no botão ✨ da barra. */
-  $('#pChips').innerHTML = chipLocal + chipSeq + `
+  $('#pChips').innerHTML = chipLocal + chipCota + chipSeq + `
     <span class="chip">⭐ <b>${G.pontos}</b></span>
     <span class="chip">⚔️ <b>${golpeTotal()}</b></span>
     <span class="chip">🛡️ <b>${defesaTotal()}</b></span>
@@ -2683,18 +2847,22 @@ function render(){
       const cls = ['cell', c.visto?'seen':'', aqui?'here':'', perto?'reach':'', novo?'novo':''].filter(Boolean).join(' ');
       let icone = '';
       if(aqui) icone = '🧝';
-      else if(c.visto) icone = c.limpo ? '·' : (ICONES[c.tipo] || '·');
+      else if(c.visto) icone = c.limpo ? '·'
+             : (c.tipo === 'escada' && faltaMatar() > 0) ? '🔒'
+             : (ICONES[c.tipo] || '·');
       return `<button class="${cls}" data-cell="${i}" ${perto?'':'disabled'} aria-label="sala"><span>${icone}</span></button>`;
     }).join('');
     $$('[data-cell]').forEach(b => b.onclick = () => mover(+b.dataset.cell));
-    const naForja = G.grid[G.pos].tipo === 'forja';
+    const tentativas = FUGAS_POR_MASMORRA - (G.fugasUsadas || 0);
     acts.innerHTML = `
-      <button class="act ${naForja?'main':''}" data-act="forja">⚒️ Forja<small>${naForja?'você está numa forja':'só nas salas com bigorna'}</small></button>
       <button class="act" data-act="mochila">🎒 Mochila<small>equipamento e materiais</small></button>
       <button class="act" data-act="pocao" ${G.pocoes>0?'':'disabled'}>🧪 Poção<small>${G.pocoes} restantes • +${curaDaPocao()} de vida</small></button>
-      <button class="act" data-act="bestiario">📖 Bestiário<small>${Object.keys(META.bestiario).length}/${BESTIARIO.length} criaturas</small></button>`;
-    const bf = acts.querySelector('[data-act="forja"]');
-    if(bf && !naForja) bf.disabled = true;
+      <button class="act" data-act="bestiario">📖 Bestiário<small>${Object.keys(META.bestiario).length}/${BESTIARIO.length} criaturas</small></button>
+      <button class="act" data-act="escapar" ${tentativas>0?'':'disabled'}>🚪 Escapar<small>${
+        tentativas > 0
+          ? `tire ${alvoDaFuga()}+ no dado • ${tentativas} ${tentativas===1?'tentativa':'tentativas'}`
+          : 'sem tentativas — agora é seguir ou cair'
+      }</small></button>`;
   }
 
   $$('#pActs [data-act]').forEach(b => b.onclick = () => {
@@ -2703,7 +2871,7 @@ function render(){
     else if(a === 'defender') defender();
     else if(a === 'pocao') beberPocao();
     else if(a === 'fugir') fugir();
-    else if(a === 'forja') abrirForja();
+    else if(a === 'escapar') escaparDaMasmorra();
     else if(a === 'mochila') abrirMochila();
     else if(a === 'bestiario') abrirBestiario();
     else if(a === 'conquistas') abrirConquistas();
@@ -2725,7 +2893,13 @@ function render(){
 function dimensionarMapa(){
   const mid = $('#playMid'), mapa = $('#map');
   if(!mid || !mapa) return;
-  const cabe = Math.min(mid.clientWidth, mid.clientHeight);
+  /* No Safari a barra de endereço e a de baixo entram e saem, e a área
+     realmente visível às vezes é menor que a caixa que medimos. Cruzar as
+     duas medidas evita o tabuleiro nascer maior do que cabe na tela. */
+  const vv = window.visualViewport;
+  const larguraVis = vv ? vv.width  - 26 : Infinity;
+  const alturaVis  = vv ? vv.height - 26 : Infinity;
+  const cabe = Math.min(mid.clientWidth, mid.clientHeight, larguraVis, alturaVis);
   /* Abaixo disso a casa fica menor que a ponta do dedo e o tabuleiro
      deixa de ser jogável. Em tela deitada o meio às vezes é mais baixo
      que isso — aí é melhor deixar rolar do que cortar linhas fora. */
@@ -2761,6 +2935,7 @@ observarMeio();
 window.addEventListener('resize', () => { medirTela(); dimensionarMapa(); });
 window.addEventListener('orientationchange', () => { medirTela(); dimensionarMapa(); });
 window.visualViewport?.addEventListener('resize', () => { medirTela(); dimensionarMapa(); });
+window.visualViewport?.addEventListener('scroll', () => { medirTela(); dimensionarMapa(); });
 
 function abrirJogo(){
   if(!G) return;
