@@ -1,0 +1,1220 @@
+<title>Bestiário Midjourney</title>
+<style>
+:root{
+  --bg:#f5efe1; --surface:#fffdf7; --surface-2:#ece1c8; --ink:#241c14; --muted:#6d5f4c; --line:#ddcdac;
+  --accent:#8f5c1f; --accent-strong:#6e4517; --accent-ink:#fffaf0; --focus:#8f5c1f;
+  --r-campo:#3f6b2a; --r-deserto:#8f6a24; --r-gelo:#2c6f8f; --r-masmorra:#5c5347; --r-covil:#8f3324; --r-itens:#6e5a8a;
+  --shadow: 0 1px 2px rgba(36,28,20,.06), 0 8px 24px -12px rgba(36,28,20,.18);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#15100b; --surface:#1d1712; --surface-2:#251d15; --ink:#f3e8d6; --muted:#ab9a80; --line:#3b2d20;
+    --accent:#d9a355; --accent-strong:#f1c37c; --accent-ink:#1c1006; --focus:#d9a355;
+    --r-campo:#8fc264; --r-deserto:#dba658; --r-gelo:#7ecbee; --r-masmorra:#b3a184; --r-covil:#ef7a58; --r-itens:#b7a2df;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 28px -14px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15100b; --surface:#1d1712; --surface-2:#251d15; --ink:#f3e8d6; --muted:#ab9a80; --line:#3b2d20;
+  --accent:#d9a355; --accent-strong:#f1c37c; --accent-ink:#1c1006; --focus:#d9a355;
+  --r-campo:#8fc264; --r-deserto:#dba658; --r-gelo:#7ecbee; --r-masmorra:#b3a184; --r-covil:#ef7a58; --r-itens:#b7a2df;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 28px -14px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  line-height:1.55; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px 72px}
+a{color:inherit}
+::selection{background:var(--accent);color:var(--accent-ink)}
+
+header.hero{padding:28px 0 18px}
+h1{
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:clamp(26px,7vw,36px); margin:0 0 6px; text-wrap:balance; letter-spacing:.01em;
+}
+.hero p{color:var(--muted);margin:0;max-width:56ch;font-size:14.5px}
+.hero .count{font-variant-numeric:tabular-nums;color:var(--accent-strong);font-weight:700}
+
+details.info{
+  background:var(--surface); border:1px solid var(--line); border-radius:14px;
+  margin:18px 0; box-shadow:var(--shadow);
+}
+details.info summary{
+  list-style:none; cursor:pointer; padding:13px 16px; font-weight:600; font-size:14.5px;
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+}
+details.info summary::-webkit-details-marker{display:none}
+details.info summary::after{content:'+'; font-size:19px; color:var(--muted); font-weight:400; transition:transform .18s}
+details.info[open] summary::after{transform:rotate(45deg)}
+.info-body{padding:0 16px 16px}
+.info-body p{margin:0 0 10px;font-size:14px;color:var(--ink)}
+.info-body p:last-child{margin-bottom:0}
+.info-body b{color:var(--accent-strong)}
+.info-body code{background:var(--surface-2);border:1px solid var(--line);border-radius:5px;padding:1px 5px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px}
+.info-grid{display:grid;grid-template-columns:1fr;gap:8px;margin-top:4px}
+.info-card{background:var(--surface-2);border-radius:10px;padding:10px 12px;font-size:13px}
+.info-card b{display:block;color:var(--ink);font-size:13.5px;margin-bottom:2px}
+
+.toolbar{
+  position:sticky; top:0; z-index:5; padding:12px 0; margin:0 -16px; padding-left:16px; padding-right:16px;
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.search{
+  display:flex; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--line);
+  border-radius:11px; padding:9px 12px; margin-bottom:10px;
+}
+.search svg{width:16px;height:16px;flex:none;color:var(--muted)}
+.search input{
+  border:0; outline:0; background:transparent; color:var(--ink); font-size:15px; width:100%;
+  font-family:inherit;
+}
+.search input::placeholder{color:var(--muted)}
+.chips{display:flex; gap:7px; overflow-x:auto; padding-bottom:2px; -webkit-overflow-scrolling:touch; scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{
+  flex:none; border:1px solid var(--line); background:var(--surface); color:var(--ink);
+  border-radius:999px; padding:7px 13px; font-size:13px; font-weight:600; white-space:nowrap; cursor:pointer;
+}
+.chip[aria-pressed="true"]{background:var(--region); border-color:var(--region); color:var(--accent-ink)}
+.result-count{font-size:12.5px;color:var(--muted);margin:10px 2px 0}
+
+section.region{margin-top:30px}
+section.region h2{
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:20px; margin:0 0 12px; display:flex; align-items:baseline; gap:9px;
+  border-bottom:2px solid var(--region); padding-bottom:8px; color:var(--ink);
+}
+.region-icon{font-size:19px}
+section.region h2 small{font-family:-apple-system,sans-serif; font-weight:600; font-size:11.5px; color:var(--muted); margin-left:auto}
+h3.subgroup{font-size:12.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:16px 2px 9px;font-weight:700}
+
+.grid{display:grid; gap:10px}
+.card{
+  border:1px solid var(--line); border-left:3px solid var(--region, var(--line));
+  border-radius:13px; background:var(--surface); padding:12px 13px; box-shadow:var(--shadow);
+}
+.card-item{border-left-color:var(--accent)}
+.card-top{display:flex; align-items:flex-start; gap:10px; margin-bottom:8px}
+.glyph{font-size:21px; line-height:1; flex:none; margin-top:1px}
+.card-id{min-width:0; flex:1}
+.card-id h3{margin:0; font-size:14.5px; font-weight:700; color:var(--ink)}
+.card-id code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11.5px; color:var(--muted)}
+.tag{flex:none; font-size:10px; text-transform:uppercase; letter-spacing:.06em; border-radius:999px; padding:3px 9px; font-weight:700; align-self:flex-start}
+.tag-chefe{background:var(--surface-2); color:var(--accent-strong); border:1px solid var(--accent)}
+.tag-final{background:var(--r-covil); color:#fff8f2}
+.prompt{
+  margin:0 0 10px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12.5px;
+  line-height:1.55; color:var(--muted); word-break:break-word;
+}
+.copy{
+  display:inline-flex; align-items:center; gap:6px; border:1px solid var(--line); background:var(--surface-2);
+  color:var(--ink); border-radius:9px; padding:9px 14px; font-size:13px; font-weight:600; cursor:pointer;
+  min-height:38px; font-family:inherit;
+}
+.copy svg{width:14px;height:14px;stroke:currentColor;fill:none}
+.copy:active{transform:scale(.97)}
+.copy.ok{background:var(--accent); border-color:var(--accent); color:var(--accent-ink)}
+.copy:focus-visible, .chip:focus-visible, input:focus-visible{outline:2px solid var(--focus); outline-offset:2px}
+
+.hidden{display:none !important}
+@media(prefers-reduced-motion: reduce){ * {transition:none !important} }
+</style>
+
+<div class="wrap">
+  <header class="hero">
+    <h1>Bestiário Midjourney</h1>
+    <p>Prompts prontos para as <span class="count">51</span> criaturas e <span class="count">20</span> itens do Climbix. Toque em <b>copiar</b>, cole no Midjourney, salve com o nome de arquivo indicado.</p>
+  </header>
+
+  <details class="info">
+    <summary>Como usar e erros comuns</summary>
+    <div class="info-body">
+      <p>Cada prompt gera um <b>busto</b> — cabeça, ombros e peito, em três quartos — porque no bestiário a criatura aparece com apenas 32 pixels de altura, e nesse tamanho é a cabeça que precisa se ler. Todos os prompts terminam com <code>--ar 1:1 --s 750</code>: o formato quadrado é obrigatório, o <code>--s</code> controla o quanto o Midjourney segue o prompt à risca (suba para 800 se as imagens saírem genéricas demais, desça para 600 se saírem estranhas).</p>
+      <div class="info-grid">
+        <div class="info-card"><b>Salve com o nome exato</b>Minúsculo, sem acento — o nome de arquivo mostrado em cada card.</div>
+        <div class="info-card"><b>Pastas certas</b>Criaturas em <code>public_html/img/</code>, itens em <code>public_html/img/itens/</code>.</div>
+        <div class="info-card"><b>PNG quadrado, fundo transparente</b>512×512 sobra. Sem transparência? Gere em fundo preto sólido e recorte depois.</div>
+        <div class="info-card"><b>Nada de cenário</b>Chão, grama ou coluna encolhem a criatura no ícone final — só o bicho, preenchendo o quadro.</div>
+      </div>
+    </div>
+  </details>
+
+  <div class="toolbar">
+    <label class="search">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="9" r="6.2"/><path d="m17 17-4-4" stroke-linecap="round"/></svg>
+      <input type="search" id="busca" placeholder="Buscar criatura ou item…" autocomplete="off" enterkeyhint="search">
+    </label>
+    <nav class="chips" id="chips">
+      <button class="chip" type="button" data-filter="todas" aria-pressed="true">Todas</button>
+      <button class="chip" type="button" data-filter="campo" style="--region:var(--r-campo)">🌿 Campo Aberto</button><button class="chip" type="button" data-filter="deserto" style="--region:var(--r-deserto)">🏜️ Deserto de Sal</button><button class="chip" type="button" data-filter="gelo" style="--region:var(--r-gelo)">❄️ Campos de Gelo</button><button class="chip" type="button" data-filter="masmorra" style="--region:var(--r-masmorra)">🕯️ A Masmorra</button><button class="chip" type="button" data-filter="covil" style="--region:var(--r-covil)">🐉 Covil do Dragonete</button><button class="chip" type="button" data-filter="itens" style="--region:var(--r-itens)">⚒️ Itens</button>
+    </nav>
+    <p class="result-count" id="contagem"></p>
+  </div>
+
+  <section class="region" data-region-section="campo">
+    <h2 style="--region:var(--r-campo)"><span class="region-icon">🌿</span>Campo Aberto<small>11 criaturas</small></h2>
+    <div class="grid"><article class="card" data-region="campo" data-search="rato gigante rato" style="--region:var(--r-campo)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🐀</span>
+      <div class="card-id">
+        <h3>Rato Gigante</h3>
+        <code>img/rato.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a mangy giant rat head and shoulders, matted fur, long yellow teeth, twitching whiskers, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a mangy giant rat head and shoulders, matted fur, long yellow teeth, twitching whiskers, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="campo" data-search="morcego do campo morcegoc" style="--region:var(--r-campo)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🦇</span>
+      <div class="card-id">
+        <h3>Morcego do Campo</h3>
+        <code>img/morcegoc.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a giant field bat head and shoulders, huge ears, snarling fanged face, wings folded tight against the body, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a giant field bat head and shoulders, huge ears, snarling fanged face, wings folded tight against the body, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="campo" data-search="goblin batedor goblin" style="--region:var(--r-campo)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">👺</span>
+      <div class="card-id">
+        <h3>Goblin Batedor</h3>
+        <code>img/goblin.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a scrawny goblin scout with oversized ears, rusty dagger, leather scraps, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a scrawny goblin scout with oversized ears, rusty dagger, leather scraps, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="campo" data-search="cobra do mato cobra" style="--region:var(--r-campo)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🐍</span>
+      <div class="card-id">
+        <h3>Cobra do Mato</h3>
+        <code>img/cobra.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a grass snake head rearing, green scales, forked tongue, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a grass snake head rearing, green scales, forked tongue, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="campo" data-search="abelha rainha abelha" style="--region:var(--r-campo)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🐝</span>
+      <div class="card-id">
+        <h3>Abelha Rainha</h3>
+        <code>img/abelha.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a monstrous queen bee head and thorax, amber compound eyes, fuzzy collar, tiny crown, wings folded back, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a monstrous queen bee head and thorax, amber compound eyes, fuzzy collar, tiny crown, wings folded back, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="campo" data-search="sapo venenoso sapo" style="--region:var(--r-campo)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🐸</span>
+      <div class="card-id">
+        <h3>Sapo Venenoso</h3>
+        <code>img/sapo.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a bloated poison toad head and shoulders, warty purple-spotted skin, dripping venom, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a bloated poison toad head and shoulders, warty purple-spotted skin, dripping venom, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="campo" data-search="aranha do mato aranhamato" style="--region:var(--r-campo)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🕷️</span>
+      <div class="card-id">
+        <h3>Aranha do Mato</h3>
+        <code>img/aranhamato.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a mossy forest spider head and forelegs, eight red eyes, hairy green-brown body, cobweb strands across it, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a mossy forest spider head and forelegs, eight red eyes, hairy green-brown body, cobweb strands across it, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="campo" data-search="corvo ladrão corvo" style="--region:var(--r-campo)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🐦‍⬛</span>
+      <div class="card-id">
+        <h3>Corvo Ladrão</h3>
+        <code>img/corvo.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a thieving crow head and chest, glossy black feathers, a gold coin in its beak, wings folded, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a thieving crow head and chest, glossy black feathers, a gold coin in its beak, wings folded, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="campo" data-search="lobo faminto lobo" style="--region:var(--r-campo)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🐺</span>
+      <div class="card-id">
+        <h3>Lobo Faminto</h3>
+        <code>img/lobo.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a gaunt hungry wolf head and shoulders, snarling with bared fangs, ears laid back, matted grey fur with a mossy tint, hungry yellow eyes, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a gaunt hungry wolf head and shoulders, snarling with bared fangs, ears laid back, matted grey fur with a mossy tint, hungry yellow eyes, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="campo" data-search="urso pardo urso" style="--region:var(--r-campo)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🐻</span>
+      <div class="card-id">
+        <h3>Urso Pardo</h3>
+        <code>img/urso.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a brown bear head and shoulders, thick shaggy fur, open jaws, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a brown bear head and shoulders, thick shaggy fur, open jaws, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="campo" data-search="javali ancião javali" style="--region:var(--r-campo)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🐗</span>
+      <div class="card-id">
+        <h3>Javali Ancião</h3>
+        <code>img/javali.png</code>
+      </div>
+      <span class="tag tag-chefe">chefe</span>
+    </div>
+    <p class="prompt">an ancient dire boar head and shoulders, enormous curved tusks, scarred hide, moss on its nape, boss variant more threatening than common creatures, older and more scarred, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="an ancient dire boar head and shoulders, enormous curved tusks, scarred hide, moss on its nape, boss variant more threatening than common creatures, older and more scarred, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, earthy, mossy green, brown tones, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article></div>
+  </section><section class="region" data-region-section="deserto">
+    <h2 style="--region:var(--r-deserto)"><span class="region-icon">🏜️</span>Deserto de Sal<small>10 criaturas</small></h2>
+    <div class="grid"><article class="card" data-region="deserto" data-search="lagarto de sal lagarto" style="--region:var(--r-deserto)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🦎</span>
+      <div class="card-id">
+        <h3>Lagarto de Sal</h3>
+        <code>img/lagarto.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a salt-crusted desert lizard, pale scales, long tail, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a salt-crusted desert lizard, pale scales, long tail, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="deserto" data-search="abutre faminto abutre" style="--region:var(--r-deserto)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🦅</span>
+      <div class="card-id">
+        <h3>Abutre Faminto</h3>
+        <code>img/abutre.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a starving vulture head and neck, bald wrinkled skin, hooked beak, ruff of ragged feathers, wings folded, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a starving vulture head and neck, bald wrinkled skin, hooked beak, ruff of ragged feathers, wings folded, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="deserto" data-search="escorpião dourado escorpiao" style="--region:var(--r-deserto)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🦂</span>
+      <div class="card-id">
+        <h3>Escorpião Dourado</h3>
+        <code>img/escorpiao.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a golden desert scorpion, raised stinger, glossy carapace, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a golden desert scorpion, raised stinger, glossy carapace, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="deserto" data-search="besouro de bronze besouro" style="--region:var(--r-deserto)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🪲</span>
+      <div class="card-id">
+        <h3>Besouro de Bronze</h3>
+        <code>img/besouro.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a bronze-shelled beetle, metallic plated back, mandibles, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a bronze-shelled beetle, metallic plated back, mandibles, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="deserto" data-search="camelo enfurecido camelo" style="--region:var(--r-deserto)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🐪</span>
+      <div class="card-id">
+        <h3>Camelo Enfurecido</h3>
+        <code>img/camelo.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">an enraged camel head and neck, foaming mouth, torn saddle straps, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="an enraged camel head and neck, foaming mouth, torn saddle straps, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="deserto" data-search="bandido mascarado bandido" style="--region:var(--r-deserto)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🗡️</span>
+      <div class="card-id">
+        <h3>Bandido Mascarado</h3>
+        <code>img/bandido.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a masked desert bandit, cloth wrap over face, curved scimitar, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a masked desert bandit, cloth wrap over face, curved scimitar, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="deserto" data-search="gênio menor genio" style="--region:var(--r-deserto)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🧞</span>
+      <div class="card-id">
+        <h3>Gênio Menor</h3>
+        <code>img/genio.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a lesser genie, smoky lower body, brass arm cuffs, glowing eyes, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a lesser genie, smoky lower body, brass arm cuffs, glowing eyes, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="deserto" data-search="múmia ressecada mumia" style="--region:var(--r-deserto)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🧟</span>
+      <div class="card-id">
+        <h3>Múmia Ressecada</h3>
+        <code>img/mumia.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a dried mummy, cracked bandages, hollow glowing eye sockets, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a dried mummy, cracked bandages, hollow glowing eye sockets, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="deserto" data-search="verme das areias verme" style="--region:var(--r-deserto)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🪱</span>
+      <div class="card-id">
+        <h3>Verme das Areias</h3>
+        <code>img/verme.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a giant sandworm head, ringed segments, circular toothed maw open at the viewer, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a giant sandworm head, ringed segments, circular toothed maw open at the viewer, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="deserto" data-search="colosso de bronze bronze" style="--region:var(--r-deserto)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🗿</span>
+      <div class="card-id">
+        <h3>Colosso de Bronze</h3>
+        <code>img/bronze.png</code>
+      </div>
+      <span class="tag tag-chefe">chefe</span>
+    </div>
+    <p class="prompt">a colossal bronze statue head and shoulders coming alive, cracked patina, glowing seams, boss variant more threatening than common creatures, older and more scarred, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a colossal bronze statue head and shoulders coming alive, cracked patina, glowing seams, boss variant more threatening than common creatures, older and more scarred, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, sun-bleached, sandy, bronze, desert, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article></div>
+  </section><section class="region" data-region-section="gelo">
+    <h2 style="--region:var(--r-gelo)"><span class="region-icon">❄️</span>Campos de Gelo<small>10 criaturas</small></h2>
+    <div class="grid"><article class="card" data-region="gelo" data-search="pinguim berserker pinguim" style="--region:var(--r-gelo)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🐧</span>
+      <div class="card-id">
+        <h3>Pinguim Berserker</h3>
+        <code>img/pinguim.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a furious battle penguin, tiny ice shard spear, puffed chest, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a furious battle penguin, tiny ice shard spear, puffed chest, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="gelo" data-search="foca colossal foca" style="--region:var(--r-gelo)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🦭</span>
+      <div class="card-id">
+        <h3>Foca Colossal</h3>
+        <code>img/foca.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a colossal seal, thick blubber, tusked, ice crusted whiskers, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a colossal seal, thick blubber, tusked, ice crusted whiskers, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="gelo" data-search="aranha de gelo aranhagelo" style="--region:var(--r-gelo)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🕷️</span>
+      <div class="card-id">
+        <h3>Aranha de Gelo</h3>
+        <code>img/aranhagelo.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">an ice spider, translucent crystalline legs, frost on abdomen, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="an ice spider, translucent crystalline legs, frost on abdomen, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="gelo" data-search="lobo branco lobobranco" style="--region:var(--r-gelo)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🐕‍🦺</span>
+      <div class="card-id">
+        <h3>Lobo Branco</h3>
+        <code>img/lobobranco.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a white wolf with frost breath, pale blue eyes, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a white wolf with frost breath, pale blue eyes, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="gelo" data-search="urso glacial ursoglacial" style="--region:var(--r-gelo)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🐻‍❄️</span>
+      <div class="card-id">
+        <h3>Urso Glacial</h3>
+        <code>img/ursoglacial.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a glacial polar bear, ice shards frozen into its fur, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a glacial polar bear, ice shards frozen into its fur, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="gelo" data-search="coruja da nevasca coruja" style="--region:var(--r-gelo)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🦉</span>
+      <div class="card-id">
+        <h3>Coruja da Nevasca</h3>
+        <code>img/coruja.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a blizzard owl head and chest, wide amber eyes, snow-dusted facial disc, wings folded, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a blizzard owl head and chest, wide amber eyes, snow-dusted facial disc, wings folded, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="gelo" data-search="alce ancião alce" style="--region:var(--r-gelo)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🫎</span>
+      <div class="card-id">
+        <h3>Alce Ancião</h3>
+        <code>img/alce.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">an ancient elk, huge frost-covered antlers, steam from nostrils, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="an ancient elk, huge frost-covered antlers, steam from nostrils, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="gelo" data-search="espectro do poço espectro" style="--region:var(--r-gelo)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">👻</span>
+      <div class="card-id">
+        <h3>Espectro do Poço</h3>
+        <code>img/espectro.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a well spectre, tattered translucent shroud, hollow face, dripping water, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a well spectre, tattered translucent shroud, hollow face, dripping water, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="gelo" data-search="golem cristalino cristalino" style="--region:var(--r-gelo)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">💎</span>
+      <div class="card-id">
+        <h3>Golem Cristalino</h3>
+        <code>img/cristalino.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a crystal golem, angular blue-white shards, glowing core, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a crystal golem, angular blue-white shards, glowing core, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="gelo" data-search="gigante de gelo gigante" style="--region:var(--r-gelo)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🧊</span>
+      <div class="card-id">
+        <h3>Gigante de Gelo</h3>
+        <code>img/gigante.png</code>
+      </div>
+      <span class="tag tag-chefe">chefe</span>
+    </div>
+    <p class="prompt">an ice giant head and shoulders, frozen brow, frost beard, glacier club over the shoulder, boss variant more threatening than common creatures, older and more scarred, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="an ice giant head and shoulders, frozen brow, frost beard, glacier club over the shoulder, boss variant more threatening than common creatures, older and more scarred, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, pale blue, frost-white, icy, crystalline, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article></div>
+  </section><section class="region" data-region-section="masmorra">
+    <h2 style="--region:var(--r-masmorra)"><span class="region-icon">🕯️</span>A Masmorra<small>10 criaturas</small></h2>
+    <div class="grid"><article class="card" data-region="masmorra" data-search="rato-rei ratorei" style="--region:var(--r-masmorra)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🐁</span>
+      <div class="card-id">
+        <h3>Rato-Rei</h3>
+        <code>img/ratorei.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a rat king, many rats fused with tangled tails, tiny crooked crown, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a rat king, many rats fused with tangled tails, tiny crooked crown, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="masmorra" data-search="aranha da cripta aranhacripta" style="--region:var(--r-masmorra)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🕸️</span>
+      <div class="card-id">
+        <h3>Aranha da Cripta</h3>
+        <code>img/aranhacripta.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a crypt spider on a dusty web, bone-pale markings, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a crypt spider on a dusty web, bone-pale markings, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="masmorra" data-search="esqueleto esqueleto" style="--region:var(--r-masmorra)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">💀</span>
+      <div class="card-id">
+        <h3>Esqueleto</h3>
+        <code>img/esqueleto.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">an animated skeleton warrior, rusted sword, chipped bones, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="an animated skeleton warrior, rusted sword, chipped bones, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="masmorra" data-search="cadáver andante cadaver" style="--region:var(--r-masmorra)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🪦</span>
+      <div class="card-id">
+        <h3>Cadáver Andante</h3>
+        <code>img/cadaver.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a shambling corpse, grave dirt, torn burial clothes, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a shambling corpse, grave dirt, torn burial clothes, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="masmorra" data-search="sombra errante sombra" style="--region:var(--r-masmorra)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">👤</span>
+      <div class="card-id">
+        <h3>Sombra Errante</h3>
+        <code>img/sombra.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a wandering shadow, featureless dark humanoid, faint glowing eyes, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a wandering shadow, featureless dark humanoid, faint glowing eyes, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="masmorra" data-search="vampiro menor vampiro" style="--region:var(--r-masmorra)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🧛</span>
+      <div class="card-id">
+        <h3>Vampiro Menor</h3>
+        <code>img/vampiro.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a lesser vampire, pale gaunt face, red-lined black cloak, fangs, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a lesser vampire, pale gaunt face, red-lined black cloak, fangs, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="masmorra" data-search="golem de tijolo golemtijolo" style="--region:var(--r-masmorra)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🧱</span>
+      <div class="card-id">
+        <h3>Golem de Tijolo</h3>
+        <code>img/golemtijolo.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a brick golem, crumbling masonry body, mortar cracks, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a brick golem, crumbling masonry body, mortar cracks, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="masmorra" data-search="ogro faminto ogro" style="--region:var(--r-masmorra)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">👹</span>
+      <div class="card-id">
+        <h3>Ogro Faminto</h3>
+        <code>img/ogro.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a hungry ogre, huge belly, crude club, tusked underbite, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a hungry ogre, huge belly, crude club, tusked underbite, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="masmorra" data-search="necromante menor necromante" style="--region:var(--r-masmorra)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🧙</span>
+      <div class="card-id">
+        <h3>Necromante Menor</h3>
+        <code>img/necromante.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a minor necromancer, hooded robe, skull staff, green magic wisps, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a minor necromancer, hooded robe, skull staff, green magic wisps, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="masmorra" data-search="cavaleiro caído cavaleiro" style="--region:var(--r-masmorra)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">⚔️</span>
+      <div class="card-id">
+        <h3>Cavaleiro Caído</h3>
+        <code>img/cavaleiro.png</code>
+      </div>
+      <span class="tag tag-chefe">chefe</span>
+    </div>
+    <p class="prompt">a fallen knight head and shoulders, dented black pauldrons, cracked helm with red glow, boss variant more threatening than common creatures, older and more scarred, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a fallen knight head and shoulders, dented black pauldrons, cracked helm with red glow, boss variant more threatening than common creatures, older and more scarred, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, amber, grey stone, shadowy, candlelit, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article></div>
+  </section><section class="region" data-region-section="covil">
+    <h2 style="--region:var(--r-covil)"><span class="region-icon">🐉</span>Covil do Dragonete<small>10 criaturas</small></h2>
+    <div class="grid"><article class="card" data-region="covil" data-search="diabrete imp" style="--region:var(--r-covil)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">😈</span>
+      <div class="card-id">
+        <h3>Diabrete</h3>
+        <code>img/imp.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a small red imp, bat wings, forked tail, mischievous grin, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a small red imp, bat wings, forked tail, mischievous grin, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="covil" data-search="salamandra ígnea salamandra" style="--region:var(--r-covil)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🔥</span>
+      <div class="card-id">
+        <h3>Salamandra Ígnea</h3>
+        <code>img/salamandra.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a fire salamander, molten cracks along its back, ember trail, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a fire salamander, molten cracks along its back, ember trail, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="covil" data-search="filhote de dragão filhote" style="--region:var(--r-covil)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🐲</span>
+      <div class="card-id">
+        <h3>Filhote de Dragão</h3>
+        <code>img/filhote.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a dragon hatchling, oversized head, stubby wings, iron-grey scales, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a dragon hatchling, oversized head, stubby wings, iron-grey scales, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="covil" data-search="basilisco basilisco" style="--region:var(--r-covil)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🦕</span>
+      <div class="card-id">
+        <h3>Basilisco</h3>
+        <code>img/basilisco.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a basilisk, long serpentine reptile, petrifying yellow stare, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a basilisk, long serpentine reptile, petrifying yellow stare, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="covil" data-search="quimera quimera" style="--region:var(--r-covil)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🦁</span>
+      <div class="card-id">
+        <h3>Quimera</h3>
+        <code>img/quimera.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a chimera head and shoulders, lion face, goat head beside it, serpent rising behind, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a chimera head and shoulders, lion face, goat head beside it, serpent rising behind, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="covil" data-search="wyvern wyvern" style="--region:var(--r-covil)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🐦‍🔥</span>
+      <div class="card-id">
+        <h3>Wyvern</h3>
+        <code>img/wyvern.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a wyvern head and neck, horned skull, bared fangs, folded wing shoulders framing the head, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a wyvern head and neck, horned skull, bared fangs, folded wing shoulders framing the head, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="covil" data-search="cão de três cabeças cerbero" style="--region:var(--r-covil)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🐕</span>
+      <div class="card-id">
+        <h3>Cão de Três Cabeças</h3>
+        <code>img/cerbero.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">three snarling hound heads over broad shoulders, black fur, ember eyes, iron collar, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="three snarling hound heads over broad shoulders, black fur, ember eyes, iron collar, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="covil" data-search="golem de lava golemlava" style="--region:var(--r-covil)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🌋</span>
+      <div class="card-id">
+        <h3>Golem de Lava</h3>
+        <code>img/golemlava.png</code>
+      </div>
+      
+    </div>
+    <p class="prompt">a lava golem, cracked obsidian shell with molten glowing seams, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a lava golem, cracked obsidian shell with molten glowing seams, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="covil" data-search="guardião de obsidiana obsidiana" style="--region:var(--r-covil)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🛡️</span>
+      <div class="card-id">
+        <h3>Guardião de Obsidiana</h3>
+        <code>img/obsidiana.png</code>
+      </div>
+      <span class="tag tag-chefe">chefe</span>
+    </div>
+    <p class="prompt">an obsidian guardian head and shoulders, polished black stone face, glowing red runes, boss variant more threatening than common creatures, older and more scarred, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="an obsidian guardian head and shoulders, polished black stone face, glowing red runes, boss variant more threatening than common creatures, older and more scarred, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card" data-region="covil" data-search="dragonete de ferro dragonete" style="--region:var(--r-covil)">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🐉</span>
+      <div class="card-id">
+        <h3>Dragonete de Ferro</h3>
+        <code>img/dragonete.png</code>
+      </div>
+      <span class="tag tag-final">chefe final</span>
+    </div>
+    <p class="prompt">the final boss: an iron drakeling head and neck, riveted metal plating over scales, glowing furnace throat, tattered metal wing edges behind, final boss more menacing and imposing than all others, dramatically larger, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="the final boss: an iron drakeling head and neck, riveted metal plating over scales, glowing furnace throat, tattered metal wing edges behind, final boss more menacing and imposing than all others, dramatically larger, dark fantasy game icon art, bust framing head and shoulders only, three-quarter view facing viewer, compact pose wings and limbs folded, head is largest and clearest element, filled in square frame with margins, warm rim light upper left, obsidian black, molten orange, ember glow, solid pure black background, no scenery no ground no shadow, ultra sharp 32px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article></div>
+  </section>
+  <section class="region" data-region-section="itens">
+    <h2 style="--region:var(--r-itens)"><span class="region-icon">⚒️</span>Itens<small>20 imagens</small></h2>
+    <h3 class="subgroup">Equipamento e poções</h3><div class="grid"><article class="card card-item" data-region="itens" data-search="espada de ferro espada">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🗡️</span>
+      <div class="card-id">
+        <h3>Espada de Ferro</h3>
+        <code>img/itens/espada.png</code>
+      </div>
+    </div>
+    <p class="prompt">an iron short sword, simple crossguard, worn leather grip, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="an iron short sword, simple crossguard, worn leather grip, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card card-item" data-region="itens" data-search="machado pesado machado">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🪓</span>
+      <div class="card-id">
+        <h3>Machado Pesado</h3>
+        <code>img/itens/machado.png</code>
+      </div>
+    </div>
+    <p class="prompt">a heavy two-handed battle axe, thick iron head, oak haft, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a heavy two-handed battle axe, thick iron head, oak haft, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card card-item" data-region="itens" data-search="lâmina rúnica lamina">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">⚔️</span>
+      <div class="card-id">
+        <h3>Lâmina Rúnica</h3>
+        <code>img/itens/lamina.png</code>
+      </div>
+    </div>
+    <p class="prompt">a runic blade glowing with faint gold runes along the fuller, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a runic blade glowing with faint gold runes along the fuller, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card card-item" data-region="itens" data-search="elmo de couro elmocouro">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🪖</span>
+      <div class="card-id">
+        <h3>Elmo de Couro</h3>
+        <code>img/itens/elmocouro.png</code>
+      </div>
+    </div>
+    <p class="prompt">a simple leather cap helmet with stitched seams, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a simple leather cap helmet with stitched seams, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card card-item" data-region="itens" data-search="elmo de ferro elmoferro">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">⛑️</span>
+      <div class="card-id">
+        <h3>Elmo de Ferro</h3>
+        <code>img/itens/elmoferro.png</code>
+      </div>
+    </div>
+    <p class="prompt">an iron helmet with a nose guard, hammered surface, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="an iron helmet with a nose guard, hammered surface, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card card-item" data-region="itens" data-search="peitoral de couro peitocouro">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🦺</span>
+      <div class="card-id">
+        <h3>Peitoral de Couro</h3>
+        <code>img/itens/peitocouro.png</code>
+      </div>
+    </div>
+    <p class="prompt">a leather chest armor, buckled straps, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a leather chest armor, buckled straps, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card card-item" data-region="itens" data-search="peitoral de ferro peitoferro">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🛡️</span>
+      <div class="card-id">
+        <h3>Peitoral de Ferro</h3>
+        <code>img/itens/peitoferro.png</code>
+      </div>
+    </div>
+    <p class="prompt">an iron breastplate, riveted plates, battle scratches, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="an iron breastplate, riveted plates, battle scratches, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card card-item" data-region="itens" data-search="escudo rúnico escudo">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🔰</span>
+      <div class="card-id">
+        <h3>Escudo Rúnico</h3>
+        <code>img/itens/escudo.png</code>
+      </div>
+    </div>
+    <p class="prompt">a round runic shield, iron rim, glowing engraved sigil, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a round runic shield, iron rim, glowing engraved sigil, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card card-item" data-region="itens" data-search="poção de cura pocao">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🧪</span>
+      <div class="card-id">
+        <h3>Poção de Cura</h3>
+        <code>img/itens/pocao.png</code>
+      </div>
+    </div>
+    <p class="prompt">a small round healing potion bottle, glowing red liquid, cork stopper, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a small round healing potion bottle, glowing red liquid, cork stopper, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card card-item" data-region="itens" data-search="elixir de vida elixir">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">💗</span>
+      <div class="card-id">
+        <h3>Elixir de Vida</h3>
+        <code>img/itens/elixir.png</code>
+      </div>
+    </div>
+    <p class="prompt">an ornate elixir flask, swirling pink light, gold filigree, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="an ornate elixir flask, swirling pink light, gold filigree, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article></div><h3 class="subgroup">Relíquias</h3><div class="grid"><article class="card card-item" data-region="itens" data-search="olho da sorte sorte">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🍀</span>
+      <div class="card-id">
+        <h3>Olho da Sorte</h3>
+        <code>img/itens/sorte.png</code>
+      </div>
+    </div>
+    <p class="prompt">a lucky eye amulet, green four-leaf clover set in a gold eye-shaped pendant, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a lucky eye amulet, green four-leaf clover set in a gold eye-shaped pendant, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card card-item" data-region="itens" data-search="martelo ancestral martelo">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🔨</span>
+      <div class="card-id">
+        <h3>Martelo Ancestral</h3>
+        <code>img/itens/martelo.png</code>
+      </div>
+    </div>
+    <p class="prompt">an ancestral forge hammer, runed stone head, leather-wrapped handle, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="an ancestral forge hammer, runed stone head, leather-wrapped handle, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card card-item" data-region="itens" data-search="coração de pedra coracao">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">💗</span>
+      <div class="card-id">
+        <h3>Coração de Pedra</h3>
+        <code>img/itens/coracao.png</code>
+      </div>
+    </div>
+    <p class="prompt">a heart carved from grey stone, faint red glow in its cracks, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a heart carved from grey stone, faint red glow in its cracks, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card card-item" data-region="itens" data-search="escama do dragonete escama">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🐲</span>
+      <div class="card-id">
+        <h3>Escama do Dragonete</h3>
+        <code>img/itens/escama.png</code>
+      </div>
+    </div>
+    <p class="prompt">a single large dragon scale, iron-grey with green iridescence, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a single large dragon scale, iron-grey with green iridescence, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card card-item" data-region="itens" data-search="bolsa sem fundo bolsa">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">👝</span>
+      <div class="card-id">
+        <h3>Bolsa Sem Fundo</h3>
+        <code>img/itens/bolsa.png</code>
+      </div>
+    </div>
+    <p class="prompt">a bottomless coin pouch, worn leather, gold coins spilling out, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a bottomless coin pouch, worn leather, gold coins spilling out, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card card-item" data-region="itens" data-search="frasco eterno frasco">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">⚗️</span>
+      <div class="card-id">
+        <h3>Frasco Eterno</h3>
+        <code>img/itens/frasco.png</code>
+      </div>
+    </div>
+    <p class="prompt">an eternal flask, alchemical glass with a never-emptying green brew, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="an eternal flask, alchemical glass with a never-emptying green brew, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article></div><h3 class="subgroup">Materiais</h3><div class="grid"><article class="card card-item" data-region="itens" data-search="ferro mat-ferro">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🔩</span>
+      <div class="card-id">
+        <h3>Ferro</h3>
+        <code>img/itens/mat-ferro.png</code>
+      </div>
+    </div>
+    <p class="prompt">a raw iron ingot, rough forged surface, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a raw iron ingot, rough forged surface, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card card-item" data-region="itens" data-search="couro mat-couro">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🟫</span>
+      <div class="card-id">
+        <h3>Couro</h3>
+        <code>img/itens/mat-couro.png</code>
+      </div>
+    </div>
+    <p class="prompt">a rolled piece of tanned leather, tied with cord, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a rolled piece of tanned leather, tied with cord, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card card-item" data-region="itens" data-search="cristal mat-cristal">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🔷</span>
+      <div class="card-id">
+        <h3>Cristal</h3>
+        <code>img/itens/mat-cristal.png</code>
+      </div>
+    </div>
+    <p class="prompt">a blue magic crystal shard, faceted, inner glow, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a blue magic crystal shard, faceted, inner glow, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article><article class="card card-item" data-region="itens" data-search="erva mat-erva">
+    <div class="card-top">
+      <span class="glyph" aria-hidden="true">🌿</span>
+      <div class="card-id">
+        <h3>Erva</h3>
+        <code>img/itens/mat-erva.png</code>
+      </div>
+    </div>
+    <p class="prompt">a bundle of green healing herbs tied with twine, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750</p>
+    <button class="copy" type="button" data-copy="a bundle of green healing herbs tied with twine, dark fantasy game item icon, centered in square frame with margins, warm rim light upper left, muted earthy tones with gold accents, bold simple shape, solid pure black background, no hands no scenery no shadow, ultra sharp 22px icon quality --ar 1:1 --s 750">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 2.5h7A1.5 1.5 0 0 1 15.5 4v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 14V4A1.5 1.5 0 0 1 7 2.5Z"/><path d="M4 5.5h-.5A1.5 1.5 0 0 0 2 7v10a1.5 1.5 0 0 0 1.5 1.5H11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke-width="1.3"/></svg>
+      <span>copiar</span>
+    </button>
+  </article></div>
+  </section>
+</div>
+
+<script>
+(function(){
+  var busca = document.getElementById('busca');
+  var chips = document.querySelectorAll('.chip');
+  var cards = document.querySelectorAll('.card');
+  var sections = document.querySelectorAll('[data-region-section]');
+  var contagem = document.getElementById('contagem');
+  var filtroAtivo = 'todas';
+
+  function aplicar(){
+    var termo = busca.value.trim().toLowerCase();
+    var visiveis = 0;
+    cards.forEach(function(c){
+      var regOk = filtroAtivo === 'todas' || c.dataset.region === filtroAtivo;
+      var textoOk = !termo || c.dataset.search.indexOf(termo) !== -1;
+      var mostra = regOk && textoOk;
+      c.classList.toggle('hidden', !mostra);
+      if(mostra) visiveis++;
+    });
+    sections.forEach(function(s){
+      var algumVisivel = s.querySelectorAll('.card:not(.hidden)').length > 0;
+      s.classList.toggle('hidden', !algumVisivel);
+    });
+    contagem.textContent = termo || filtroAtivo !== 'todas'
+      ? visiveis + (visiveis === 1 ? ' resultado' : ' resultados')
+      : '';
+  }
+
+  chips.forEach(function(chip){
+    chip.addEventListener('click', function(){
+      chips.forEach(function(c){ c.setAttribute('aria-pressed', 'false'); });
+      chip.setAttribute('aria-pressed', 'true');
+      filtroAtivo = chip.dataset.filter;
+      aplicar();
+    });
+  });
+  busca.addEventListener('input', aplicar);
+
+  document.querySelectorAll('.copy').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var texto = btn.dataset.copy;
+      var label = btn.querySelector('span');
+      function marcar(){
+        var antes = label.textContent;
+        btn.classList.add('ok'); label.textContent = 'copiado';
+        setTimeout(function(){ btn.classList.remove('ok'); label.textContent = antes; }, 1300);
+      }
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(texto).then(marcar).catch(function(){
+          fallback();
+        });
+      } else {
+        fallback();
+      }
+      function fallback(){
+        var ta = document.createElement('textarea');
+        ta.value = texto; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.focus(); ta.select();
+        try{ document.execCommand('copy'); marcar(); }catch(e){}
+        document.body.removeChild(ta);
+      }
+    });
+  });
+})();
+</script>
