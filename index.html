@@ -100,13 +100,19 @@
     .life-fill{height:100%;background:linear-gradient(90deg,#8c332c,#e0685a);transition:width .3s}
     .chips{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;font-size:13px}
     .chip{background:#151110;border:1px solid #35291f;border-radius:999px;padding:5px 11px;color:#e9d9be}
+    /* Numa tela estreita os cinco selos passam de uma linha e roubam altura
+       do tabuleiro. Aperta-se o selo em vez de deixar quebrar. */
+    @media(max-width:430px){
+      .chips{gap:5px;font-size:12px}
+      .chip{padding:4px 8px}
+    }
     .chip b{color:#f3d190;font-variant-numeric:tabular-nums}
     .play-mid{flex:1;min-height:0;display:grid;place-items:center;overflow:hidden}
     .play-mid.rolavel{place-items:start center;overflow-y:auto;overscroll-behavior:contain;padding:2px}
-    .map{display:grid;gap:6px;width:min(100%,92vw)}
+    .map{display:grid;gap:5px;width:min(100%,92vw)}
     .cell{
-      aspect-ratio:1;border-radius:11px;border:1px solid #241c16;background:#0c0a08;
-      display:grid;place-items:center;font-size:clamp(16px,4.6vw,22px);color:#5c4c3d;padding:0;
+      aspect-ratio:1;border-radius:10px;border:1px solid #2f2419;background:#151110;
+      display:grid;place-items:center;font-size:clamp(15px,4.4vw,22px);color:#6b5947;padding:0;
       cursor:default;touch-action:manipulation;transition:background .15s,border-color .15s;
     }
     .cell.seen{background:var(--visto,#171310);border-color:var(--borda,#332720);border-color:color-mix(in srgb,var(--borda,#332720) 55%,transparent);color:#e9dcc4}
@@ -1714,7 +1720,6 @@ function render(){
       return `<button class="${cls}" data-cell="${i}" ${perto?'':'disabled'} aria-label="sala"><span>${icone}</span></button>`;
     }).join('');
     $$('[data-cell]').forEach(b => b.onclick = () => mover(+b.dataset.cell));
-    dimensionarMapa();
     const naForja = G.grid[G.pos].tipo === 'forja';
     acts.innerHTML = `
       <button class="act ${naForja?'main':''}" data-act="forja">⚒️ Forja<small>${naForja?'você está numa forja':'só nas salas com bigorna'}</small></button>
@@ -1743,15 +1748,24 @@ function render(){
 
   $('#pMsg').innerHTML = '<span>' + (G.msg || 'Toque numa sala vizinha para andar.') + '</span>';
   ligarArte($('#play'));
+  dimensionarMapa();
 }
 
 /* O mapa é quadrado e precisa caber na área do meio, que muda de altura
-   conforme o aparelho e a barra do navegador. Medimos em vez de chutar. */
+   conforme o aparelho e a barra do navegador. Medimos em vez de chutar —
+   e só depois que a mensagem e os botões já ocuparam o espaço deles,
+   senão sobra altura no meio e o mapa nasce grande demais. */
 function dimensionarMapa(){
   const mid = $('#playMid'), mapa = $('#map');
   if(!mid || !mapa) return;
-  const lado = Math.max(160, Math.min(mid.clientWidth, mid.clientHeight));
+  const cabe = Math.min(mid.clientWidth, mid.clientHeight);
+  /* Abaixo disso a casa fica menor que a ponta do dedo e o tabuleiro
+     deixa de ser jogável. Em tela deitada o meio às vezes é mais baixo
+     que isso — aí é melhor deixar rolar do que cortar linhas fora. */
+  const MINIMO = 200;
+  const lado = Math.max(MINIMO, cabe);
   mapa.style.width = lado + 'px';
+  mid.classList.toggle('rolavel', lado > cabe);
 }
 
 /* ---------- entrar e sair do modo de jogo ---------- */
