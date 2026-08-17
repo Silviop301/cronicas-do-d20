@@ -337,11 +337,39 @@
     .beasts{display:grid;gap:6px}
     .beast{display:grid;grid-template-columns:30px 1fr auto;gap:9px;align-items:center;background:#141010;border:1px solid #2f251d;border-radius:11px;padding:8px 10px}
     .beast.oculto{opacity:.45}
-    .beast-ico{font-size:19px;text-align:center}
+    .beast-ico{font-size:19px;text-align:center;line-height:1}
+    .beast-art{width:26px;height:26px;object-fit:contain;display:block;margin:auto;image-rendering:auto}
+    .item-art{width:20px;height:20px;object-fit:contain;display:block;margin:auto}
+    .mat-art{width:15px;height:15px;object-fit:contain;display:inline-block;vertical-align:-2px}
+    .foe-art{width:clamp(84px,26vw,132px);height:clamp(84px,26vw,132px);object-fit:contain;display:block}
     .beast-txt{display:grid;min-width:0}
     .beast-txt b{font-size:13px}
     .beast-txt small{font-size:11px;color:var(--muted)}
     .beast-n{font-size:12px;color:#f3d190;font-variant-numeric:tabular-nums}
+    .entry-btns{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+    .entry-btns .btn:last-child{grid-column:1/-1}
+    .sheet.tut{max-width:400px}
+    .tut-ico{font-size:46px;text-align:center;line-height:1}
+    .tut-title{margin:10px 0 0;font:700 20px Georgia,serif;color:#f6deb0;text-align:center}
+    .tut-text{margin:9px 0 0;font-size:14px;line-height:1.6;color:#e7d8c2;text-align:center}
+    .tut-text b{color:#f3d190}
+    .tut-dots{display:flex;gap:6px;justify-content:center;margin-top:14px}
+    .tut-dots i{width:7px;height:7px;border-radius:50%;background:#3c2f25}
+    .tut-dots i.on{background:var(--gold)}
+    .tut-nav{display:grid;grid-template-columns:auto auto 1fr;gap:8px;align-items:center}
+    .save-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .save-btns .btn:last-child{grid-column:1/-1}
+    #saveCode{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;word-break:break-all}
+    .achieve{
+      position:fixed;left:50%;top:calc(16px + env(safe-area-inset-top));transform:translate(-50%,-14px);
+      z-index:70;display:none;align-items:center;gap:11px;padding:11px 16px;border-radius:14px;
+      background:linear-gradient(180deg,#2b2013,#1a1410);border:1px solid var(--gold);
+      box-shadow:0 14px 34px rgba(0,0,0,.5);opacity:0;transition:.28s;pointer-events:none;max-width:92vw;
+    }
+    .achieve.on{display:flex;opacity:1;transform:translate(-50%,0)}
+    .achieve .ach-ico{font-size:26px}
+    .achieve small{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted)}
+    .achieve b{font:700 15px Georgia,serif;color:#f3d190}
     @media(prefers-reduced-motion:reduce){
       .die-big.rolling,.die-big.done,.cell.reach,.foe-icon.hurt,.ov.on,.banner{animation:none;transition:none}
     }
@@ -410,7 +438,12 @@
             <h3 style="margin:6px 0 0;font:700 15px Georgia,serif;color:#f6deb0">Relíquias</h3>
             <p style="font-size:12px">Elas ficam com você mesmo quando o herói cai — e são o que torna uma masmorra Demônio vencível.</p>
             <div class="relics" id="lbRelics"></div>
-            <button class="btn" id="btnBestiary">📖 Bestiário</button>
+            <div class="entry-btns">
+              <button class="btn" id="btnTutorial">❓ Como jogar</button>
+              <button class="btn" id="btnBestiary">📖 Bestiário</button>
+              <button class="btn" id="btnAchieve">🏆 Conquistas</button>
+              <button class="btn" id="btnSave">💾 Salvar / trocar de aparelho</button>
+            </div>
           </div>
         </div>
 
@@ -590,6 +623,45 @@
   </div>
 </div>
 
+<!-- ===== Conquistas ===== -->
+<div class="ov" id="achOv">
+  <div class="sheet">
+    <h3>🏆 Conquistas</h3>
+    <p class="sheet-sub" id="achCount"></p>
+    <div class="sheet-body" id="achList"></div>
+    <button class="btn" data-fechar="achOv">Fechar</button>
+  </div>
+</div>
+
+<!-- ===== Tutorial ===== -->
+<div class="ov" id="tutOv">
+  <div class="sheet tut">
+    <div id="tutBody"></div>
+    <div class="tut-nav">
+      <button class="btn" id="tutBack">Voltar</button>
+      <button class="btn" id="tutSkip">Pular</button>
+      <button class="btn primary" id="tutNext">Próximo</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Save ===== -->
+<div class="ov" id="saveOv">
+  <div class="sheet">
+    <h3>💾 Salvar e transferir</h3>
+    <p class="sheet-sub">Seu progresso fica guardado neste navegador. Para levar para outro aparelho, copie o código abaixo e cole lá.</p>
+    <textarea id="saveCode" rows="5" spellcheck="false"></textarea>
+    <p class="sheet-sub" id="saveMsg"></p>
+    <div class="save-btns">
+      <button class="btn" id="saveCopy">Copiar código</button>
+      <button class="btn" id="saveDownload">Baixar arquivo</button>
+      <button class="btn primary" id="saveImport">Importar o que está aí</button>
+    </div>
+    <button class="btn" data-fechar="saveOv">Fechar</button>
+  </div>
+</div>
+
+<div class="achieve" id="achieve"></div>
 <div class="toast" id="toast">Copiado!</div>
 
 <script>
@@ -860,30 +932,91 @@ const REGIOES = [
 ];
 
 const BESTIARIO = [
-  {id:'rato',      nome:'Rato Gigante',      icone:'🐀', vida:7,  golpe:2, pts:10, regiao:'campo'},
-  {id:'goblin',    nome:'Goblin',            icone:'👺', vida:10, golpe:3, pts:15, regiao:'campo'},
-  {id:'abelha',    nome:'Abelha Rainha',     icone:'🐝', vida:9,  golpe:4, pts:18, regiao:'campo'},
-  {id:'lobo',      nome:'Lobo Faminto',      icone:'🐺', vida:14, golpe:4, pts:22, regiao:'campo'},
-  {id:'javali',    nome:'Javali Ancião',     icone:'🐗', vida:38, golpe:6, pts:90, regiao:'campo', chefe:true},
+  /* ---- Campo Aberto ---- */
+  {id:'rato',       nome:'Rato Gigante',        icone:'🐀',  vida:6,  golpe:2,  pts:10,  regiao:'campo'},
+  {id:'morcegoc',   nome:'Morcego do Campo',    icone:'🦇',  vida:8,  golpe:2,  pts:12,  regiao:'campo'},
+  {id:'goblin',     nome:'Goblin Batedor',      icone:'👺',  vida:10, golpe:3,  pts:15,  regiao:'campo'},
+  {id:'cobra',      nome:'Cobra do Mato',       icone:'🐍',  vida:11, golpe:3,  pts:17,  regiao:'campo'},
+  {id:'abelha',     nome:'Abelha Rainha',       icone:'🐝',  vida:9,  golpe:4,  pts:18,  regiao:'campo'},
+  {id:'sapo',       nome:'Sapo Venenoso',       icone:'🐸',  vida:12, golpe:3,  pts:19,  regiao:'campo'},
+  {id:'corvo',      nome:'Corvo Ladrão',        icone:'🐦‍⬛', vida:10, golpe:4,  pts:20,  regiao:'campo'},
+  {id:'lobo',       nome:'Lobo Faminto',        icone:'🐺',  vida:14, golpe:4,  pts:22,  regiao:'campo'},
+  {id:'urso',       nome:'Urso Pardo',          icone:'🐻',  vida:16, golpe:5,  pts:26,  regiao:'campo'},
+  {id:'javali',     nome:'Javali Ancião',       icone:'🐗',  vida:38, golpe:6,  pts:90,  regiao:'campo', chefe:true},
 
-  {id:'escorpiao', nome:'Escorpião Dourado', icone:'🦂', vida:16, golpe:5, pts:26, regiao:'deserto'},
-  {id:'bandido',   nome:'Bandido Mascarado', icone:'🗡️', vida:20, golpe:5, pts:32, regiao:'deserto'},
-  {id:'verme',     nome:'Verme das Areias',  icone:'🪱', vida:24, golpe:4, pts:34, regiao:'deserto'},
-  {id:'bronze',    nome:'Colosso de Bronze', icone:'🗿', vida:52, golpe:8, pts:130, regiao:'deserto', chefe:true},
+  /* ---- Deserto de Sal ---- */
+  {id:'lagarto',    nome:'Lagarto de Sal',      icone:'🦎',  vida:17, golpe:4,  pts:24,  regiao:'deserto'},
+  {id:'abutre',     nome:'Abutre Faminto',      icone:'🦅',  vida:15, golpe:5,  pts:25,  regiao:'deserto'},
+  {id:'escorpiao',  nome:'Escorpião Dourado',   icone:'🦂',  vida:16, golpe:5,  pts:26,  regiao:'deserto'},
+  {id:'besouro',    nome:'Besouro de Bronze',   icone:'🪲',  vida:19, golpe:5,  pts:28,  regiao:'deserto'},
+  {id:'camelo',     nome:'Camelo Enfurecido',   icone:'🐪',  vida:20, golpe:5,  pts:30,  regiao:'deserto'},
+  {id:'bandido',    nome:'Bandido Mascarado',   icone:'🗡️',  vida:20, golpe:5,  pts:32,  regiao:'deserto'},
+  {id:'genio',      nome:'Gênio Menor',         icone:'🧞',  vida:18, golpe:6,  pts:33,  regiao:'deserto'},
+  {id:'mumia',      nome:'Múmia Ressecada',     icone:'🧟',  vida:22, golpe:6,  pts:34,  regiao:'deserto'},
+  {id:'verme',      nome:'Verme das Areias',    icone:'🪱',  vida:24, golpe:4,  pts:34,  regiao:'deserto'},
+  {id:'bronze',     nome:'Colosso de Bronze',   icone:'🗿',  vida:52, golpe:8,  pts:130, regiao:'deserto', chefe:true},
 
-  {id:'ursoglacial',nome:'Urso Glacial',     icone:'🐻‍❄️', vida:26, golpe:6, pts:40, regiao:'gelo'},
-  {id:'aranhagelo',nome:'Aranha de Gelo',    icone:'🕷️', vida:22, golpe:6, pts:38, regiao:'gelo'},
-  {id:'espectro',  nome:'Espectro do Poço',  icone:'👻', vida:24, golpe:7, pts:44, regiao:'gelo'},
-  {id:'gigante',   nome:'Gigante de Gelo',   icone:'🧊', vida:64, golpe:9, pts:170, regiao:'gelo', chefe:true},
+  /* ---- Campos de Gelo ---- */
+  {id:'pinguim',    nome:'Pinguim Berserker',   icone:'🐧',  vida:20, golpe:5,  pts:34,  regiao:'gelo'},
+  {id:'foca',       nome:'Foca Colossal',       icone:'🦭',  vida:24, golpe:5,  pts:36,  regiao:'gelo'},
+  {id:'aranhagelo', nome:'Aranha de Gelo',      icone:'🕷️',  vida:22, golpe:6,  pts:38,  regiao:'gelo'},
+  {id:'lobobranco', nome:'Lobo Branco',         icone:'🐕‍🦺', vida:23, golpe:6,  pts:39,  regiao:'gelo'},
+  {id:'ursoglacial',nome:'Urso Glacial',        icone:'🐻‍❄️', vida:26, golpe:6,  pts:40,  regiao:'gelo'},
+  {id:'coruja',     nome:'Coruja da Nevasca',   icone:'🦉',  vida:21, golpe:7,  pts:41,  regiao:'gelo'},
+  {id:'alce',       nome:'Alce Ancião',         icone:'🫎',  vida:28, golpe:6,  pts:42,  regiao:'gelo'},
+  {id:'espectro',   nome:'Espectro do Poço',    icone:'👻',  vida:24, golpe:7,  pts:44,  regiao:'gelo'},
+  {id:'cristalino', nome:'Golem Cristalino',    icone:'💎',  vida:30, golpe:7,  pts:46,  regiao:'gelo'},
+  {id:'gigante',    nome:'Gigante de Gelo',     icone:'🧊',  vida:64, golpe:9,  pts:170, regiao:'gelo', chefe:true},
 
-  {id:'esqueleto', nome:'Esqueleto',         icone:'💀', vida:28, golpe:7, pts:46, regiao:'masmorra'},
-  {id:'morcego',   nome:'Morcego Gigante',   icone:'🦇', vida:24, golpe:8, pts:48, regiao:'masmorra'},
-  {id:'ogro',      nome:'Ogro Faminto',      icone:'👹', vida:34, golpe:8, pts:55, regiao:'masmorra'},
-  {id:'cavaleiro', nome:'Cavaleiro Caído',   icone:'⚔️', vida:76, golpe:10,pts:210, regiao:'masmorra', chefe:true},
+  /* ---- A Masmorra ---- */
+  {id:'ratorei',    nome:'Rato-Rei',            icone:'🐁',  vida:30, golpe:6,  pts:42,  regiao:'masmorra'},
+  {id:'aranhacripta',nome:'Aranha da Cripta',   icone:'🕸️',  vida:26, golpe:7,  pts:44,  regiao:'masmorra'},
+  {id:'esqueleto',  nome:'Esqueleto',           icone:'💀',  vida:28, golpe:7,  pts:46,  regiao:'masmorra'},
+  {id:'cadaver',    nome:'Cadáver Andante',     icone:'🪦',  vida:31, golpe:7,  pts:48,  regiao:'masmorra'},
+  {id:'sombra',     nome:'Sombra Errante',      icone:'👤',  vida:27, golpe:8,  pts:50,  regiao:'masmorra'},
+  {id:'vampiro',    nome:'Vampiro Menor',       icone:'🧛',  vida:29, golpe:8,  pts:52,  regiao:'masmorra'},
+  {id:'golemtijolo',nome:'Golem de Tijolo',     icone:'🧱',  vida:36, golpe:7,  pts:54,  regiao:'masmorra'},
+  {id:'ogro',       nome:'Ogro Faminto',        icone:'👹',  vida:34, golpe:8,  pts:55,  regiao:'masmorra'},
+  {id:'necromante', nome:'Necromante Menor',    icone:'🧙',  vida:32, golpe:9,  pts:58,  regiao:'masmorra'},
+  {id:'cavaleiro',  nome:'Cavaleiro Caído',     icone:'⚔️',  vida:76, golpe:10, pts:210, regiao:'masmorra', chefe:true},
 
-  {id:'filhote',   nome:'Filhote de Dragão', icone:'🦎', vida:34, golpe:9, pts:60, regiao:'covil'},
-  {id:'dragonete', nome:'Dragonete de Ferro',icone:'🐉', vida:110,golpe:12,pts:400, regiao:'covil', chefe:true, final:true}
+  /* ---- Covil do Dragonete ---- */
+  {id:'imp',        nome:'Diabrete',            icone:'😈',  vida:30, golpe:9,  pts:58,  regiao:'covil'},
+  {id:'salamandra', nome:'Salamandra Ígnea',    icone:'🔥',  vida:32, golpe:8,  pts:59,  regiao:'covil'},
+  {id:'filhote',    nome:'Filhote de Dragão',   icone:'🐲',  vida:34, golpe:9,  pts:60,  regiao:'covil'},
+  {id:'basilisco',  nome:'Basilisco',           icone:'🦕',  vida:35, golpe:9,  pts:62,  regiao:'covil'},
+  {id:'quimera',    nome:'Quimera',             icone:'🦁',  vida:38, golpe:9,  pts:65,  regiao:'covil'},
+  {id:'wyvern',     nome:'Wyvern',              icone:'🐦‍🔥', vida:34, golpe:10, pts:65,  regiao:'covil'},
+  {id:'cerbero',    nome:'Cão de Três Cabeças', icone:'🐕',  vida:36, golpe:10, pts:66,  regiao:'covil'},
+  {id:'golemlava',  nome:'Golem de Lava',       icone:'🌋',  vida:42, golpe:10, pts:70,  regiao:'covil'},
+  {id:'obsidiana',  nome:'Guardião de Obsidiana',icone:'🛡️', vida:90, golpe:11, pts:280, regiao:'covil', chefe:true},
+  {id:'dragonete',  nome:'Dragonete de Ferro',  icone:'🐉',  vida:110,golpe:12, pts:400, regiao:'covil', chefe:true, final:true}
 ];
+
+/* ---------- arte ----------
+   Cada criatura procura por img/<id>.png. Se o arquivo não existir (jogo
+   rodando como arquivo único, ou arte ainda não desenhada), cai no emoji
+   automaticamente. Assim dá para ir acrescentando imagens aos poucos. */
+const PASTA_ARTE = 'img/';
+function arte(b, cls){
+  return `<img class="${cls} arte" src="${PASTA_ARTE}${b.id}.png" alt="${escapeHtml(b.nome)}" data-emoji="${b.icone}">`;
+}
+function arteItem(id, emoji, cls){
+  return `<img class="${cls} arte" src="${PASTA_ARTE}itens/${id}.png" alt="" data-emoji="${emoji}">`;
+}
+function ligarArte(raiz){
+  (raiz || document).querySelectorAll('img.arte').forEach(img => {
+    if(img.dataset.ligada) return;
+    img.dataset.ligada = '1';
+    img.onerror = () => {
+      const s = document.createElement('span');
+      s.className = img.className.replace('arte','');
+      s.textContent = img.dataset.emoji;
+      img.replaceWith(s);
+    };
+    if(img.complete && img.naturalWidth === 0) img.onerror();
+  });
+}
 
 const MATERIAIS = {
   ferro:   {nome:'Ferro',   icone:'🔩'},
@@ -957,6 +1090,90 @@ function faixasFuga(){
   ];
 }
 
+/* ---------- conquistas ----------
+   cada uma tem um teste puro; são checadas depois de cada evento do jogo.
+   Para criar conquistas novas, é só acrescentar uma linha aqui. */
+const CONQUISTAS = [
+  {id:'primeiro',  nome:'Primeiro sangue',      icone:'🩸', desc:'Derrote a sua primeira criatura.',
+   ok:() => totalAbates() >= 1},
+  {id:'cacador10', nome:'Caçador iniciante',    icone:'🎯', desc:'Derrote 10 criaturas.',
+   ok:() => totalAbates() >= 10},
+  {id:'cacador100',nome:'Caçador veterano',     icone:'🏹', desc:'Derrote 100 criaturas.',
+   ok:() => totalAbates() >= 100},
+  {id:'limpou1',   nome:'Primeira masmorra',    icone:'🗺️', desc:'Limpe uma masmorra inteira.',
+   ok:() => (META.limpas||0) >= 1},
+  {id:'limpou25',  nome:'Explorador teimoso',   icone:'🧭', desc:'Limpe 25 masmorras.',
+   ok:() => (META.limpas||0) >= 25},
+  {id:'campo',     nome:'Dono do campo',        icone:'🌿', desc:'Derrote todas as criaturas do Campo Aberto.',
+   ok:() => regiaoCompleta('campo')},
+  {id:'deserto',   nome:'Sede de areia',        icone:'🏜️', desc:'Derrote todas as criaturas do Deserto de Sal.',
+   ok:() => regiaoCompleta('deserto')},
+  {id:'gelo',      nome:'Sangue frio',          icone:'❄️', desc:'Derrote todas as criaturas dos Campos de Gelo.',
+   ok:() => regiaoCompleta('gelo')},
+  {id:'masmorra',  nome:'Amigo dos mortos',     icone:'🕯️', desc:'Derrote todas as criaturas da Masmorra.',
+   ok:() => regiaoCompleta('masmorra')},
+  {id:'covil',     nome:'Pisou no covil',       icone:'🐉', desc:'Derrote todas as criaturas do Covil.',
+   ok:() => regiaoCompleta('covil')},
+  {id:'platina',   nome:'Bestiário completo',   icone:'🏆', desc:'Derrote pelo menos uma vez cada uma das 50 criaturas.',
+   ok:() => Object.keys(META.bestiario||{}).length >= BESTIARIO.length, platina:true},
+  {id:'ferreiro',  nome:'Ferreiro',             icone:'⚒️', desc:'Forje todas as peças de equipamento pelo menos uma vez.',
+   ok:() => RECEITAS.filter(r => ['arma','elmo','peito','escudo'].includes(r.slot)).every(r => (META.forjados||{})[r.id])},
+  {id:'rico',      nome:'Cofre cheio',          icone:'🪙', desc:'Tenha 500 de ouro guardados de uma vez.',
+   ok:() => (META.maiorOuro||0) >= 500},
+  {id:'sortudo',   nome:'Mão quente',           icone:'🍀', desc:'Tire 20 no dado 25 vezes.',
+   ok:() => (META.vintes||0) >= 25},
+  {id:'rel1',      nome:'Primeira relíquia',    icone:'✨', desc:'Encontre a sua primeira relíquia.',
+   ok:() => RELIQUIAS.some(r => nivelRel(r.id) > 0)},
+  {id:'relmax',    nome:'Coleção completa',     icone:'💠', desc:'Deixe as seis relíquias em 10/10.',
+   ok:() => RELIQUIAS.every(r => nivelRel(r.id) === REL_MAX)},
+  {id:'teimoso',   nome:'Levanta e anda',       icone:'🕯️', desc:'Caia 10 vezes e volte.',
+   ok:() => (META.mortes||0) >= 10},
+  {id:'lendaria',  nome:'Caçador de lendas',    icone:'🟠', desc:'Limpe uma masmorra Lendária.',
+   ok:() => (META.niveisLimpos||{}).lendaria},
+  {id:'zerou',     nome:'Dragonete abatido',    icone:'👑', desc:'Vença uma masmorra Demônio e zere o jogo.',
+   ok:() => (META.vitorias||0) >= 1, platina:true}
+];
+
+function totalAbates(){ return Object.values(META.bestiario||{}).reduce((a,b)=>a+b,0); }
+function regiaoCompleta(id){
+  return BESTIARIO.filter(b => b.regiao === id).every(b => (META.bestiario||{})[b.id]);
+}
+function checarConquistas(){
+  META.conquistas = META.conquistas || {};
+  const novas = [];
+  CONQUISTAS.forEach(c => {
+    if(!META.conquistas[c.id] && c.ok()){
+      META.conquistas[c.id] = Date.now();
+      novas.push(c);
+    }
+  });
+  if(novas.length){
+    salvarMeta();
+    novas.forEach(c => anotar(`${c.icone} <b>Conquista: ${c.nome}</b> — ${c.desc}`, 'gold'));
+    mostrarConquista(novas[0]);
+  }
+}
+function mostrarConquista(c){
+  const el = $('#achieve');
+  el.innerHTML = `<span class="ach-ico">${c.icone}</span><span><small>Conquista desbloqueada</small><b>${c.nome}</b></span>`;
+  el.classList.add('on');
+  clearTimeout(mostrarConquista._t);
+  mostrarConquista._t = setTimeout(() => el.classList.remove('on'), 3200);
+}
+function abrirConquistas(){
+  const feitas = Object.keys(META.conquistas||{}).length;
+  $('#achCount').textContent = `${feitas} de ${CONQUISTAS.length} conquistas`;
+  $('#achList').innerHTML = CONQUISTAS.map(c => {
+    const tem = (META.conquistas||{})[c.id];
+    return `
+      <div class="beast ${tem?'':'oculto'}">
+        <span class="beast-ico">${tem ? c.icone : '🔒'}</span>
+        <span class="beast-txt"><b>${c.nome}${c.platina?' 🏆':''}</b><small>${c.desc}</small></span>
+      </div>`;
+  }).join('');
+  $('#achOv').classList.add('on');
+}
+
 const GKEY = 'chatgpt_rpg_game_v3';
 const MKEY = 'chatgpt_rpg_meta_v1';
 const N = 6;
@@ -993,6 +1210,7 @@ function registrarBicho(id){
   META.bestiario[id] = (META.bestiario[id] || 0) + 1;
   salvarMeta();
 }
+function marcarOuro(){ META.maiorOuro = Math.max(META.maiorOuro||0, G.ouro); }
 
 function ganharReliquia(){
   const candidatas = RELIQUIAS.filter(r => nivelRel(r.id) < REL_MAX);
@@ -1007,6 +1225,7 @@ function ganharReliquia(){
   const n = nivelRel(r.id);
   anotar(`${r.icone} <b>${r.nome} ${n}/${REL_MAX}</b> — ${r.desc(n)}. Ela fica com você mesmo se cair.`, 'gold');
   vibrar([20,50,20,50,30]);
+  checarConquistas();
   return r;
 }
 
@@ -1155,6 +1374,8 @@ function voltarAoAcampamento(motivo){
   G.limpas++;
   META.limpas = (META.limpas||0) + 1;
   META.melhorNivel = Math.max(META.melhorNivel||0, NIVEIS.indexOf(n));
+  META.niveisLimpos = META.niveisLimpos || {};
+  META.niveisLimpos[n.id] = (META.niveisLimpos[n.id]||0) + 1;
   salvarMeta();
   G.masmorra = null;
   G.andar = 0;
@@ -1243,6 +1464,7 @@ function rolarDado({titulo, faixas}){
       botao.classList.remove('rolling');
       botao.classList.add('done');
       face.textContent = valor;
+      if(valor === 20){ META.vintes = (META.vintes||0) + 1; salvarMeta(); }
       const f = faixaDe(valor, faixas);
       veredito.textContent = f.texto;
       veredito.className = 'verdict ' + (f.cor || '');
@@ -1304,7 +1526,9 @@ async function entrarNaSala(sala){
       break;
     }
     case 'guardiao': case 'chefefinal': {
-      const chefe = BESTIARIO.find(b => b.regiao === reg.id && b.chefe);
+      const chefe = sala.tipo === 'chefefinal'
+        ? BESTIARIO.find(b => b.final)
+        : BESTIARIO.find(b => b.regiao === reg.id && b.chefe && !b.final);
       chamarInimigo(chefe.id);
       anotar(sala.tipo === 'chefefinal'
         ? `🐉 <b>${chefe.nome}</b> desperta. É o último combate do jogo.`
@@ -1419,6 +1643,7 @@ function cair(){
   salvarMeta();
   anotar(`☠️ ${G.nome} cai no andar ${G.andar} de ${G.masmorra ? G.masmorra.andares : '?'} com ${G.pontos} pontos.`, 'bad');
   vibrar([40,60,40]);
+  checarConquistas();
   salvar();
 }
 
@@ -1475,6 +1700,7 @@ function vencer(){
   G.grid[G.pos].limpo = true;
   anotar(`🏆 <b>${inim.nome} derrotado!</b> +${inim.pts} pontos e ${ouro} de ouro.`, 'gold');
   vibrar([15,50,25]);
+  marcarOuro(); checarConquistas();
 
   if(Math.random() < .3){
     const m = sorteio(COLHEITA[regiaoAtual().id]);
@@ -1499,6 +1725,7 @@ function vitoria(){
   salvarMeta();
   anotar(`🐉 <b>O Dragonete de Ferro cai.</b> ${G.nome} zerou o jogo com ${G.pontos} pontos!`, 'gold');
   vibrar([30,60,30,60,60]);
+  marcarOuro(); checarConquistas();
   salvar();
 }
 
@@ -1555,7 +1782,7 @@ function abrirForja(){
 function desenharForja(){
   $('#forgeGold').textContent = G.ouro;
   $('#forgeMats').innerHTML = Object.entries(MATERIAIS).map(([k,m]) =>
-    `<span class="chip">${m.icone} ${m.nome} <b>${G.mats[k]||0}</b></span>`
+    `<span class="chip">${arteItem('mat-'+k, m.icone, 'mat-art')} ${m.nome} <b>${G.mats[k]||0}</b></span>`
   ).join('');
   $('#forgeList').innerHTML = RECEITAS.map(r => {
     const atual = r.slot === 'pocao' || r.slot === 'vida' ? null : G.equip[r.slot];
@@ -1571,7 +1798,7 @@ function desenharForja(){
     else ganho = `Defesa ${r.valor}`;
     return `
       <button class="recipe" data-forjar="${r.id}" ${pode?'':'disabled'}>
-        <span class="recipe-ico">${r.icone}</span>
+        <span class="recipe-ico">${arteItem(r.id, r.icone, 'item-art')}</span>
         <span class="recipe-txt">
           <b>${r.nome}</b>
           <small>${ganho}${jaMelhor ? ' • você já tem algo igual ou melhor' : ''}</small>
@@ -1580,6 +1807,7 @@ function desenharForja(){
       </button>`;
   }).join('');
   $$('[data-forjar]').forEach(b => b.onclick = () => forjar(b.dataset.forjar));
+  ligarArte($('#forgeOv'));
 }
 function forjar(id){
   const r = receita(id);
@@ -1599,10 +1827,14 @@ function forjar(id){
     anotar(`⚒️ Você bebe o <b>${r.nome}</b>: vida máxima agora é ${G.vidaMax}.`, 'gold');
   }else{
     G.equip[r.slot] = {id:r.id, nome:r.nome, icone:r.icone, valor:r.valor};
+    META.forjados = META.forjados || {};
+    META.forjados[r.id] = true;
+    salvarMeta();
     anotar(`⚒️ Forjado: <b>${r.nome}</b>. ${r.slot === 'arma' ? `Golpe agora é ${golpeTotal()}` : `Defesa agora é ${defesaTotal()}`}.`, 'gold');
   }
   pontuar(15);
   vibrar([12,30,12]);
+  marcarOuro(); checarConquistas();
   sincronizarFicha(); salvar(); desenharForja(); render();
 }
 
@@ -1612,13 +1844,13 @@ function abrirMochila(){
     const e = G.equip[k];
     return `
       <div class="slot ${e?'cheio':''}">
-        <span class="slot-ico">${e ? e.icone : '—'}</span>
+        <span class="slot-ico">${e ? arteItem(e.id, e.icone, 'item-art') : '—'}</span>
         <span class="slot-txt"><small>${NOMES_SLOT[k]}</small><b>${e ? escapeHtml(e.nome) : 'vazio'}</b></span>
         <span class="slot-val">${e ? (k === 'arma' ? '+'+e.valor+' golpe' : '+'+e.valor+' defesa') : ''}</span>
       </div>`;
   }).join('');
   const mats = Object.entries(MATERIAIS).map(([k,m]) =>
-    `<span class="chip">${m.icone} ${m.nome} <b>${G.mats[k]||0}</b></span>`
+    `<span class="chip">${arteItem('mat-'+k, m.icone, 'mat-art')} ${m.nome} <b>${G.mats[k]||0}</b></span>`
   ).join('');
   $('#bagBody').innerHTML = `
     <div class="bag-head">
@@ -1636,6 +1868,7 @@ function abrirMochila(){
     <h4>Relíquias <small class="fade">ficam com você mesmo se cair</small></h4>
     <div class="relics">${tirinhaReliquias(true)}</div>`;
   $('#bagOv').classList.add('on');
+  ligarArte($('#bagOv'));
 }
 
 /* ---------- bestiário ---------- */
@@ -1652,7 +1885,7 @@ function abrirBestiario(){
         </div>`;
       return `
         <div class="beast">
-          <span class="beast-ico">${b.icone}</span>
+          <span class="beast-ico">${arte(b,'beast-art')}</span>
           <span class="beast-txt">
             <b>${b.nome}${b.chefe?' 👑':''}</b>
             <small>Vida ${b.vida} • Golpe ${b.golpe} • ${b.pts} pontos</small>
@@ -1663,6 +1896,7 @@ function abrirBestiario(){
     return `<h4>${reg.icone} ${reg.nome}</h4><div class="beasts">${linhas}</div>`;
   }).join('');
   $('#bestOv').classList.add('on');
+  ligarArte($('#bestOv'));
 }
 
 function renascer(){
@@ -1679,7 +1913,7 @@ function tirinhaReliquias(detalhe=false){
     const pct = (n/REL_MAX)*100;
     return `
       <div class="relic ${n?'':'off'}">
-        <span class="relic-ico">${r.icone}</span>
+        <span class="relic-ico">${arteItem(r.id, r.icone, 'item-art')}</span>
         <span class="relic-txt">
           <b>${r.nome} <i>${n}/${REL_MAX}</i></b>
           ${detalhe ? `<small>${n ? r.desc(n) : 'ainda não encontrada'}</small>` : ''}
@@ -1709,6 +1943,7 @@ function render(){
   const temJogo = !!G;
   $('#lbBest').textContent = META.recorde;
   $('#lbRelics').innerHTML = tirinhaReliquias(true);
+  ligarArte($('#aventura'));
   $('#lbWins').textContent = META.vitorias;
   $('#resumeBox').innerHTML = temJogo
     ? `<button class="btn primary" id="btnResume" style="padding:15px;font-size:17px;width:100%">▶ Continuar — ${escapeHtml(G.nome)}${G.masmorra ? `, andar ${G.andar}/${G.masmorra.andares}` : ' no acampamento'}</button>`
@@ -1774,7 +2009,7 @@ function render(){
       <button class="act main" data-act="procurar">🧭 Procurar outras<small>troca as três entradas</small></button>
       <button class="act" data-act="forja">⚒️ Forja<small>gaste ouro e materiais</small></button>
       <button class="act" data-act="mochila">🎒 Mochila<small>equipamento e relíquias</small></button>
-      <button class="act" data-act="bestiario">📖 Bestiário<small>${Object.keys(META.bestiario).length}/${BESTIARIO.length} criaturas</small></button>`;
+      <button class="act" data-act="conquistas">🏆 Conquistas<small>${Object.keys(META.conquistas||{}).length}/${CONQUISTAS.length} desbloqueadas</small></button>`;
   }else if(G.modo === 'vitoria'){
     mid.innerHTML = `
       <div class="over-panel">
@@ -1803,7 +2038,7 @@ function render(){
     const pct = Math.max(0, (inim.vida/inim.vidaMax)*100);
     mid.innerHTML = `
       <div class="foe">
-        <div class="foe-icon ${inim.chefe?'chefe':''}" id="foeIcon">${inim.icone}</div>
+        <div class="foe-icon ${inim.chefe?'chefe':''}" id="foeIcon">${arte(bicho(inim.id) || inim, 'foe-art')}</div>
         <p class="foe-name">${inim.chefe?'👑 ':''}${escapeHtml(inim.nome)}</p>
         <div class="foe-life">
           <div class="life-top"><span>Vida dele</span><b>${Math.max(0,inim.vida)} / ${inim.vidaMax}</b></div>
@@ -1846,6 +2081,7 @@ function render(){
     else if(a === 'forja') abrirForja();
     else if(a === 'mochila') abrirMochila();
     else if(a === 'bestiario') abrirBestiario();
+    else if(a === 'conquistas') abrirConquistas();
     else if(a === 'renascer') renascer();
     else if(a === 'denovo') renascer();
     else if(a === 'procurar') procurarOutras();
@@ -1853,6 +2089,7 @@ function render(){
   });
 
   $('#pMsg').innerHTML = '<span>' + (G.msg || 'Toque numa sala vizinha para andar.') + '</span>';
+  ligarArte($('#play'));
 }
 
 /* ---------- entrar e sair do modo de jogo ---------- */
@@ -1887,6 +2124,99 @@ function abrirDiario(){
   $('#logOv').classList.add('on');
 }
 
+/* ---------- tutorial ---------- */
+const TUTORIAL = [
+  {icone:'🎲', titulo:'Uma regra só',
+   texto:'Na hora de bater, o dado aparece na tela. <b>Quanto maior o número, maior o estrago.</b> Tirou 1, você erra; tirou 20, o dano é cinco vezes maior. É só isso que você precisa entender para jogar.'},
+  {icone:'👣', titulo:'Andando pelas salas',
+   texto:'Toque numa <b>sala vizinha</b> para caminhar até ela. As salas escondem inimigos, baús, materiais, fontes que curam e forjas. O que você já visitou fica marcado no mapa.'},
+  {icone:'🏕️', titulo:'O acampamento',
+   texto:'Antes de cada masmorra você escolhe entre três entradas, cada uma com um nível de dificuldade. <b>Pode recusar todas</b> e procurar outras quantas vezes quiser — não custa nada.'},
+  {icone:'⚒️', titulo:'Ouro e forja',
+   texto:'Baús dão ouro e materiais. Na forja você troca os dois por <b>armas, armaduras e poções</b>. Arma aumenta o seu golpe; armadura desconta dano de cada pancada que você leva.'},
+  {icone:'✨', titulo:'Relíquias: o que fica',
+   texto:'Quando você cai, perde ouro e equipamento — mas <b>nunca perde as relíquias</b>. Elas sobem de 1/10 até 10/10 e vão te deixando mais forte a cada tentativa. O Olho da Sorte, por exemplo, aumenta a faixa de crítico do dado.'},
+  {icone:'🔴', titulo:'Como zerar',
+   texto:'O jogo termina quando você vence uma masmorra <b>Demônio</b>. Ela é brutal de propósito: sem quase todas as relíquias no máximo, não tem jeito. Até lá, morrer faz parte — cada queda te deixa um pouco mais forte.'}
+];
+let passoTutorial = 0;
+
+function abrirTutorial(passo=0){
+  passoTutorial = passo;
+  desenharTutorial();
+  $('#tutOv').classList.add('on');
+}
+function desenharTutorial(){
+  const t = TUTORIAL[passoTutorial];
+  const ultimo = passoTutorial === TUTORIAL.length - 1;
+  $('#tutBody').innerHTML = `
+    <div class="tut-ico">${t.icone}</div>
+    <h3 class="tut-title">${t.titulo}</h3>
+    <p class="tut-text">${t.texto}</p>
+    <div class="tut-dots">${TUTORIAL.map((_,i) => `<i class="${i===passoTutorial?'on':''}"></i>`).join('')}</div>`;
+  $('#tutNext').textContent = ultimo ? 'Entendi, bora jogar' : 'Próximo';
+  $('#tutBack').style.visibility = passoTutorial ? 'visible' : 'hidden';
+}
+function avancarTutorial(){
+  if(passoTutorial < TUTORIAL.length - 1){ passoTutorial++; desenharTutorial(); }
+  else { $('#tutOv').classList.remove('on'); store.set('chatgpt_rpg_tutorial','1'); }
+}
+
+/* ---------- exportar e importar o save ---------- */
+function codigoDoSave(){
+  const pacote = {v:1, meta:META, jogo:G, quando:new Date().toISOString()};
+  return btoa(unescape(encodeURIComponent(JSON.stringify(pacote))));
+}
+function abrirSave(){
+  $('#saveCode').value = codigoDoSave();
+  $('#saveMsg').textContent = '';
+  $('#saveOv').classList.add('on');
+}
+async function copiarSave(){
+  const txt = $('#saveCode').value;
+  try{
+    await navigator.clipboard.writeText(txt);
+    $('#saveMsg').textContent = 'Código copiado. Guarde num lugar seguro.';
+  }catch(e){
+    $('#saveCode').select();
+    $('#saveMsg').textContent = 'Selecione o texto e copie com Ctrl+C.';
+  }
+}
+function baixarSave(){
+  try{
+    const blob = new Blob([codigoDoSave()], {type:'text/plain'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'cronicas-do-d20-save.txt';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    $('#saveMsg').textContent = 'Arquivo gerado.';
+  }catch(e){
+    $('#saveMsg').textContent = 'Este navegador não deixou baixar. Use o botão de copiar.';
+  }
+}
+function importarSave(){
+  const txt = $('#saveCode').value.trim();
+  if(!txt){ $('#saveMsg').textContent = 'Cole um código primeiro.'; return; }
+  let pacote;
+  try{
+    pacote = JSON.parse(decodeURIComponent(escape(atob(txt))));
+  }catch(e){
+    $('#saveMsg').textContent = 'Este código não parece válido. Confira se copiou inteiro.';
+    return;
+  }
+  if(!pacote || !pacote.meta){
+    $('#saveMsg').textContent = 'Este código não tem dados de jogo.';
+    return;
+  }
+  if(!confirmar('Importar este save? O progresso atual deste navegador será substituído.')) return;
+  META = Object.assign({recorde:0,vitorias:0,mortes:0,bestiario:{},reliquias:{},conquistas:{}}, pacote.meta);
+  salvarMeta();
+  if(pacote.jogo && Array.isArray(pacote.jogo.grid)){ G = pacote.jogo; salvar(); }
+  $('#saveMsg').textContent = 'Save importado. Tudo no lugar.';
+  render();
+}
+
 /* ---------- tela de entrada ---------- */
 function desenharClasses(){
   $('#classPick').innerHTML = CLASSES.map(c => `
@@ -1899,6 +2229,7 @@ function desenharClasses(){
   $$('[data-classe]').forEach(b => b.onclick = () => {
     classeEscolhida = b.dataset.classe;
     desenharClasses();
+if(!store.get('chatgpt_rpg_tutorial')) setTimeout(() => abrirTutorial(0), 400);
   });
 }
 
@@ -1914,6 +2245,15 @@ $('#heroPlay').onclick = () => {
   else $('#heroName').focus();
 };
 $('#btnBestiary').onclick = abrirBestiario;
+$('#btnAchieve').onclick = abrirConquistas;
+$('#btnTutorial').onclick = () => abrirTutorial(0);
+$('#btnSave').onclick = abrirSave;
+$('#tutNext').onclick = avancarTutorial;
+$('#tutBack').onclick = () => { if(passoTutorial){ passoTutorial--; desenharTutorial(); } };
+$('#tutSkip').onclick = () => { $('#tutOv').classList.remove('on'); store.set('chatgpt_rpg_tutorial','1'); };
+$('#saveCopy').onclick = copiarSave;
+$('#saveDownload').onclick = baixarSave;
+$('#saveImport').onclick = importarSave;
 $('#playExit').onclick = sairDoJogo;
 $('#playDiary').onclick = abrirDiario;
 $$('[data-fechar]').forEach(b => b.onclick = () => $('#'+b.dataset.fechar).classList.remove('on'));
@@ -1943,6 +2283,7 @@ document.addEventListener('keydown', e => {
 });
 
 desenharClasses();
+if(!store.get('chatgpt_rpg_tutorial')) setTimeout(() => abrirTutorial(0), 400);
 
 
 load();
