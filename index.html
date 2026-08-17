@@ -1095,7 +1095,7 @@ const BENCAOS = [
   // --- bolso ---
   {id:'faro',      nome:'Faro de Ouro',      icone:'💰', desc:'+50% de ouro', ouroPct:.5},
   {id:'catador',   nome:'Catador',           icone:'🧲', desc:'material cai em todo abate', truque:1},
-  {id:'mercador',  nome:'Mercador',          icone:'⚖️', desc:'forja 25% mais barata', descontoPct:.25},
+  {id:'saque',     nome:'Saqueador',         icone:'💎', desc:'baús rendem o dobro de ouro e material', truque:1},
   // --- as que definem a partida ---
   {id:'frenesi',   nome:'Frenesi',           icone:'🔥', desc:'+1 de golpe por abate da sequência', truque:1},
   {id:'teimoso',   nome:'Teimoso',           icone:'⛏️', desc:'+1 de golpe por andar que você já desceu', truque:1},
@@ -1474,7 +1474,7 @@ function curaDaPocao(){
 }
 const FORCA_POCAO = [16, 28, 46];
 const NOME_POCAO = ['Poção de Cura', 'Poção Forte', 'Elixir de Vida'];
-function precoForja(r){ return Math.round(r.ouro * (1 - somaB('descontoPct'))); }
+function precoForja(r){ return r.ouro; }
 function temMateriais(r){
   return G.ouro >= precoForja(r) && Object.entries(r.mats).every(([k,q]) => (G.mats[k]||0) >= q);
 }
@@ -1867,14 +1867,15 @@ async function entrarNaSala(sala){
     }
     case 'tesouro': {
       sala.limpo = true;
-      const ouro = entre([6,14]) + G.andar*2;
+      const dobro = temB('saque') ? 2 : 1;
+      const ouro = (entre([6,14]) + G.andar*2) * dobro;
       G.ouro += ouro;
       pontuar(20);
       const mat = sorteio(COLHEITA[reg.id]);
-      G.mats[mat] = (G.mats[mat]||0) + 1;
+      G.mats[mat] = (G.mats[mat]||0) + dobro;
       let extra = '';
       if(Math.random() < .3){ G.pocoes++; extra = ' e uma poção'; }
-      anotar(`💰 Baú: <b>${ouro} de ouro</b>, ${MATERIAIS[mat].icone} 1 ${MATERIAIS[mat].nome}${extra}.`, 'gold');
+      anotar(`💰 Baú: <b>${ouro} de ouro</b>, ${MATERIAIS[mat].icone} ${dobro} ${MATERIAIS[mat].nome}${extra}.${dobro>1?' <b>(Saqueador)</b>':''}`, 'gold');
       if(Math.random() < .08) ganharReliquia();
       break;
     }
@@ -2353,7 +2354,7 @@ function desenharForja(){
   ];
   const linhaCusto = r => {
     const preco = precoForja(r);
-    return [preco < r.ouro ? `🪙 <s>${r.ouro}</s> ${preco}` : `🪙 ${preco}`]
+    return [`🪙 ${preco}`]
       .concat(Object.entries(r.mats).map(([k,q]) => `${MATERIAIS[k].icone} ${q}`)).join('  ');
   };
 
@@ -2622,7 +2623,7 @@ function mostrarFaixa(reg){
 
 /* ---------- desenho da tela ---------- */
 const ICONES = {
-  inicio:'🚩', inimigo:'👹', tesouro:'💰', material:'⛏️', forja:'⚒️',
+  inicio:'🚩', inimigo:'👹', tesouro:'💰', material:'⛏️',
   armadilha:'⚠️', fonte:'⛲', altar:'🕯️', escada:'🪜', guardiao:'👑', chefefinal:'🐉', vazio:'·'
 };
 
