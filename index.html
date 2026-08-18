@@ -184,6 +184,8 @@
     .foe-name{font:700 clamp(20px,5.5vw,28px) Georgia,serif;color:#ffd3ae;margin:0}
     .foe-life{width:min(320px,82vw)}
     .foe-afixo{margin:-6px 0 0;font-size:12.5px;color:#e0a08a}
+    .foe-regra{margin:-4px 0 0;font-size:12px;color:#f0c98a;line-height:1.4;max-width:min(330px,86vw)}
+    .foe-regra b{color:#ffdca0}
     .intencao{display:grid;grid-template-columns:26px 1fr;gap:9px;align-items:center;text-align:left;
       background:#171310;border:1px solid #3a2d23;border-radius:12px;padding:8px 11px;width:min(320px,82vw)}
     .intencao.grave{border-color:#8a4a3a;background:#1f1512}
@@ -359,7 +361,10 @@
     .relic-txt small{font-size:11px;color:var(--muted)}
     .relic-txt small b.rel-hoje{display:inline;font-size:11px;color:#8fd39a;font-weight:700}
     .relic-txt small.rel-nada{color:#8a7a67}
+    .relic-txt small.rel-rumo{color:#cbb6ef}
+    .relic-txt small.rel-espera{color:#f3d190;font-weight:700}
     .rel-intro{margin:0 0 12px;font-size:13px;line-height:1.55;color:#d9c9b2}
+    .rumo-intro{margin:0 0 13px;font-size:13px;line-height:1.55;color:#e7d8c2}
     .zerar-aviso{margin:0 0 12px;font-size:14px;color:#ffc0b8}
     .zerar-dica{margin:14px 0 0;font-size:12.5px;color:var(--muted);line-height:1.5}
     .perde{display:flex;flex-wrap:wrap;gap:7px}
@@ -732,6 +737,23 @@
   </div>
 </div>
 
+<!-- ===== Rumo da relíquia ===== -->
+<div class="ov" id="rumoOv">
+  <div class="sheet">
+    <h3 id="rumoTitulo">Escolha o rumo</h3>
+    <div class="sheet-body" id="rumoCorpo"></div>
+  </div>
+</div>
+
+<!-- ===== Itens de uso ===== -->
+<div class="ov" id="itensOv">
+  <div class="sheet">
+    <h3>🎒 Usar um item</h3>
+    <div class="sheet-body" id="itensCorpo"></div>
+    <button class="btn" data-fechar="itensOv">Voltar</button>
+  </div>
+</div>
+
 <!-- ===== Apagar progresso ===== -->
 <div class="ov" id="zerarOv">
   <div class="sheet">
@@ -932,6 +954,104 @@ const AFIXOS = [
   {id:'furioso',  nome:'Furioso',  icone:'😤', desc:'bate cada vez mais forte',         vida:.95, golpe:.85, fura:.18}
 ];
 const AFIXO = Object.fromEntries(AFIXOS.map(a => [a.id, a]));
+
+/* Itens de uso: caem de baú e dão ao combate um terceiro verbo, além de
+   um motivo para abrir baú fora do caminho. */
+const USAVEIS = [
+  {id:'bomba',   nome:'Bomba',            icone:'💣', desc:'dano fixo alto que ignora armadura e placas', peso:3},
+  {id:'faca',    nome:'Faca de Arremesso',icone:'🔪', desc:'dano médio garantido, sem rolar o dado',      peso:4},
+  {id:'fumaca',  nome:'Pó de Fumaça',     icone:'🌫️', desc:'a criatura perde o próximo turno',            peso:3},
+  {id:'oleo',    nome:'Óleo Inflamável',  icone:'🛢️', desc:'ela sangra 6 por turno até o fim da briga',   peso:3},
+  {id:'talisma', nome:'Talismã',          icone:'🧿', desc:'limpa veneno e te deixa imune ao próximo golpe', peso:2}
+];
+const USAVEL = Object.fromEntries(USAVEIS.map(u => [u.id, u]));
+function sorteiaUsavel(){
+  const soma = USAVEIS.reduce((t,u)=>t+u.peso,0);
+  let r = Math.random()*soma;
+  for(const u of USAVEIS){ r -= u.peso; if(r <= 0) return u.id; }
+  return USAVEIS[0].id;
+}
+const quantosUsaveis = () => Object.values(G.usaveis || {}).reduce((a,b)=>a+b,0);
+
+async function usarItem(id){
+  if(G.modo !== 'combate' || ocupado) return;
+  if(!G.usaveis || !G.usaveis[id]) return;
+  if(await passouCongelado()) return;
+  const u = USAVEL[id], inim = G.inimigo;
+  ocupado = true;
+  G.usaveis[id]--;
+  $('#itensOv').classList.remove('on');
+  anotar(`${u.icone} <b>${u.nome}</b>.`, 'gold');
+
+  let matou = false;
+  if(id === 'bomba' || id === 'faca'){
+    const dano = id === 'bomba' ? Math.round(golpeTotal()*1.8) + 12 : Math.round(golpeTotal()*.9) + 6;
+    inim.vida -= dano;
+    flutuarDano('#foeIcon', '−' + dano, id === 'bomba' ? 'forte' : '', u.nome.toLowerCase());
+    bater('batida');
+    if(id === 'bomba') tremerTela();
+    anotar(`${u.icone} Acerta em cheio: <b>${dano}</b> de dano.`, 'good');
+    matou = inim.vida <= 0;
+  }else if(id === 'fumaca'){
+    inim.pulaTurno = true;
+    anotar('🌫️ Ela se perde na fumaça e vai perder o próximo turno.', 'good');
+  }else if(id === 'oleo'){
+    inim.sangra = (inim.sangra || 0) + 6;
+    anotar('🛢️ O óleo pega fogo: ela sangra 6 por turno até cair.', 'good');
+  }else if(id === 'talisma'){
+    G.veneno = 0;
+    G.imune = true;
+    anotar('🧿 O talismã limpa o veneno e te protege do próximo golpe.', 'good');
+  }
+
+  if(matou){
+    const ic = $('#foeIcon'); if(ic){ ic.classList.add('morrendo'); await espera(430); }
+    vencer(); ocupado = false; salvar(); render(); mostrarGanhoDeReliquia(); return;
+  }
+  render();
+  await espera(380);
+  contraAtaque();
+  sofrerVeneno();
+  ocupado = false;
+  salvar(); render();
+  mostrarGanhoDeReliquia();
+}
+
+function abrirItens(){
+  if(!G.usaveis || !quantosUsaveis()){ anotar('🎒 Você não tem nenhum item de uso.', ''); render(); return; }
+  $('#itensCorpo').innerHTML = USAVEIS.filter(u => (G.usaveis[u.id]||0) > 0).map(u => `
+    <button class="recipe" data-usar="${u.id}">
+      <span class="recipe-ico">${u.icone}</span>
+      <span class="recipe-txt"><b>${u.nome}</b><small>${u.desc}</small></span>
+      <span class="recipe-cost">×${G.usaveis[u.id]}</span>
+    </button>`).join('');
+  $$('[data-usar]').forEach(b => b.onclick = () => usarItem(b.dataset.usar));
+  $('#itensOv').classList.add('on');
+}
+
+/* Regra do guardião: cada chefe tem um jeito próprio de brigar, para as
+   cinco lutas serem cinco lutas, e não cinco sacos de vida. */
+const GUARDIOES = {
+  javali:    {nome:'Couro Grosso',    icone:'🐗',
+              desc:'só sente golpe forte: dano normal quase não o arranha',
+              regra:'couroGrosso'},
+  bronze:    {nome:'Placas de Bronze', icone:'🛡️',
+              desc:'começa blindado; cada crítico seu quebra uma placa',
+              regra:'placas', placas:3},
+  gigante:   {nome:'Sopro Gelado',    icone:'🥶',
+              desc:'congela: se você não defender o sopro, perde o turno seguinte',
+              regra:'congela'},
+  cavaleiro: {nome:'Duelo',           icone:'⚔️',
+              desc:'devolve com juros o golpe de quem ataca sem guarda carregada',
+              regra:'duelo'},
+  obsidiana: {nome:'Runas Vivas',     icone:'🔴',
+              desc:'a cada 4 turnos ele se cura, a não ser que esteja de guarda baixa',
+              regra:'runas'},
+  dragonete: {nome:'Fornalha',        icone:'🔥',
+              desc:'a fornalha esquenta a cada turno: quanto mais demora, mais forte ele bate',
+              regra:'fornalha'}
+};
+const guardiaoDoInimigo = () => (G.inimigo && GUARDIOES[G.inimigo.id]) ? GUARDIOES[G.inimigo.id] : null;
 
 /* Intenção: a criatura anuncia o que vai fazer antes de você escolher.
    É o que transforma o turno de "aperte atacar" numa leitura — cada
@@ -1173,11 +1293,46 @@ const RELIQUIAS = [
 /* Arredondando para cima, e não para baixo: com floor, achar a relíquia
    dava +0 e ela parecia quebrada. Toda relíquia vale alguma coisa já no
    primeiro nível. */
-const golpeDoMartelo = n => Math.ceil(n/2);
-const defesaDaEscama = n => Math.ceil(n/3);
-const pocoesDoFrasco = n => Math.ceil(n/5);
+/* Bifurcação: ao chegar em 10 e em 20, cada relíquia oferece dois caminhos.
+   É o que faz duas coleções completas não darem o mesmo herói — antes a
+   progressão permanente só subia, sem nenhuma escolha. */
+const RUMOS = {
+  sorte: [
+    {id:'sorte-largo', nome:'Sorte Larga',   icone:'🍀', desc:'a faixa de crítico desce mais rápido'},
+    {id:'sorte-firme', nome:'Mão Calejada',  icone:'✊', desc:'o dado nunca cai abaixo de 4'}
+  ],
+  martelo: [
+    {id:'martelo-peso',  nome:'Peso Bruto',   icone:'🔨', desc:'+50% no golpe que a relíquia dá'},
+    {id:'martelo-brecha',nome:'Brecha',       icone:'🩸', desc:'seus golpes ignoram metade da guarda inimiga'}
+  ],
+  coracao: [
+    {id:'coracao-muro', nome:'Muralha de Pedra', icone:'🧱', desc:'+50% na vida que a relíquia dá'},
+    {id:'coracao-brasa',nome:'Brasa Interna',    icone:'🔥', desc:'começa cada masmorra com a guarda reforçada'}
+  ],
+  escama: [
+    {id:'escama-couro', nome:'Escama Grossa',  icone:'🐲', desc:'+50% na defesa que a relíquia dá'},
+    {id:'escama-espelho',nome:'Escama Espelho',icone:'🪞', desc:'devolve 12% do dano que você leva'}
+  ],
+  bolsa: [
+    {id:'bolsa-fundo',  nome:'Fundo Falso',   icone:'👝', desc:'+50% no ouro inicial'},
+    {id:'bolsa-faro',   nome:'Faro Fino',     icone:'💎', desc:'+25% de ouro em tudo que você ganhar'}
+  ],
+  frasco: [
+    {id:'frasco-cheio', nome:'Frasco Cheio',  icone:'⚗️', desc:'+2 poções no começo'},
+    {id:'frasco-forte', nome:'Destilado',     icone:'🍷', desc:'suas poções curam +30%'}
+  ]
+};
+const RUMO_EM = 10;                       // o nível em que a relíquia se divide
+const rumoDe = id => (META.rumos || {})[id] || null;
+const temRumo = rid => Object.values(META.rumos || {}).includes(rid);
+const rumosPendentes = () =>
+  RELIQUIAS.filter(r => nivelRel(r.id) >= RUMO_EM && !rumoDe(r.id));
+
+const golpeDoMartelo = n => Math.round(Math.ceil(n/2) * (temRumo('martelo-peso') ? 1.5 : 1));
+const defesaDaEscama = n => Math.round(Math.ceil(n/3) * (temRumo('escama-couro') ? 1.5 : 1));
+const pocoesDoFrasco = n => Math.ceil(n/5) + (temRumo('frasco-cheio') ? 2 : 0);
 const nivelRel = id => Math.min(REL_MAX, (META.reliquias && META.reliquias[id]) || 0);
-const critDesde = n => 20 - Math.floor(n/4);
+const critDesde = n => 20 - Math.floor(n / (temRumo('sorte-largo') ? 3 : 4));
 
 /* Bênçãos: escolhidas durante a masmorra e válidas só até voltar ao
    acampamento. São elas que fazem duas descidas na mesma masmorra jogarem
@@ -1254,6 +1409,7 @@ function dadoDoHeroi(){
   let v = d20();
   if(temB('viciado')) v = Math.max(v, d20());
   if(temB('firme'))   v = Math.max(v, 3);
+  if(temRumo('sorte-firme')) v = Math.max(v, 4);
   return v;
 }
 const FAIXAS_SORTE = [
@@ -1449,6 +1605,7 @@ function carregarMeta(){
       META = Object.assign(META, m);
       META.bestiario = META.bestiario || {};
       META.reliquias = META.reliquias || {};
+      META.rumos = META.rumos || {};
     }
   }catch(e){}
 }
@@ -1480,6 +1637,38 @@ function ganharReliquia(){
   relGanhas.push({id:r.id, n, antes});
   checarConquistas();
   return r;
+}
+
+/* Quando uma relíquia chega ao nível da bifurcação, o jogador escolhe o
+   rumo dela. A escolha é permanente e vale para todos os heróis seguintes. */
+function abrirEscolhaDeRumo(){
+  const pendentes = rumosPendentes();
+  if(!pendentes.length) return false;
+  const r = pendentes[0];
+  const opcoes = RUMOS[r.id];
+  $('#rumoTitulo').innerHTML = `${r.icone} ${r.nome} chegou ao ${RUMO_EM}`;
+  $('#rumoCorpo').innerHTML = `
+    <p class="rumo-intro">Daqui ela segue por um caminho só. A escolha vale para
+    sempre, inclusive para os heróis que vierem depois.</p>
+    ${opcoes.map(op => `
+      <button class="offer bencao" data-rumo="${r.id}|${op.id}">
+        <span class="offer-ico">${op.icone}</span>
+        <span class="offer-txt"><b>${op.nome}</b><small>${op.desc}</small></span>
+      </button>`).join('')}`;
+  $$('[data-rumo]').forEach(b => b.onclick = () => {
+    const [rel, rumo] = b.dataset.rumo.split('|');
+    META.rumos = META.rumos || {};
+    META.rumos[rel] = rumo;
+    salvarMeta();
+    $('#rumoOv').classList.remove('on');
+    const op = RUMOS[rel].find(x => x.id === rumo);
+    anotar(`${op.icone} <b>${op.nome}</b> — ${op.desc}.`, 'gold');
+    vibrar([16,40,16]);
+    salvar(); render();
+    abrirEscolhaDeRumo();          // pode haver mais de uma pendente
+  });
+  $('#rumoOv').classList.add('on');
+  return true;
 }
 
 function mostrarGanhoDeReliquia(){
@@ -1580,7 +1769,7 @@ function defesaTotal(){
 function curaDaPocao(){
   const base = FORCA_POCAO[G.pocaoNivel || 0] || FORCA_POCAO[0];
   const comClasse = G.classe === 'alquimista' ? Math.round(base*1.3) : base;
-  return comClasse * (1 + somaB('pocaoMult'));
+  return Math.round(comClasse * (1 + somaB('pocaoMult')) * (temRumo('frasco-forte') ? 1.3 : 1));
 }
 const FORCA_POCAO = [16, 28, 46];
 const NOME_POCAO = ['Poção de Cura', 'Poção Forte', 'Elixir de Vida'];
@@ -1630,14 +1819,14 @@ function novaAventura(nome, classeId, pontos){
     mats: {ferro:0, couro:0, cristal:0, erva:0, essencia:0}, pocaoNivel: 0,
     defendendo: false, masmorra: null, ofertas: [],
     bencaos: [], ofertaBencaos: [], vidaBencao: 0, peleUsada: false, fugasUsadas: 0, abatesNoAndar: 0,
-    recarga: 0, semGuarda: false,
+    recarga: 0, semGuarda: false, usaveis: {},
     grid: [], pos: 0, inimigo: null, log: [], msg: '', modo: 'hub'
   };
-  G.vidaMax += nivelRel('coracao')*3;
+  G.vidaMax += Math.round(nivelRel('coracao')*3 * (temRumo('coracao-muro') ? 1.5 : 1));
   G.vida = G.vidaMax;
   G.golpeBase += golpeDoMartelo(nivelRel('martelo'));
   G.defesaBase += defesaDaEscama(nivelRel('escama'));
-  G.ouro += nivelRel('bolsa')*15;
+  G.ouro += Math.round(nivelRel('bolsa')*15 * (temRumo('bolsa-fundo') ? 1.5 : 1));
   G.pocoes += pocoesDoFrasco(nivelRel('frasco'));
 
   sortearOfertas();
@@ -1665,6 +1854,7 @@ function carregarJogo(){
       G.bencaos = Array.isArray(G.bencaos) ? G.bencaos : [];
       G.ofertaBencaos = Array.isArray(G.ofertaBencaos) ? G.ofertaBencaos : [];
       G.vidaBencao = G.vidaBencao || 0;
+      G.usaveis = G.usaveis || {};
       render();
       return;
     }
@@ -1718,6 +1908,7 @@ function entrarNaMasmorra(idx){
   G.peleUsada = false;
   G.fugasUsadas = 0;
   G.abatesNoAndar = 0;
+  G.guardaCarregada = temRumo('coracao-brasa');
   gerarAndar();
   const reg = regiaoAtual();
   anotar(`${n.icone} Você entra numa masmorra <b>${n.nome}</b> — ${reg.nome}, ${n.andares} andares.`, 'gold');
@@ -2097,6 +2288,12 @@ function chamarInimigo(id, afixoDado){
   G.inimigo.intencao = proximaIntencao(G.inimigo);
   G.recarga = 0;
   G.semGuarda = false;
+  G.congelado = false;
+  const gdi = GUARDIOES[G.inimigo.id];
+  if(gdi){
+    if(gdi.placas) G.inimigo.placas = gdi.placas;
+    anotar(`${gdi.icone} <b>${gdi.nome}</b> — ${gdi.desc}.`, 'bad');
+  }
   if(af) anotar(`${af.icone} Esta vem <b>${af.nome}</b> — ${af.desc}.`, 'bad');
 }
 const afixoDoInimigo = () => (G.inimigo && G.inimigo.afixo) ? AFIXO[G.inimigo.afixo] : null;
@@ -2130,6 +2327,11 @@ async function entrarNaSala(sala){
       G.mats[mat] = (G.mats[mat]||0) + dobro;
       let extra = '';
       if(Math.random() < .3){ G.pocoes++; extra = ' e uma poção'; }
+      if(Math.random() < .45){
+        const uid = sorteiaUsavel();
+        G.usaveis[uid] = (G.usaveis[uid]||0) + 1;
+        extra += ` e ${USAVEL[uid].icone} ${USAVEL[uid].nome}`;
+      }
       anotar(`💰 Baú: <b>${ouro} de ouro</b>, ${MATERIAIS[mat].icone} ${dobro} ${MATERIAIS[mat].nome}${extra}.${dobro>1?' <b>(Saqueador)</b>':''}`, 'gold');
       if(Math.random() < .08) ganharReliquia();
       break;
@@ -2297,6 +2499,11 @@ function machucar(bruto, ignoraArmadura=false){
   G.vida = Math.max(0, G.vida - dano);
   const aparado = !ignoraArmadura && bruto - dano > 0 ? `−${bruto - dano} aparado` : '';
   flutuarDano('.life-bar', '−' + dano, 'nele', aparado);
+  if(temRumo('escama-espelho') && G.inimigo && G.modo === 'combate'){
+    const volta = Math.max(1, Math.round(dano*.12));
+    G.inimigo.vida -= volta;
+    if(G.inimigo.vida <= 0) vencer();
+  }
   /* Segunda Pele: uma vez por andar, o golpe que mataria deixa você em 1. */
   if(G.vida <= 0 && temB('pele') && !G.peleUsada){
     G.peleUsada = true;
@@ -2321,6 +2528,7 @@ function cair(){
 /* ---------- combate ---------- */
 async function atacar(){
   if(G.modo !== 'combate' || ocupado) return;
+  if(await passouCongelado()) return;
   ocupado = true;
   const acertou = await darUmGolpe(`Seu golpe no ${G.inimigo.nome}`);
   if(!G.inimigo){ ocupado = false; salvar(); render(); mostrarGanhoDeReliquia(); return; }
@@ -2354,6 +2562,16 @@ async function atacar(){
   mostrarGanhoDeReliquia();
 }
 
+/* O óleo queima a criatura no turno dela, até a briga acabar. */
+function sangrarInimigo(){
+  const inim = G.inimigo;
+  if(!inim || !inim.sangra || G.modo !== 'combate') return;
+  inim.vida -= inim.sangra;
+  anotar(`🛢️ O fogo consome o ${inim.nome}: <b>−${inim.sangra}</b>.`, 'good');
+  flutuarDano('#foeIcon', '−' + inim.sangra, '', 'fogo');
+  if(inim.vida <= 0) vencer();
+}
+
 /* Veneno cobra no fim do seu turno e vai sumindo sozinho. */
 function sofrerVeneno(){
   if(!G.veneno || G.modo !== 'combate') return;
@@ -2364,6 +2582,7 @@ function sofrerVeneno(){
 
 async function usarPoder(){
   if(G.modo !== 'combate' || ocupado || !poderPronto()) return;
+  if(await passouCongelado()) return;
   const p = poderDaClasse();
   const inim = G.inimigo;
   ocupado = true;
@@ -2407,6 +2626,22 @@ async function usarPoder(){
   mostrarGanhoDeReliquia();
 }
 
+/* Congelado: o turno é da criatura, você só assiste. Devolve true quando
+   o turno foi consumido pelo gelo. */
+async function passouCongelado(){
+  if(!G.congelado) return false;
+  G.congelado = false;
+  ocupado = true;
+  anotar('🥶 Você está preso no gelo e perde o turno.', 'bad');
+  render();
+  await espera(500);
+  contraAtaque();
+  sofrerVeneno();
+  ocupado = false;
+  salvar(); render();
+  return true;
+}
+
 /* Devolve o valor do dado, ou null se a criatura caiu no golpe. */
 async function darUmGolpe(titulo){
   const inim = G.inimigo;
@@ -2427,10 +2662,29 @@ async function darUmGolpe(titulo){
   if(dano > 0 && ferida && temB('carniceiro')) dano = Math.round(dano*1.5);
   const af = afixoDoInimigo();
   if(dano > 0 && af && af.corte) dano = Math.max(1, Math.round(dano*(1-af.corte)));
+  const gd = guardiaoDoInimigo();
+  let notaChefe = '';
+  /* Javali: golpe fraco quase não o arranha; é preciso acertar forte. */
+  if(gd && gd.regra === 'couroGrosso' && dano > 0 && faixa.mult <= 1){
+    dano = Math.max(1, Math.round(dano*.3));
+    notaChefe = ' <i>— o couro dele engole golpe fraco</i>';
+  }
+  /* Colosso: placas que só quebram no crítico. */
+  if(gd && gd.regra === 'placas' && dano > 0){
+    if(inim.placas > 0){
+      if(faixa.mult >= 5){
+        inim.placas--;
+        notaChefe = ` <b>Placa quebrada!</b> <i>faltam ${inim.placas}</i>`;
+      }else{
+        dano = Math.max(1, Math.round(dano*.35));
+        notaChefe = ` <i>— ${inim.placas} placas ainda o cobrem</i>`;
+      }
+    }
+  }
   let aparou = false;
   if(G.poderAtivo === 'cacador') inim.guardando = false;   // Tiro Certeiro fura a guarda
   if(dano > 0 && inim.guardando){
-    dano = Math.max(1, Math.round(dano*.45));
+    dano = Math.max(1, Math.round(dano * (temRumo('martelo-brecha') ? .72 : .45)));
     inim.guardando = false;
     aparou = true;
   }
@@ -2440,7 +2694,7 @@ async function darUmGolpe(titulo){
     inim.vida -= dano;
     const carne = ferida && temB('carniceiro');
     const nota = (carne ? ' <b>(Carniceiro)</b>' : '') + (reforcado ? ' <b>(guarda reforçada)</b>' : '')
-               + (aparou ? ' <i>— ele aparou boa parte</i>' : '');
+               + (aparou ? ' <i>— ele aparou boa parte</i>' : '') + notaChefe;
     anotar(`⚔️ ${faixa.texto} Você tira <b>${dano}</b> de vida do ${inim.nome}.${nota}`, 'good');
     bater('batida');
     if(faixa.mult >= 5){ clarao(); tremerTela(); }
@@ -2466,6 +2720,13 @@ async function darUmGolpe(titulo){
     render();
     return null;
   }
+  /* Cavaleiro: quem ataca de guarda baixa leva o contragolpe do duelo. */
+  if(gd && gd.regra === 'duelo' && !reforcado && dano > 0){
+    const troco = Math.max(2, Math.round(inim.golpe*.7));
+    anotar(`⚔️ <b>Duelo:</b> o ${inim.nome} devolve o seu golpe — <b>−${troco}</b>.`, 'bad');
+    machucar(troco, true);
+    if(G.modo !== 'combate'){ render(); return null; }
+  }
   render();
   return valor;
 }
@@ -2473,7 +2734,34 @@ async function darUmGolpe(titulo){
 function contraAtaque(){
   const inim = G.inimigo;
   if(!inim || G.modo !== 'combate') return;
+  /* Conta no começo: o turno é dela de qualquer jeito, mesmo que ela o
+     perca na fumaça ou gaste se curando. */
+  if(G.recarga > 0) G.recarga--;
+  /* Fumaça: ela perde o turno inteiro, inclusive a regra de guardião. */
+  if(inim.pulaTurno){
+    inim.pulaTurno = false;
+    anotar(`🌫️ O ${inim.nome} tateia na fumaça e perde o turno.`, 'good');
+    if(inim.sangra) sangrarInimigo();
+    inim.intencao = proximaIntencao(inim);
+    return;
+  }
   const intencao = inim.intencao || 'golpe';
+
+  const gd = guardiaoDoInimigo();
+  /* Dragonete: a fornalha esquenta a cada turno — demorar custa caro. */
+  if(gd && gd.regra === 'fornalha'){
+    inim.fornalha = (inim.fornalha || 0) + .07;
+  }
+  /* Obsidiana: as runas o curam se você deixar a guarda dele em paz. */
+  if(gd && gd.regra === 'runas'){
+    inim.turnos = (inim.turnos || 0) + 1;
+    if(inim.turnos % 4 === 0 && inim.vida < inim.vidaMax){
+      const volta = Math.round(inim.vidaMax * .1);
+      inim.vida = Math.min(inim.vidaMax, inim.vida + volta);
+      anotar(`🔴 <b>Runas Vivas:</b> o ${inim.nome} se refaz em <b>${volta}</b>.`, 'bad');
+      flutuarDano('#foeIcon', '+' + volta, 'cura');
+    }
+  }
 
   /* Guardar e curar gastam o turno da criatura — não há golpe nenhum. */
   if(intencao === 'guarda'){
@@ -2496,6 +2784,7 @@ function contraAtaque(){
 
   let bruto = inim.golpe + Math.floor(Math.random()*3);
   if(inim.furia) bruto = Math.round(bruto * (1 + inim.furia));
+  if(inim.fornalha) bruto = Math.round(bruto * (1 + inim.fornalha));
 
   const pesado = intencao === 'pesado';
   if(pesado){
@@ -2507,6 +2796,12 @@ function contraAtaque(){
     }
   }
 
+  if(G.imune){
+    G.imune = false;
+    anotar(`🧿 O talismã absorve o golpe do ${inim.nome} por inteiro.`, 'good');
+    inim.intencao = proximaIntencao(inim);
+    return;
+  }
   if(G.semGuarda){ G.semGuarda = false; G.defendendo = false; }
   if(G.defendendo){
     bruto = temB('muralha') ? Math.ceil(bruto/5) : Math.ceil(bruto/3);
@@ -2530,6 +2825,10 @@ function contraAtaque(){
     const dano = machucar(bruto);
     const grito = pesado ? ' <b>Golpe pesado!</b>' : '';
     if(pesado) tremerTela();
+    if(gd && gd.regra === 'congela' && pesado && G.modo === 'combate'){
+      G.congelado = true;
+      anotar('🥶 <b>Você congela!</b> Perde o próximo turno por não ter aparado o sopro.', 'bad');
+    }
     anotar(`${inim.icone} O ${inim.nome} te acerta: <b>−${dano} de vida</b>.${grito}`, 'bad');
   }
   const af2 = afixoDoInimigo();
@@ -2539,7 +2838,7 @@ function contraAtaque(){
   }
   if(af2 && af2.fura) inim.furia = (inim.furia || 0) + af2.fura;
 
-  if(G.recarga > 0) G.recarga--;
+  if(inim.sangra) sangrarInimigo();
   /* Escolhe e anuncia o próximo movimento, para você poder responder. */
   if(G.modo === 'combate'){
     inim.intencao = proximaIntencao(inim);
@@ -2555,7 +2854,8 @@ function vencer(){
   G.sequencia = (G.sequencia || 0) + 1;
   const bonus = bonusDeSequencia();
   const ouroBase = Math.round(inim.pts * .8) + entre([3,8]) + G.andar*2 + (inim.chefe ? 45 : 0);
-  const ouroMult = 1 + bonus + somaB('ouroPct') + doClima('ouroPct') + (temB('pacto') ? 1 : 0);
+  const ouroMult = 1 + bonus + somaB('ouroPct') + doClima('ouroPct')
+                 + (temRumo('bolsa-faro') ? .25 : 0) + (temB('pacto') ? 1 : 0);
   const ouro = Math.round(ouroBase * ouroMult);
   const pts = Math.round(inim.pts * (1 + bonus));
   G.inimigo = null;
@@ -2628,8 +2928,9 @@ function vitoria(){
   salvar();
 }
 
-function defender(){
+async function defender(){
   if(G.modo !== 'combate' || ocupado) return;
+  if(await passouCongelado()) return;
   ocupado = true;
   G.defendendo = true;
   anotar('🛡️ Você levanta a guarda e espera o golpe.', '');
@@ -2857,6 +3158,11 @@ function abrirMochila(){
         const b = BENCAO[id];
         return `<div class="bencao-l"><span>${b.icone}</span><span><b>${b.nome}</b><small>${b.desc}</small></span></div>`;
       }).join('')}</div>` : ''}
+    ${quantosUsaveis() ? `
+      <h4>Itens de uso <small class="fade">gastáveis no combate</small></h4>
+      <div class="bencoes">${USAVEIS.filter(u=>(G.usaveis[u.id]||0)>0).map(u =>
+        `<div class="bencao-l"><span>${u.icone}</span><span><b>${u.nome} ×${G.usaveis[u.id]}</b><small>${u.desc}</small></span></div>`
+      ).join('')}</div>` : ''}
     <h4>Materiais <small class="fade">para forjar</small></h4>
     <div class="chips">${mats}</div>
     <button class="btn" id="bagRel" style="width:100%;margin-top:14px">✨ Ver relíquias</button>`;
@@ -2953,6 +3259,11 @@ function tirinhaReliquias(detalhe=false){
         <span class="relic-txt">
           <b>${r.nome} <i>${n}/${REL_MAX}</i></b>
           ${detalhe ? efeitoRel(r, n) : ''}
+          ${detalhe && rumoDe(r.id) ? (() => {
+            const op = RUMOS[r.id].find(x => x.id === rumoDe(r.id));
+            return `<small class="rel-rumo">${op.icone} ${op.nome} — ${op.desc}</small>`;
+          })() : ''}
+          ${detalhe && n >= RUMO_EM && !rumoDe(r.id) ? '<small class="rel-espera">⚡ escolha o rumo dela</small>' : ''}
           <span class="relic-bar"><i style="width:${pct}%"></i></span>
         </span>
       </div>`;
@@ -3204,6 +3515,7 @@ function render(){
         <div class="foe-icon ${inim.chefe?'chefe':''}" id="foeIcon">${arte(bicho(inim.id) || inim, 'foe-art')}</div>
         <p class="foe-name">${inim.chefe?'👑 ':''}${escapeHtml(inim.nome)}</p>
         ${inim.afixo ? `<p class="foe-afixo">${AFIXO[inim.afixo].icone} ${AFIXO[inim.afixo].desc}</p>` : ''}
+        ${GUARDIOES[inim.id] ? `<p class="foe-regra">${GUARDIOES[inim.id].icone} <b>${GUARDIOES[inim.id].nome}</b> — ${GUARDIOES[inim.id].desc}</p>` : ''}
         <div class="foe-life">
           <div class="life-top"><span>Vida dele</span><b>${Math.max(0,inim.vida)} / ${inim.vidaMax}</b></div>
           <div class="life-bar"><div class="life-fill" style="width:${pct}%"></div></div>
@@ -3217,6 +3529,9 @@ function render(){
           </div>`;
         })()}
         <div class="foe-estado">
+          ${inim.placas > 0 ? `<span class="est ruim">🛡️ ${inim.placas} placas de bronze</span>` : ''}
+          ${inim.fornalha ? `<span class="est perigo">🔥 fornalha +${Math.round(inim.fornalha*100)}%</span>` : ''}
+          ${G.congelado ? '<span class="est perigo">🥶 você perde o próximo turno</span>' : ''}
           ${inim.guardando ? '<span class="est ruim">🛡️ ele está de guarda</span>' : ''}
           ${G.guardaCarregada ? '<span class="est bom">🛡️ guarda reforçada</span>' : ''}
           ${G.veneno ? `<span class="est ruim">🧪 envenenado −${G.veneno}/turno</span>` : ''}
@@ -3233,6 +3548,8 @@ function render(){
         poderDaClasse().icone} ${poderDaClasse().nome}<small>${
         poderPronto() ? poderDaClasse().desc : `pronta em ${G.recarga} ${G.recarga===1?'turno':'turnos'}`}</small></button>
       <button class="act" data-act="pocao" ${G.pocoes>0?'':'disabled'}>🧪 Poção<small>${G.pocoes} restantes • +${curaDaPocao()} de vida</small></button>
+      <button class="act" data-act="itens" ${quantosUsaveis()?'':'disabled'}>🎒 Itens<small>${
+        quantosUsaveis() ? quantosUsaveis()+' para usar' : 'nenhum item de uso'}</small></button>
       <button class="act wide" data-act="fugir" ${inim.chefe?'disabled':''}>🏃 Fugir<small>${
         inim.chefe ? 'não dá para fugir de um guardião'
         : (G.sequencia > 1 ? `perde a sequência de ${G.sequencia}`
@@ -3282,6 +3599,7 @@ function render(){
     if(a === 'atacar') atacar();
     else if(a === 'defender') defender();
     else if(a === 'poder') usarPoder();
+    else if(a === 'itens') abrirItens();
     else if(a === 'pocao') beberPocao();
     else if(a === 'fugir') fugir();
     else if(a === 'escapar') escaparDaMasmorra();
@@ -3442,7 +3760,7 @@ function zerarTudo(){
   if(!confirmar('Apagar TODO o progresso? Relíquias, bestiário, conquistas e recordes somem para sempre. Não dá para desfazer.')) return;
   [GKEY, MKEY, TKEY].forEach(k => store.del(k));
   G = null;
-  META = {recorde:0, vitorias:0, mortes:0, bestiario:{}, reliquias:{}, conquistas:{}};
+  META = {recorde:0, vitorias:0, mortes:0, bestiario:{}, reliquias:{}, conquistas:{}, rumos:{}};
   classeEscolhida = CLASSES[0].id;
   $('#zerarOv').classList.remove('on');
   render();
@@ -3613,7 +3931,10 @@ $('#saveImport').onclick = importarSave;
 $('#playExit').onclick = sairDoJogo;
 $('#playRelics').onclick = abrirReliquias;
 $('#playDiary').onclick = abrirDiario;
-$$('[data-fechar]').forEach(b => b.onclick = () => $('#'+b.dataset.fechar).classList.remove('on'));
+$$('[data-fechar]').forEach(b => b.onclick = () => {
+  $('#'+b.dataset.fechar).classList.remove('on');
+  if(b.dataset.fechar === 'ganhoOv') abrirEscolhaDeRumo();
+});
 $$('.ov').forEach(ov => ov.addEventListener('click', e => {
   if(e.target === ov && ov.id !== 'diceOv') ov.classList.remove('on');
 }));
