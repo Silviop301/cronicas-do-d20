@@ -136,8 +136,11 @@
     }
     .cell.seen{background:var(--visto,#171310);border-color:var(--borda,#332720);border-color:color-mix(in srgb,var(--borda,#332720) 55%,transparent);color:#e9dcc4}
     .cell.reach{border-color:var(--borda,#a87c3d);background:var(--chao,#1e1712);cursor:pointer;animation:breathe 2.4s ease-in-out infinite}
+    .cell.longe{cursor:pointer;border-color:color-mix(in srgb,var(--borda,#a87c3d) 40%,transparent)}
     .cell.reach:active{filter:brightness(1.35)}
     .cell.here{background:var(--chao,#3a2a1a);border-color:var(--gold);box-shadow:0 0 0 2px rgba(215,168,79,.22);animation:none}
+    /* criatura com traço: anel para você saber que a briga é diferente */
+    .cell.comtraco{box-shadow:inset 0 0 0 2px #a2537a}
     @keyframes breathe{0%,100%{opacity:.82}50%{opacity:1}}
     .play-mid{background:radial-gradient(circle at 50% 45%,var(--luz,transparent),transparent 68%)}
     .foe{display:grid;gap:12px;justify-items:center;text-align:center;width:100%}
@@ -437,6 +440,9 @@
     .banner small{color:var(--muted);font-size:12px}
     .chip.seq{border-color:#8a4a2a;color:#ffb987;background:#1d1210}
     .chip.cota{border-color:#6b5a3a;color:#e0cba0}
+    .chip.clima{border-color:#4a6280;color:#a9c8e4}
+    .offer-clima{display:block;font-size:11.5px;color:#a9c8e4;margin-top:3px;line-height:1.4}
+    .offer-clima b{color:#c6dcf0}
     .chip.cota.ok{border-color:#4d7a55;color:#8fd39a}
     .chip.ben{border-color:#6d5a8a;color:#cbb6ef;background:#171423}
     /* A oferta de masmorra pinta a borda com a cor do nível; a de bênção não
@@ -548,6 +554,19 @@
     .dano.errou{font-size:23px;color:#a08f7d}
     .dano.nele{color:#ff9d8a}
     .dano.cura{color:#8fd39a}
+    /* o dado rápido, que rola na própria tela de combate */
+    .dado-rapido{
+      position:fixed;z-index:68;pointer-events:none;transform:translate(-50%,-100%);
+      min-width:52px;padding:6px 10px;border-radius:13px;text-align:center;
+      font:800 27px Georgia,serif;color:#f3e2c4;
+      background:linear-gradient(180deg,#2a2118,#171210);border:2px solid #6b5637;
+      box-shadow:0 8px 22px rgba(0,0,0,.5);
+    }
+    .dado-rapido.parou{animation:dadoParou .34s ease-out}
+    .dado-rapido.bom{border-color:var(--gold);color:#ffd98a}
+    .dado-rapido.ruim{border-color:#8a3b32;color:#ffb0a6}
+    @keyframes dadoParou{0%{transform:translate(-50%,-100%) scale(1.35)}100%{transform:translate(-50%,-100%) scale(1)}}
+    @media(prefers-reduced-motion:reduce){.dado-rapido.parou{animation:none}}
     .dano .sub{display:block;font:700 12px Inter,sans-serif;letter-spacing:.06em;text-align:center;opacity:.9}
     @keyframes sobe{
       0%{opacity:0;transform:translate(-50%,6px) scale(.6)}
@@ -622,6 +641,7 @@
             <details class="mais">
               <summary>Mais opções</summary>
               <div class="entry-btns">
+                <button class="btn" id="btnDado"></button>
                 <button class="btn" id="btnSave">💾 Salvar / trocar de aparelho</button>
                 <button class="btn danger" id="btnZerar">🗑️ Apagar todo o progresso</button>
               </div>
@@ -861,6 +881,36 @@ const NIVEIS = [
 
 /* Afixos: o mesmo bestiário de 51 criaturas rende brigas diferentes quando
    a criatura vem com um traço. Aparecem mais nas masmorras mais duras. */
+/* Clima da masmorra: sorteado na entrada e anunciado no cartão, antes de
+   você se comprometer. É o que faz duas Raras não serem a mesma Rara. */
+/* Cada clima precisa ser uma troca, não um imposto: numa masmorra de dez
+   andares qualquer perda de sustento se acumula. A Calmaria pesa mais no
+   sorteio para que o clima seja tempero, e não a regra. */
+const CLIMAS = [
+  {id:'calmaria', nome:'Calmaria',     icone:'🍃', desc:'nada fora do comum por aqui', peso:5},
+  {id:'nevasca',  nome:'Nevasca',      icone:'🌨️', desc:'−2 de vida a cada andar, mas +60% de ouro',
+   dano:2, ouroPct:.6, peso:2},
+  {id:'veio',     nome:'Veio de Ouro', icone:'🪙', desc:'baús rendem o dobro',
+   bauDobra:true, peso:2},
+  {id:'nevoa',    nome:'Névoa',        icone:'🌫️', desc:'só enxerga as salas vizinhas, mas paga +50% de ouro',
+   nevoa:true, ouroPct:.5, peso:2},
+  {id:'enxame',   nome:'Enxame',       icone:'🐝', desc:'mais criaturas por andar, e o dobro de material',
+   maisBichos:2, matDobra:true, peso:2},
+  {id:'ossos',    nome:'Campo de Ossos', icone:'💀', desc:'criaturas mais duras, mas uma bênção a mais na entrada',
+   forcaPct:.12, bencaoExtra:true, peso:2},
+  {id:'farto',    nome:'Fartura',      icone:'🍖', desc:'as fontes curam o dobro e há mais baús',
+   fonteDobra:true, maisBaus:2, peso:2}
+];
+function sorteiaClima(){
+  const soma = CLIMAS.reduce((t,c)=>t+c.peso,0);
+  let r = Math.random()*soma;
+  for(const c of CLIMAS){ r -= c.peso; if(r <= 0) return c.id; }
+  return 'calmaria';
+}
+const CLIMA = Object.fromEntries(CLIMAS.map(c => [c.id, c]));
+const climaAtual = () => (G && G.masmorra && G.masmorra.clima) ? CLIMA[G.masmorra.clima] : null;
+const doClima = campo => { const c = climaAtual(); return c ? (c[campo] || 0) : 0; };
+
 const AFIXOS = [
   {id:'blindado', nome:'Blindado', icone:'🛡️', desc:'leva menos dano dos seus golpes', vida:1.15, corte:.35},
   {id:'veloz',    nome:'Veloz',    icone:'💨', desc:'ataca duas vezes seguidas',        vida:.85, golpe:.7, duplo:true},
@@ -1582,14 +1632,14 @@ function sortearOfertas(){
   const ofertas = [];
   for(let k=0;k<3;k++){
     const n = sorteiaNivel();
-    ofertas.push({nivel:n.id, regiao:sorteio(n.regioes)});
+    ofertas.push({nivel:n.id, regiao:sorteio(n.regioes), clima:sorteiaClima()});
   }
   /* Sem o botão de trocar as entradas, três ofertas pesadas travariam o
      jogo. Uma delas é sempre algo que o herói já provou dar conta. */
   const tetoSeguro = Math.max(0, (META.melhorNivel || 0));
   const jaFaz = NIVEIS[Math.min(tetoSeguro, NIVEIS.length-1)];
   if(!ofertas.some(o => NIVEIS.findIndex(n => n.id === o.nivel) <= tetoSeguro)){
-    ofertas[Math.floor(Math.random()*3)] = {nivel:jaFaz.id, regiao:sorteio(jaFaz.regioes)};
+    ofertas[Math.floor(Math.random()*3)] = {nivel:jaFaz.id, regiao:sorteio(jaFaz.regioes), clima:sorteiaClima()};
   }
   G.ofertas = ofertas;
 }
@@ -1599,7 +1649,7 @@ function entrarNaMasmorra(idx){
   if(!of || ocupado) return;
   const n = nivelPorId(of.nivel);
   if(n.final && !confirmar('Esta é uma masmorra Demônio: dez andares e o Dragonete de Ferro no fim. Vencer aqui encerra o jogo — e quase ninguém consegue sem as relíquias no máximo.\n\nEntrar mesmo assim?')) return;
-  G.masmorra = {nivel:n.id, regiao:of.regiao, andares:n.andares};
+  G.masmorra = {nivel:n.id, regiao:of.regiao, andares:n.andares, clima:of.clima || 'calmaria'};
   G.andar = 1;
   G.sequencia = 0;
   G.bencaos = [];
@@ -1611,7 +1661,10 @@ function entrarNaMasmorra(idx){
   const reg = regiaoAtual();
   anotar(`${n.icone} Você entra numa masmorra <b>${n.nome}</b> — ${reg.nome}, ${n.andares} andares.`, 'gold');
   mostrarFaixa(reg);
+  const cl = CLIMA[G.masmorra.clima];
+  if(cl && cl.id !== 'calmaria') anotar(`${cl.icone} <b>${cl.nome}</b> — ${cl.desc}.`, 'gold');
   oferecerBencao();
+  if(cl && cl.bencaoExtra && G.modo === 'bencao') G.bencaoDupla = true;
   salvar(); render();
 }
 
@@ -1710,14 +1763,26 @@ function gerarAndar(){
   for(let i=0;i<total;i++) if(i !== inicio) livres.push(i);
   livres.sort(() => Math.random()-.5);
 
+  const cl = climaAtual();
   const plano = [
-    ...Array(Math.min(10, 5+G.andar)).fill('inimigo'),
-    ...Array(3).fill('tesouro'),
+    ...Array(Math.min(13, 5 + G.andar + (cl?.maisBichos || 0))).fill('inimigo'),
+    ...Array(3 + (cl?.maisBaus || 0)).fill('tesouro'),
     ...Array(3).fill('material'),
     ...Array(2).fill('armadilha'),
     'fonte', 'altar'
   ];
   plano.forEach(tipo => { const i = livres.pop(); if(i !== undefined) grid[i].tipo = tipo; });
+
+  /* Quem mora em cada sala de inimigo é sorteado agora, e não na hora de
+     entrar: é o que permite o mapa mostrar de antemão no que você vai
+     encostar, em vez de um 👹 genérico para tudo. */
+  const n = nivelAtual();
+  const comuns = BESTIARIO.filter(b => b.regiao === reg.id && !b.chefe);
+  grid.forEach(c => {
+    if(c.tipo !== 'inimigo') return;
+    c.bicho = sorteio(comuns).id;
+    c.afixo = Math.random() < chanceDeAfixo(n) ? sorteio(AFIXOS).id : null;
+  });
 
   // a saída (ou o chefe final) fica na sala mais distante da entrada
   const p0 = xy(inicio);
@@ -1741,6 +1806,8 @@ function gerarAndar(){
 
 function revelar(){
   const {x,y} = xy(G.pos);
+  /* Névoa: o que você já viu volta a sumir assim que sai de perto. */
+  if(climaAtual()?.nevoa) G.grid.forEach(c => { if(!c.limpo && c.tipo !== 'inicio') c.visto = false; });
   [[0,0],[1,0],[-1,0],[0,1],[0,-1]].forEach(([dx,dy]) => {
     const nx = x+dx, ny = y+dy;
     if(nx>=0 && nx<N && ny>=0 && ny<N) G.grid[iAt(nx,ny)].visto = true;
@@ -1748,7 +1815,43 @@ function revelar(){
 }
 
 /* ---------- o dado ---------- */
-function rolarDado({titulo, faixas, rolar}){
+/* O modal cobrava dois toques e 1,7 s por golpe — uns dois minutos por
+   masmorra só de espera. Golpe comum rola aqui mesmo, rápido e sem toque;
+   guardião, altar, armadilha e fuga seguem no modal, onde a pausa vale. */
+const DADO_KEY = 'climbix_dado_lento';
+const dadoLento = () => !!store.get(DADO_KEY);
+
+function rolarRapido({faixas, rolar}){
+  return new Promise(resolve => {
+    const valor = (rolar || d20)();
+    const f = faixaDe(valor, faixas);
+    if(valor === 20){ META.vintes = (META.vintes||0) + 1; salvarMeta(); progredirMissao('vinte'); }
+
+    const alvo = $('#foeIcon') || $('#playMid');
+    const cx = alvo ? alvo.getBoundingClientRect() : {left:0,width:window.innerWidth,top:120,height:0};
+    const el = document.createElement('div');
+    el.className = 'dado-rapido ' + (f.cor || '');
+    el.textContent = '?';
+    el.style.left = (cx.left + cx.width/2) + 'px';
+    el.style.top  = (cx.top - 6) + 'px';
+    document.body.appendChild(el);
+
+    let t = 0;
+    const gira = setInterval(() => {
+      el.textContent = randInt(20);
+      if(++t >= 5){
+        clearInterval(gira);
+        el.textContent = valor;
+        el.classList.add('parou');
+        vibrar(f.cor === 'bom' ? [14,26,14] : 10);
+        setTimeout(() => { el.remove(); resolve({valor, faixa:f}); }, 340);
+      }
+    }, 52);
+  });
+}
+
+function rolarDado({titulo, faixas, rolar, rapido}){
+  if(rapido && !dadoLento()) return rolarRapido({faixas, rolar});
   return new Promise(resolve => {
     const ov = $('#diceOv'), face = $('#dieFace'), botao = $('#dieBtn');
     const veredito = $('#diceVerdict'), dica = $('#diceHint');
@@ -1801,6 +1904,90 @@ function podeIr(i){
   return Math.abs(a.x-b.x) + Math.abs(a.y-b.y) === 1;
 }
 
+/* Caminho até uma sala distante, passando SÓ por salas já resolvidas.
+   É o que faz o toque único economizar passos sem virar atalho: para
+   chegar longe, o que estava no meio já teve que ser enfrentado. */
+function caminhoAte(destino){
+  if(!G || G.modo !== 'mapa' || destino === G.pos) return null;
+  if(!G.grid[destino].visto) return null;
+  const anterior = new Array(N*N).fill(-1);
+  const fila = [G.pos];
+  anterior[G.pos] = G.pos;
+  while(fila.length){
+    const atual = fila.shift();
+    if(atual === destino) break;
+    const {x,y} = xy(atual);
+    for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){
+      const nx = x+dx, ny = y+dy;
+      if(nx<0||nx>=N||ny<0||ny>=N) continue;
+      const viz = iAt(nx,ny);
+      if(anterior[viz] !== -1) continue;
+      const c = G.grid[viz];
+      // atravessa o que já está resolvido; o destino pode ser qualquer sala vista
+      const atravessavel = c.visto && (c.limpo || c.tipo === 'inicio');
+      if(viz !== destino && !atravessavel) continue;
+      anterior[viz] = atual;
+      fila.push(viz);
+    }
+  }
+  if(anterior[destino] === -1) return null;
+  const caminho = [];
+  for(let p = destino; p !== G.pos; p = anterior[p]) caminho.unshift(p);
+  return caminho;
+}
+/* Uma busca só por desenho, em vez de uma por sala: o mapa tem 36 casas e
+   redesenha a cada passo do caminhar automático. */
+function salasAlcancaveis(){
+  const alcanca = new Array(N*N).fill(false);
+  if(!G || G.modo !== 'mapa') return alcanca;
+  const visto = new Array(N*N).fill(false);
+  const fila = [G.pos];
+  visto[G.pos] = true;
+  while(fila.length){
+    const atual = fila.shift();
+    const {x,y} = xy(atual);
+    for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){
+      const nx = x+dx, ny = y+dy;
+      if(nx<0||nx>=N||ny<0||ny>=N) continue;
+      const viz = iAt(nx,ny);
+      if(visto[viz]) continue;
+      const c = G.grid[viz];
+      if(!c.visto) continue;
+      alcanca[viz] = true;
+      visto[viz] = true;
+      // só continua andando por onde já está resolvido
+      if(c.limpo || c.tipo === 'inicio') fila.push(viz);
+    }
+  }
+  return alcanca;
+}
+
+/* Um toque leva o herói até lá, passo a passo. Ele para na hora em que
+   encosta em qualquer coisa que exija decisão. */
+async function irAte(destino){
+  if(ocupado) return;
+  const caminho = caminhoAte(destino);
+  if(!caminho) return;
+  if(caminho.length === 1) return mover(caminho[0]);
+  ocupado = true;
+  for(const passo of caminho){
+    G.pos = passo;
+    revelar();
+    render();
+    const sala = G.grid[passo];
+    if(!sala.limpo){
+      ocupado = false;
+      await entrarNaSala(sala);
+      salvar(); render();
+      mostrarGanhoDeReliquia();
+      return;
+    }
+    await espera(105);
+  }
+  ocupado = false;
+  salvar(); render();
+}
+
 async function mover(i){
   if(!podeIr(i)) return;
   ocupado = true;
@@ -1814,19 +2001,23 @@ async function mover(i){
   mostrarGanhoDeReliquia();
 }
 
-function chamarInimigo(id){
+function chamarInimigo(id, afixoDado){
   const b = bicho(id);
   const n = nivelAtual();
   const andarExtra = b.chefe ? 1 : 1 + .10*(G.andar-1);
   const golpeMult = 1 + (n.forca-1)*.30;
-  let vida = Math.round(b.vida * n.forca * andarExtra * (b.chefe ? n.chefeVida : 1));
-  let golpe = Math.round(b.golpe * golpeMult * (b.chefe ? 1.15 : 1 + .05*(G.andar-1)));
+  const duro = 1 + doClima('forcaPct');
+  let vida = Math.round(b.vida * n.forca * andarExtra * (b.chefe ? n.chefeVida : 1) * duro);
+  let golpe = Math.round(b.golpe * golpeMult * (b.chefe ? 1.15 : 1 + .05*(G.andar-1)) * duro);
   let pts = Math.round(b.pts * n.premio);
 
   /* Guardião nunca vem com afixo: já é a briga desenhada do andar. */
   let af = null;
-  if(!b.chefe && Math.random() < chanceDeAfixo(n)){
-    af = sorteio(AFIXOS);
+  const escolhido = afixoDado === undefined
+    ? (Math.random() < chanceDeAfixo(n) ? sorteio(AFIXOS).id : null)
+    : afixoDado;
+  if(!b.chefe && escolhido){
+    af = AFIXO[escolhido];
     vida = Math.round(vida * (af.vida || 1));
     golpe = Math.round(golpe * (af.golpe || 1));
     pts = Math.round(pts * (af.premio || 1.35));
@@ -1851,7 +2042,7 @@ async function entrarNaSala(sala){
   switch(sala.tipo){
     case 'inimigo': {
       const pool = BESTIARIO.filter(b => b.regiao === reg.id && !b.chefe);
-      chamarInimigo(sorteio(pool).id);
+      chamarInimigo(sala.bicho || sorteio(pool).id, sala.afixo);
       anotar(`Um <b>${G.inimigo.nome}</b> aparece na sua frente!`, 'bad');
       break;
     }
@@ -1867,8 +2058,8 @@ async function entrarNaSala(sala){
     }
     case 'tesouro': {
       sala.limpo = true;
-      const dobro = temB('saque') ? 2 : 1;
-      const ouro = (entre([6,14]) + G.andar*2) * dobro;
+      const dobro = (temB('saque') || climaAtual()?.bauDobra) ? 2 : 1;
+      const ouro = Math.round((entre([6,14]) + G.andar*2) * dobro * (1 + doClima('ouroPct')));
       G.ouro += ouro;
       pontuar(20);
       const mat = sorteio(COLHEITA[reg.id]);
@@ -1904,9 +2095,9 @@ async function entrarNaSala(sala){
     }
     case 'fonte': {
       sala.limpo = true;
-      const cura = Math.ceil(G.vidaMax*.4);
+      const cura = Math.ceil(G.vidaMax * (climaAtual()?.fonteDobra ? .8 : .4));
       curar(cura);
-      anotar(`⛲ Você descansa e se recupera: <b>+${cura} de vida</b>.`, 'good');
+      anotar(`⛲ Você descansa e se recupera: <b>+${cura} de vida</b>.${climaAtual()?.fonteDobra?' <b>(Fartura)</b>':''}`, 'good');
       break;
     }
     case 'altar': {
@@ -1955,6 +2146,11 @@ function descer(){
   curar(Math.ceil(G.vidaMax*.2));
   G.peleUsada = false;
   G.abatesNoAndar = 0;
+  const gelo = doClima('dano');
+  if(gelo){
+    anotar(`${climaAtual().icone} A ${climaAtual().nome} cobra o seu preço: <b>−${gelo} de vida</b>.`, 'bad');
+    machucar(gelo, true);
+  }
   if(G.classe === 'clerigo'){
     const reza = Math.ceil(G.vidaMax*.2);
     curar(reza);
@@ -2013,6 +2209,7 @@ function escolherBencao(id){
   G.ofertaBencaos = [];
   G.modo = G.voltaPara === 'combate' ? 'mapa' : (G.voltaPara || 'mapa');
   G.voltaPara = null;
+  if(G.bencaoDupla){ G.bencaoDupla = false; oferecerBencao(); }
   vibrar([12,30,12]);
   salvar(); render();
 }
@@ -2101,7 +2298,8 @@ function sofrerVeneno(){
 /* Devolve o valor do dado, ou null se a criatura caiu no golpe. */
 async function darUmGolpe(titulo){
   const inim = G.inimigo;
-  const {valor, faixa} = await rolarDado({titulo, faixas:faixasGolpe(), rolar:dadoDoHeroi});
+  const {valor, faixa} = await rolarDado({titulo, faixas:faixasGolpe(), rolar:dadoDoHeroi,
+                                          rapido: !(G.inimigo && G.inimigo.chefe)});
   let dano = golpeTotal() * faixa.mult;
   const reforcado = G.guardaCarregada && dano > 0;
   if(G.guardaCarregada){ G.guardaCarregada = false; if(dano > 0) dano = Math.round(dano * (temB('ritmo') ? 2.2 : 1.6)); }
@@ -2211,7 +2409,7 @@ function vencer(){
   G.sequencia = (G.sequencia || 0) + 1;
   const bonus = bonusDeSequencia();
   const ouroBase = Math.round(inim.pts * .8) + entre([3,8]) + G.andar*2 + (inim.chefe ? 45 : 0);
-  const ouroMult = 1 + bonus + somaB('ouroPct') + (temB('pacto') ? 1 : 0);
+  const ouroMult = 1 + bonus + somaB('ouroPct') + doClima('ouroPct') + (temB('pacto') ? 1 : 0);
   const ouro = Math.round(ouroBase * ouroMult);
   const pts = Math.round(inim.pts * (1 + bonus));
   G.inimigo = null;
@@ -2240,6 +2438,7 @@ function vencer(){
      de brigar, já que dá para atravessar a masmorra desviando de todo mundo. */
   let quedas = inim.chefe ? 3 : ((temB('catador') || Math.random() < .55) ? 1 : 0);
   if(temB('pacto')) quedas *= 2;
+  if(climaAtual()?.matDobra) quedas *= 2;
   if(inim.chefe){
     const ess = inim.final ? 3 : 1;
     G.mats.essencia = (G.mats.essencia||0) + ess;
@@ -2622,6 +2821,11 @@ function mostrarFaixa(reg){
 }
 
 /* ---------- desenho da tela ---------- */
+const NOME_SALA = {
+  inimigo:'criatura', tesouro:'baú', material:'material', armadilha:'armadilha',
+  fonte:'fonte que cura', altar:'altar', escada:'escada para o próximo andar',
+  guardiao:'guardião', chefefinal:'o Dragonete de Ferro', inicio:'entrada', vazio:'sala vazia'
+};
 const ICONES = {
   inicio:'🚩', inimigo:'👹', tesouro:'💰', material:'⛏️',
   armadilha:'⚠️', fonte:'⛲', altar:'🕯️', escada:'🪜', guardiao:'👑', chefefinal:'🐉', vazio:'·'
@@ -2701,6 +2905,7 @@ function render(){
   $('#lbBestCount').textContent = `${Object.keys(META.bestiario||{}).length}/${BESTIARIO.length}`;
   $('#lbAchCount').textContent = `${Object.keys(META.conquistas||{}).length}/${CONQUISTAS.length}`;
   desenharDicaTelaCheia();
+  desenharBotaoDado();
   desenharMissao();
   desenharProximaMeta();
   ligarArte($('#aventura'));
@@ -2737,6 +2942,9 @@ function render(){
   const chipSeq = b
     ? `<span class="chip seq" title="recompensa maior enquanto você não fugir">🔥 <b>${G.sequencia}</b> <i>+${Math.round(b*100)}%</i></span>`
     : '';
+  const cl = climaAtual();
+  const chipClima = (cl && cl.id !== 'calmaria')
+    ? `<span class="chip clima" title="${cl.desc}">${cl.icone} ${cl.nome}</span>` : '';
   const falta = G.masmorra && !ultimoAndar() ? faltaMatar() : 0;
   const chipCota = G.masmorra && !ultimoAndar()
     ? `<span class="chip cota ${falta?'':'ok'}" title="a escada só abre quando a cota do andar for cumprida">🪜 <b>${
@@ -2744,7 +2952,7 @@ function render(){
     : '';
   /* Sem selo de bênção aqui: numa tela estreita ele quebra a linha dos
      selos e o tabuleiro encolhe. A lista fica no botão ✨ da barra. */
-  $('#pChips').innerHTML = chipLocal + chipCota + chipSeq + `
+  $('#pChips').innerHTML = chipLocal + chipClima + chipCota + chipSeq + `
     <span class="chip">⭐ <b>${G.pontos}</b></span>
     <span class="chip">⚔️ <b>${golpeTotal()}</b></span>
     <span class="chip">🛡️ <b>${defesaTotal()}</b></span>
@@ -2788,12 +2996,16 @@ function render(){
             const aviso = nv.final
               ? `<span class="offer-warn">Zera o jogo • suas relíquias estão em ${pronto}%</span>`
               : '';
+            const cl = CLIMA[of.clima];
+            const clima = (cl && cl.id !== 'calmaria')
+              ? `<span class="offer-clima">${cl.icone} <b>${cl.nome}</b> — ${cl.desc}</span>` : '';
             return `
               <button class="offer" data-entrar="${i}" style="--nc:${nv.cor}">
                 <span class="offer-top">
                   <b>${nv.icone} ${nv.nome}</b> <span class="reg">${rg.icone} ${rg.nome}</span>
                   <span class="offer-floors">${nv.andares} andares</span>
                 </span>
+                ${clima}
                 <span class="offer-bot">
                   <span>⚔️ inimigos ×${nv.forca.toFixed(1)}</span>
                   <span>🪙 recompensa ×${nv.premio.toFixed(1)}</span>
@@ -2865,20 +3077,31 @@ function render(){
       }</small></button>`;
   }else{
     mid.innerHTML = `<div class="map" id="map" style="grid-template-columns:repeat(${N},1fr)"></div>`;
+    const alcance = salasAlcancaveis();
     $('#map').innerHTML = G.grid.map((c,i) => {
       const aqui = i === G.pos;
       const perto = podeIr(i);
+      const alcancavel = perto || alcance[i];
       const novo = c.visto && !c.animou;
       if(novo) c.animou = true;
-      const cls = ['cell', c.visto?'seen':'', aqui?'here':'', perto?'reach':'', novo?'novo':''].filter(Boolean).join(' ');
+      const marcado = c.visto && !c.limpo && c.afixo;
+      const cls = ['cell', c.visto?'seen':'', aqui?'here':'', perto?'reach':'',
+                   (alcancavel && !perto)?'longe':'', novo?'novo':'',
+                   marcado?'comtraco':''].filter(Boolean).join(' ');
       let icone = '';
       if(aqui) icone = '🧝';
       else if(c.visto) icone = c.limpo ? '·'
              : (c.tipo === 'escada' && faltaMatar() > 0) ? '🔒'
+             : (c.tipo === 'inimigo' && c.bicho) ? (bicho(c.bicho)?.icone || '👹')
              : (ICONES[c.tipo] || '·');
-      return `<button class="${cls}" data-cell="${i}" ${perto?'':'disabled'} aria-label="sala"><span>${icone}</span></button>`;
+      const rotulo = !c.visto ? 'sala inexplorada'
+        : c.limpo ? 'sala vazia'
+        : c.tipo === 'inimigo' && c.bicho
+          ? (bicho(c.bicho)?.nome || 'criatura') + (c.afixo ? ' ' + AFIXO[c.afixo].nome : '')
+          : NOME_SALA[c.tipo] || 'sala';
+      return `<button class="${cls}" data-cell="${i}" ${alcancavel?'':'disabled'} title="${rotulo}" aria-label="${rotulo}"><span>${icone}</span></button>`;
     }).join('');
-    $$('[data-cell]').forEach(b => b.onclick = () => mover(+b.dataset.cell));
+    $$('[data-cell]').forEach(b => b.onclick = () => irAte(+b.dataset.cell));
     const tentativas = FUGAS_POR_MASMORRA - (G.fugasUsadas || 0);
     acts.innerHTML = `
       <button class="act" data-act="mochila">🎒 Mochila<small>equipamento e materiais</small></button>
@@ -3203,6 +3426,16 @@ $('#btnAchieve').onclick = abrirConquistas;
 $('#btnTutorial').onclick = () => abrirTutorial(0);
 $('#btnSave').onclick = abrirSave;
 $('#btnZerar').onclick = abrirZerar;
+$('#btnDado').onclick = () => {
+  if(dadoLento()) store.del(DADO_KEY); else store.set(DADO_KEY,'1');
+  desenharBotaoDado();
+};
+function desenharBotaoDado(){
+  const b = $('#btnDado');
+  if(b) b.textContent = dadoLento()
+    ? '🎲 Dado: tela cheia a cada golpe'
+    : '🎲 Dado: rápido no golpe comum';
+}
 $('#zerarConfirma').onclick = zerarTudo;
 $('#tutNext').onclick = avancarTutorial;
 $('#tutBack').onclick = () => { if(passoTutorial){ passoTutorial--; desenharTutorial(); } };
