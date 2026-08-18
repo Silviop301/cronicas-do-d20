@@ -729,6 +729,7 @@
             <details class="mais">
               <summary>Mais opções</summary>
               <div class="entry-btns">
+                <button class="btn" id="btnSom"></button>
                 <button class="btn" id="btnDado"></button>
                 <button class="btn" id="btnSave">💾 Salvar / trocar de aparelho</button>
                 <button class="btn danger" id="btnZerar">🗑️ Apagar todo o progresso</button>
@@ -1813,6 +1814,7 @@ function abrirEscolhaDeRumo(){
 
 function mostrarGanhoDeReliquia(){
   if(!relGanhas.length) return;
+  som('brilho');
   /* Um chefe pode subir a mesma relíquia duas vezes. Juntamos num cartão só,
      do nível de antes até o de agora — dois cartões do mesmo item confundem. */
   const juntas = [];
@@ -2219,6 +2221,100 @@ function revelar(){
 /* O modal cobrava dois toques e 1,7 s por golpe — uns dois minutos por
    masmorra só de espera. Golpe comum rola aqui mesmo, rápido e sem toque;
    guardião, altar, armadilha e fuga seguem no modal, onde a pausa vale. */
+/* ---------- som ----------
+   Tudo sintetizado na hora: o jogo é um arquivo só e vai continuar sendo,
+   então não há mp3 nenhum. São osciladores e ruído curtos, montados em
+   cima de duas peças — uma nota e um chiado — que todo efeito reaproveita.
+
+   O iPhone não deixa tocar nada antes do primeiro toque do dedo, e mesmo
+   depois respeita a chavinha de silêncio. Por isso o contexto só nasce no
+   primeiro toque de verdade, e nunca no carregamento. */
+const SOM_KEY = 'climbix_som';
+const somLigado = () => store.get(SOM_KEY) !== '0';
+let audio = null, mestre = null;
+function acordarSom(){
+  if(audio || !somLigado()) return;
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if(!AC) return;
+  try{
+    audio = new AC();
+    mestre = audio.createGain();
+    mestre.gain.value = .22;
+    mestre.connect(audio.destination);
+  }catch(e){ audio = null; }
+}
+/* Safari suspende o contexto quando o app volta do segundo plano. */
+function retomarSom(){ if(audio && audio.state === 'suspended') audio.resume().catch(()=>{}); }
+
+/* Uma nota: dá para escorregar a altura (fim) e escolher a forma da onda. */
+function nota({freq, fim, tipo='sine', dur=.18, vol=.5, atraso=0}){
+  if(!audio) return;
+  const t = audio.currentTime + atraso;
+  const osc = audio.createOscillator(), g = audio.createGain();
+  osc.type = tipo;
+  osc.frequency.setValueAtTime(freq, t);
+  if(fim && fim !== freq) osc.frequency.exponentialRampToValueAtTime(Math.max(20, fim), t + dur);
+  /* Ataque de 6ms: sem ele todo som começa com um estalo. */
+  g.gain.setValueAtTime(.0001, t);
+  g.gain.exponentialRampToValueAtTime(vol, t + .006);
+  g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+  osc.connect(g); g.connect(mestre);
+  osc.start(t); osc.stop(t + dur + .02);
+}
+/* Um chiado: é o que dá peso de pancada e o estalo do dado na mesa. */
+function chiado({dur=.09, vol=.4, corte=1800, tipo='lowpass', atraso=0}){
+  if(!audio) return;
+  const t = audio.currentTime + atraso;
+  const n = Math.max(1, Math.floor(audio.sampleRate * dur));
+  const buf = audio.createBuffer(1, n, audio.sampleRate);
+  const dados = buf.getChannelData(0);
+  for(let i=0;i<n;i++) dados[i] = (Math.random()*2 - 1) * (1 - i/n);
+  const src = audio.createBufferSource(); src.buffer = buf;
+  const filtro = audio.createBiquadFilter(); filtro.type = tipo; filtro.frequency.value = corte;
+  const g = audio.createGain();
+  g.gain.setValueAtTime(vol, t);
+  g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+  src.connect(filtro); filtro.connect(g); g.connect(mestre);
+  src.start(t); src.stop(t + dur);
+}
+
+const SONS = {
+  // o dado batendo enquanto gira, e parando
+  dado:    () => chiado({dur:.045, vol:.30, corte:2600, tipo:'highpass'}),
+  parou:   () => { chiado({dur:.07, vol:.45, corte:1400}); nota({freq:520, fim:300, tipo:'triangle', dur:.10, vol:.25}); },
+  // bater
+  golpe:   () => { chiado({dur:.08, vol:.5, corte:1100}); nota({freq:150, fim:70, tipo:'square', dur:.12, vol:.22}); },
+  forte:   () => { chiado({dur:.11, vol:.6, corte:900});  nota({freq:120, fim:52, tipo:'square', dur:.18, vol:.32}); },
+  critico: () => { chiado({dur:.13, vol:.65, corte:800}); nota({freq:110, fim:48, tipo:'sawtooth', dur:.22, vol:.34});
+                   [523,659,880].forEach((f,i) => nota({freq:f, tipo:'triangle', dur:.20, vol:.26, atraso:.05+i*.055})); },
+  errou:   () => { chiado({dur:.10, vol:.22, corte:520}); nota({freq:180, fim:120, tipo:'sine', dur:.12, vol:.12}); },
+  // apanhar
+  dano:    () => { chiado({dur:.10, vol:.35, corte:700}); nota({freq:230, fim:110, tipo:'sawtooth', dur:.20, vol:.26}); },
+  aparar:  () => { chiado({dur:.07, vol:.32, corte:3200, tipo:'highpass'}); nota({freq:700, fim:420, tipo:'triangle', dur:.13, vol:.20}); },
+  // ganhar coisas
+  cura:    () => [392,523,659].forEach((f,i) => nota({freq:f, tipo:'sine', dur:.26, vol:.22, atraso:i*.06})),
+  moeda:   () => { nota({freq:988, tipo:'triangle', dur:.09, vol:.24});
+                   nota({freq:1319, tipo:'triangle', dur:.13, vol:.20, atraso:.06}); },
+  bigorna: () => { chiado({dur:.06, vol:.5, corte:5000, tipo:'highpass'});
+                   nota({freq:880, fim:600, tipo:'square', dur:.10, vol:.16});
+                   nota({freq:1320, fim:900, tipo:'square', dur:.22, vol:.12, atraso:.02}); },
+  brilho:  () => [1047,1319,1568,2093].forEach((f,i) => nota({freq:f, tipo:'sine', dur:.30, vol:.16, atraso:i*.07})),
+  // andar pelo mapa
+  passo:   () => chiado({dur:.05, vol:.18, corte:900}),
+  descer:  () => { nota({freq:420, fim:150, tipo:'triangle', dur:.34, vol:.24}); chiado({dur:.16, vol:.20, corte:600, atraso:.05}); },
+  abrir:   () => chiado({dur:.16, vol:.16, corte:2400, tipo:'highpass'}),
+  // fim de jornada
+  vitoria: () => [523,659,784,1047].forEach((f,i) => nota({freq:f, tipo:'triangle', dur:.42, vol:.26, atraso:i*.12})),
+  morte:   () => { nota({freq:300, fim:60, tipo:'sawtooth', dur:.9, vol:.28}); chiado({dur:.5, vol:.18, corte:400, atraso:.1}); },
+  chefe:   () => { nota({freq:90, fim:60, tipo:'sawtooth', dur:.7, vol:.30}); nota({freq:135, fim:90, tipo:'square', dur:.7, vol:.16}); }
+};
+function som(nome){
+  if(!somLigado()) return;
+  acordarSom(); retomarSom();
+  if(!audio || !SONS[nome]) return;
+  try{ SONS[nome](); }catch(e){}
+}
+
 const DADO_KEY = 'climbix_dado_lento';
 const dadoLento = () => !!store.get(DADO_KEY);
 
@@ -2238,12 +2334,15 @@ function rolarRapido({faixas, rolar}){
     document.body.appendChild(el);
 
     let t = 0;
+    som('dado');
     const gira = setInterval(() => {
       el.textContent = randInt(20);
+      som('dado');
       if(++t >= 5){
         clearInterval(gira);
         el.textContent = valor;
         el.classList.add('parou');
+        som('parou');
         vibrar(f.cor === 'bom' ? [14,26,14] : 10);
         setTimeout(() => { el.remove(); resolve({valor, faixa:f}); }, 340);
       }
@@ -2277,10 +2376,11 @@ function rolarDado({titulo, faixas, rolar, rapido}){
       dica.textContent = '';
       vibrar(12);
       const valor = (rolar || d20)();
-      for(let t=0;t<9;t++){ face.textContent = randInt(20); await espera(58); }
+      for(let t=0;t<9;t++){ face.textContent = randInt(20); som('dado'); await espera(58); }
       botao.classList.remove('rolling');
       botao.classList.add('done');
       face.textContent = valor;
+      som('parou');
       if(valor === 20){ META.vintes = (META.vintes||0) + 1; salvarMeta(); progredirMissao('vinte'); }
       const f = faixaDe(valor, faixas);
       veredito.textContent = f.texto;
@@ -2373,6 +2473,7 @@ async function irAte(destino){
   ocupado = true;
   for(const passo of caminho){
     G.pos = passo;
+    som('passo');
     revelar();
     render();
     const sala = G.grid[passo];
@@ -2393,6 +2494,7 @@ async function mover(i){
   if(!podeIr(i)) return;
   ocupado = true;
   G.pos = i;
+  som('passo');
   revelar();
   render();
   const sala = G.grid[i];
@@ -2439,6 +2541,7 @@ function chamarInimigo(id, afixoDado){
   G.recarga = 0;
   G.semGuarda = false;
   G.congelado = false;
+  som(G.inimigo.chefe ? 'chefe' : 'abrir');
   const gdi = GUARDIOES[G.inimigo.id];
   if(gdi){
     if(gdi.placas) G.inimigo.placas = gdi.placas;
@@ -2557,6 +2660,7 @@ function descer(){
   const ganho = Math.round(40 * G.andar * n.premio);
   pontuar(ganho);
   G.andar++;
+  som('descer');
   /* Sem +vida máxima por andar: era o que fazia a poção (que curava uma
      fração dela) virar uma fonte de cura sem fim. */
   curar(Math.ceil(G.vidaMax*.2));
@@ -2605,6 +2709,7 @@ function escolherBencao(id){
   if(ocupado || G.modo !== 'bencao') return;
   const b = BENCAO[id];
   if(!b || G.bencaos.includes(id)) return;
+  som('brilho');
   G.bencaos.push(id);
 
   /* Efeitos de vida máxima valem na hora, e o quanto mexeram fica anotado
@@ -2636,7 +2741,7 @@ function curar(n){
   const antes = G.vida;
   G.vida = Math.min(G.vidaMax, G.vida + n);
   const ganho = G.vida - antes;
-  if(ganho > 0) flutuarDano('.life-bar', '+' + ganho, 'cura');
+  if(ganho > 0){ som('cura'); flutuarDano('.life-bar', '+' + ganho, 'cura'); }
 }
 /* Defesa era subtraída direto do golpe, então bastava passar da força do
    inimigo para ele tirar 1 de vida e o jogo acabava. Agora corta uma
@@ -2650,6 +2755,7 @@ function machucar(bruto, ignoraArmadura=false){
   /* Dracônico: dois pontos a menos em tudo que atravessar a armadura. */
   if(!ignoraArmadura && temTraco('draconico')) dano = Math.max(1, dano - 2);
   G.vida = Math.max(0, G.vida - dano);
+  if(dano > 0) som('dano');
   const aparado = !ignoraArmadura && bruto - dano > 0 ? `−${bruto - dano} aparado` : '';
   flutuarDano('.life-bar', '−' + dano, 'nele', aparado);
   const espelho = (temRumo('escama-espelho') ? .12 : 0) + (temTraco('espinhos') ? .12 : 0);
@@ -2674,6 +2780,7 @@ function cair(){
   META.mortes++;
   salvarMeta();
   anotar(`☠️ ${G.nome} cai no andar ${G.andar} de ${G.masmorra ? G.masmorra.andares : '?'} com ${G.pontos} pontos.`, 'bad');
+  som('morte');
   vibrar([40,60,40]);
   checarConquistas();
   salvar();
@@ -2853,6 +2960,7 @@ async function darUmGolpe(titulo){
                + (aparou ? ' <i>— ele aparou boa parte</i>' : '') + notaChefe;
     anotar(`⚔️ ${faixa.texto} Você tira <b>${dano}</b> de vida do ${inim.nome}.${nota}`, 'good');
     bater('batida');
+    som(faixa.mult >= 5 ? 'critico' : faixa.mult >= 2 ? 'forte' : 'golpe');
     if(faixa.mult >= 5){ clarao(); tremerTela(); }
     else if(faixa.mult >= 3) tremerTela();
     const tipo = faixa.mult >= 5 ? 'crit' : (faixa.mult >= 2 ? 'forte' : '');
@@ -2867,6 +2975,7 @@ async function darUmGolpe(titulo){
     }
   }else{
     anotar(`⚔️ ${faixa.texto} Seu golpe passa longe.`, 'bad');
+    som('errou');
     flutuarDano('#foeIcon', 'errou', 'errou');
   }
   if(inim.vida <= 0){
@@ -2984,6 +3093,7 @@ function contraAtaque(){
     G.guardaCarregada = true;
     const remedio = somaB('curaGuarda') + (temTraco('improviso') ? 4 : 0);
     if(remedio) curar(remedio);
+    som('aparar');
     const dano = machucar(bruto);
     anotar(`🛡️ Você apara ${pesado?'o golpe pesado':'o golpe'} do ${inim.nome}: <b>−${dano} de vida</b> só. O próximo golpe seu sai reforçado.`, 'good');
     /* Refletor: parte do golpe aparado volta na cara de quem bateu. */
@@ -3052,6 +3162,7 @@ function vencer(){
   G.grid[G.pos].limpo = true;
   const selo = bonus ? ` <b>Sequência ${G.sequencia}</b> (+${Math.round(bonus*100)}%)` : '';
   anotar(`🏆 <b>${inim.nome} derrotado!</b> +${pts} pontos e ${ouro} de ouro.${selo}`, 'gold');
+  som('moeda');
   vibrar([15,50,25]);
   marcarOuro(); checarConquistas();
 
@@ -3110,6 +3221,7 @@ function vitoria(){
   META.vitorias++;
   salvarMeta();
   anotar(`🐉 <b>O Dragonete de Ferro cai.</b> ${G.nome} zerou o jogo com ${G.pontos} pontos!`, 'gold');
+  som('vitoria');
   vibrar([30,60,30,60,60]);
   marcarOuro(); checarConquistas();
   salvar();
@@ -3327,6 +3439,7 @@ function forjar(id){
   }
   pontuar(15);
   progredirMissao('forjou');
+  som('bigorna');
   vibrar([12,30,12]);
   marcarOuro(); checarConquistas();
   salvar(); desenharForja(); render();
@@ -3651,6 +3764,7 @@ function render(){
   $('#lbAchCount').textContent = `${Object.keys(META.conquistas||{}).length}/${CONQUISTAS.length}`;
   desenharDicaTelaCheia();
   desenharBotaoDado();
+  desenharBotaoSom();
   desenharMissao();
   desenharProximaMeta();
   ligarArte($('#aventura'));
@@ -4207,7 +4321,7 @@ $('#novoComecar').onclick = () => {
 };
 /* Sobe junto com o arquivo: se a home mostra outra data, o aparelho ainda
    está servindo a versão velha do cache. */
-const VERSAO = 'v14 · 18/08 · mochila';
+const VERSAO = 'v15 · 18/08 · som';
 $('#lbVersao').textContent = VERSAO;
 $('#btnStart').onclick = abrirNovoHeroi;
 $('#btnRelics').onclick = abrirReliquias;
@@ -4220,6 +4334,24 @@ $('#btnDado').onclick = () => {
   if(dadoLento()) store.del(DADO_KEY); else store.set(DADO_KEY,'1');
   desenharBotaoDado();
 };
+$('#btnSom').onclick = () => {
+  if(somLigado()) store.set(SOM_KEY,'0');
+  else { store.del(SOM_KEY); acordarSom(); retomarSom(); som('moeda'); }  // toca de volta para provar que ligou
+  desenharBotaoSom();
+};
+function desenharBotaoSom(){
+  const b = $('#btnSom');
+  if(b) b.textContent = somLigado() ? '🔊 Som: ligado' : '🔇 Som: desligado';
+}
+desenharBotaoSom();
+
+/* O iPhone só libera áudio dentro de um toque de verdade — por isso o
+   contexto nasce no primeiro toque em qualquer lugar, e não no carregamento.
+   Depois disso o Safari ainda suspende quando o app vai para o segundo
+   plano, então retomamos ao voltar. */
+['pointerdown','touchstart','keydown'].forEach(ev =>
+  window.addEventListener(ev, () => { acordarSom(); retomarSom(); }, {once:false, passive:true}));
+document.addEventListener('visibilitychange', () => { if(!document.hidden) retomarSom(); });
 function desenharBotaoDado(){
   const b = $('#btnDado');
   if(b) b.textContent = dadoLento()
