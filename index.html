@@ -4,6 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#14110f" />
+  <!-- O jogo é um arquivo só: se o navegador guardar o HTML, ele guarda o jogo
+       inteiro e a atualização não chega. Melhor sempre conferir com o servidor. -->
+  <meta http-equiv="Cache-Control" content="no-cache, must-revalidate" />
   <title>Climbix</title>
   <meta name="description" content="Desça a masmorra, role o dado e volte vivo. Um RPG de aventura curto, para jogar no celular sem saber nada de RPG." />
 
@@ -494,6 +497,9 @@
     .hub{display:grid;gap:9px;width:100%;max-width:520px;align-content:start}
     .hub-title{margin:0;font:700 clamp(17px,4.4vw,21px) Georgia,serif;color:#f6deb0;text-align:center}
     .hub-sub{margin:0;text-align:center;color:var(--muted);font-size:12px;line-height:1.35}
+    /* Sem uma marca visível não dá para saber se o arquivo novo subiu mesmo,
+       ou se o aparelho continua servindo o antigo do cache. */
+    .versao{margin:2px 0 0;text-align:center;font-size:10.5px;color:#6b5c4c;letter-spacing:.04em}
     .offers{display:grid;gap:8px}
     .offer{
       display:grid;gap:4px;text-align:left;padding:10px 12px;border-radius:14px;color:var(--text);
@@ -719,6 +725,7 @@
               <span>Recorde: <b id="lbBest">0</b></span>
               <span>Vencidas: <b id="lbWins">0</b></span>
             </div>
+            <p class="versao" id="lbVersao"></p>
             <details class="mais">
               <summary>Mais opções</summary>
               <div class="entry-btns">
@@ -4198,6 +4205,10 @@ $('#novoComecar').onclick = () => {
   novaAventura($('#novoNome').value, classeEscolhida, pontosGastos);
   abrirJogo();
 };
+/* Sobe junto com o arquivo: se a home mostra outra data, o aparelho ainda
+   está servindo a versão velha do cache. */
+const VERSAO = 'v14 · 18/08 · mochila';
+$('#lbVersao').textContent = VERSAO;
 $('#btnStart').onclick = abrirNovoHeroi;
 $('#btnRelics').onclick = abrirReliquias;
 $('#btnBestiary').onclick = abrirBestiario;
