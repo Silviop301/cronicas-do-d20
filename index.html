@@ -350,7 +350,8 @@
     .aba-pag.on{display:grid;animation:sobeAba .2s ease-out}
     @keyframes sobeAba{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
     @media(prefers-reduced-motion:reduce){.aba-pag.on{animation:none}}
-    .slot-traco{grid-column:1/-1;font-size:11px;color:#c8a6e0;line-height:1.4;margin-top:2px}
+    .slot-traco{grid-column:1/-1;font-size:11px;color:#c8a6e0;line-height:1.4;margin-top:5px;
+      background:rgba(200,166,224,.08);border-radius:8px;padding:6px 8px}
     .slot-traco b{color:#dcc0f0}
     .reserva{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:9px;
       margin-top:7px;padding-top:7px;border-top:1px dashed #2b2119;font-size:11.5px;color:var(--muted)}
@@ -508,10 +509,17 @@
     .ganho-txt small.ganho-antes{color:var(--muted);text-decoration:line-through;opacity:.7}
     @media(prefers-reduced-motion:reduce){.ganho-brilho{animation:none}}
     .conta{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0 4px}
-    .conta-l{background:#141010;border:1px solid #2f251d;border-radius:11px;padding:9px 11px;display:grid;gap:3px}
-    .conta-top{font-size:13px;color:#e9d9be}
-    .conta-top b{color:#f3d190;font-size:16px;font-variant-numeric:tabular-nums;margin-left:3px}
-    .conta-top i{font-style:normal;font-size:11px;color:#8fd39a;display:block}
+    .conta-l{
+      background:linear-gradient(160deg,#1d160e,#141010 65%);
+      border:1px solid #4a3a2b;border-radius:12px;padding:11px 12px;display:grid;gap:2px;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
+    }
+    /* Ficha em pé: rótulo pequeno em cima, o número grande sozinho embaixo —
+       é a diferença entre "mais um texto" e "isto aqui é o que importa". */
+    .conta-top{display:grid;gap:2px}
+    .conta-top .ct-label{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px}
+    .conta-top b{color:#f3d190;font-size:34px;font-family:Georgia,serif;font-variant-numeric:tabular-nums;line-height:1.05}
+    .conta-top i{font-style:normal;font-size:11px;color:#8fd39a;display:block;margin-top:1px}
     .conta-l small{font-size:11px;color:var(--muted);line-height:1.45}
     .chip.vazio{opacity:.42}
     .relic-bar{height:5px;border-radius:999px;background:#241c17;overflow:hidden}
@@ -591,13 +599,27 @@
     .bag-hero b{font-family:Georgia,serif;color:#f3d190}
     .bag-hero small{color:var(--muted);font-size:12px}
     .slots{display:grid;gap:7px}
-    .slot{display:grid;grid-template-columns:30px 1fr auto;gap:9px;align-items:center;background:#141010;border:1px solid #2f251d;border-radius:11px;padding:8px 10px}
-    .slot.cheio{border-color:#4a3a2b}
+    .slot{display:grid;grid-template-columns:30px 1fr auto;gap:9px;align-items:center;
+      background:#141010;border:1px solid #2f251d;border-radius:11px;padding:8px 10px;
+      transition:opacity .15s ease}
+    /* Vazio recua: sem traço pra ler, sem número pra somar — não precisa do
+       mesmo peso que uma peça equipada. */
+    .slot:not(.cheio){opacity:.5;border-style:dashed}
+    .slot:not(.cheio) .slot-ico{color:#5a4d3d}
+    /* Ocupado ganha presença: fundo mais claro, borda dourada baixinha e uma
+       faixa na lateral — é o card que a mochila quer que você leia. */
+    .slot.cheio{
+      background:linear-gradient(160deg,#1c1610,#161210 70%);
+      border-color:#5a4327;
+      box-shadow:inset 3px 0 0 rgba(215,168,79,.55);
+    }
     .slot-ico{font-size:19px;text-align:center}
     .slot-txt{display:grid;min-width:0}
     .slot-txt small{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
     .slot-txt b{font-size:13px}
-    .slot-val{font-size:12px;color:#f3d190;white-space:nowrap}
+    .slot:not(.cheio) .slot-txt b{color:var(--muted);font-weight:400}
+    .slot.cheio .slot-txt b{color:#f6e2bb}
+    .slot-val{font-size:12px;color:#f3d190;white-space:nowrap;font-weight:700}
     .recipe{
       display:grid;grid-template-columns:32px 1fr auto;gap:10px;align-items:center;text-align:left;
       background:#141010;border:1px solid #2f251d;border-radius:12px;padding:9px 11px;color:var(--text);
@@ -3626,11 +3648,11 @@ function desenharMochila(){
       </div>
       <div class="conta">
         <div class="conta-l">
-          <span class="conta-top">⚔️ Golpe <b>${golpeTotal()}</b></span>
+          <span class="conta-top"><span class="ct-label">⚔️ Golpe</span><b>${golpeTotal()}</b></span>
           <small>${parcelas('só a base', [['base',G.golpeBase - relMartelo],['🔨 relíquia',relMartelo],['🗡️ arma',armaV]])}</small>
         </div>
         <div class="conta-l">
-          <span class="conta-top">🛡️ Defesa <b>${defesaTotal()}</b> <i>−${Math.round(reducaoDefesa()*100)}% de dano</i></span>
+          <span class="conta-top"><span class="ct-label">🛡️ Defesa</span><b>${defesaTotal()}</b><i>−${Math.round(reducaoDefesa()*100)}% de dano</i></span>
           <small>${parcelas('nenhuma ainda', [['base',G.defesaBase - relEscama],['🐲 relíquia',relEscama],['🛡️ armadura',armaduraV]])}</small>
         </div>
       </div>
@@ -4673,7 +4695,7 @@ $('#novoComecar').onclick = () => {
 };
 /* Sobe junto com o arquivo: se a home mostra outra data, o aparelho ainda
    está servindo a versão velha do cache. */
-const VERSAO = 'v19 · 18/08 · cartão pra compartilhar';
+const VERSAO = 'v20 · 18/08 · hierarquia da mochila';
 $('#lbVersao').textContent = VERSAO;
 $('#btnStart').onclick = () => {
   /* Na primeira vez o jogo começa e pronto: escolher classe e distribuir
