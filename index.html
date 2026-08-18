@@ -121,6 +121,8 @@
     .life-bar{height:14px;border-radius:999px;background:#170f0e;border:1px solid #43302c;overflow:hidden}
     .life-fill{height:100%;background:linear-gradient(90deg,#8c332c,#e0685a);transition:width .3s}
     .chips{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;font-size:13px}
+    .ico{width:1.05em;height:1.05em;vertical-align:-.16em;flex:none}
+    .ico.g{width:1.25em;height:1.25em;vertical-align:-.24em}
     .chip{background:#151110;border:1px solid #35291f;border-radius:999px;padding:5px 11px;color:#e9d9be}
     /* Numa tela estreita os cinco selos passam de uma linha e roubam altura
        do tabuleiro. Aperta-se o selo em vez de deixar quebrar. */
@@ -223,7 +225,10 @@
     .act{
       min-height:56px;border-radius:14px;border:1px solid #4a382b;background:#1b1511;color:var(--text);
       font-weight:700;display:grid;gap:2px;place-content:center;text-align:center;touch-action:manipulation;
+      padding:6px 8px;
     }
+    /* Sem isto o SVG vira uma célula da grade e o rótulo desce uma linha. */
+    .act-t{display:flex;align-items:center;justify-content:center;gap:7px;line-height:1.2}
     .act small{font-weight:400;font-size:11px;color:var(--muted)}
     .act:active{background:#291f18}
     .act.main{background:linear-gradient(180deg,var(--gold2),var(--gold));color:#24170b;border:none}
@@ -407,11 +412,17 @@
     .sheet-acoes{display:grid;grid-template-columns:auto 1fr;gap:9px;margin-top:4px}
 
     /* ===== Classes, relíquias e acampamento ===== */
-    .classes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    /* Uma coluna sempre. A folha tem 420px no máximo: com três colunas cada
+       cartão ficava com 123px e a linha do poder saía duas palavras por vez,
+       em qualquer aparelho. Ícone à esquerda, texto à direita. */
+    .classes{display:grid;gap:8px}
     .classcard{
-      display:grid;gap:4px;justify-items:center;text-align:center;padding:11px 7px;border-radius:14px;
+      display:grid;grid-template-columns:34px 1fr;column-gap:10px;gap:4px;
+      justify-items:start;text-align:left;padding:11px 12px;border-radius:14px;
       border:1px solid #3b2f26;background:#141010;color:var(--text);line-height:1.3;touch-action:manipulation;
     }
+    .classcard .cc-ico{grid-column:1;grid-row:1;align-self:start}
+    .classcard > *:not(.cc-ico){grid-column:2}
     .classcard.sel{border-color:var(--gold);background:#271c12;box-shadow:0 0 0 2px rgba(215,168,79,.14)}
     .cc-poder{display:block;font-size:11px;color:#c0aee0;line-height:1.4;margin-top:3px}
     .cc-poder b{color:#d9c6f5}
@@ -421,7 +432,7 @@
     .classcard b{font-size:14px}
     .classcard small{font-size:11px;color:var(--muted)}
     .classcard .cc-stats{font-size:10px;color:#c8b393;letter-spacing:.02em}
-    @media(max-width:520px){.classes{grid-template-columns:1fr}.classcard{grid-template-columns:34px 1fr;justify-items:start;text-align:left}.classcard .cc-ico{grid-row:span 3}}
+
 
     .relics{display:grid;gap:7px}
     .relic{display:grid;grid-template-columns:30px 1fr;gap:9px;align-items:center;background:#141010;border:1px solid #2f251d;border-radius:11px;padding:8px 10px}
@@ -707,6 +718,35 @@
   </style>
 </head>
 <body>
+<!-- Ícones da interface. Emoji é bonito mas cada aparelho desenha o seu: o
+     ⚔️ do iPhone não é o do Android, e nenhum dos dois combina com o dourado
+     e a serifa do resto. Estes são desenhados aqui, herdam a cor de quem os
+     usa e ficam iguais em toda tela. As criaturas continuam em emoji (e nas
+     artes que você subir) — lá a variedade é o ponto. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <g id="g-ico" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></g>
+  <symbol id="i-vida" viewBox="0 0 24 24"><path d="M12 20.2C7 16.6 3.6 13.6 3.6 9.9A4.3 4.3 0 0 1 12 8a4.3 4.3 0 0 1 8.4 1.9c0 3.7-3.4 6.7-8.4 10.3Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></symbol>
+  <symbol id="i-golpe" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.4 14.3 7v6.2H9.7V7L12 2.4Z"/><path d="M7 13.9h10"/><path d="M12 13.9v5"/><path d="M10.4 20.4h3.2"/></g></symbol>
+  <symbol id="i-defesa" viewBox="0 0 24 24"><path d="M12 3.2 5 5.8v5.4c0 4.2 2.9 7.6 7 9.6 4.1-2 7-5.4 7-9.6V5.8L12 3.2Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></symbol>
+  <symbol id="i-ouro" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4.3"/></g></symbol>
+  <symbol id="i-pontos" viewBox="0 0 24 24"><path d="m12 3.4 2.6 5.6 6 .8-4.4 4.2 1.1 6-5.3-2.9-5.3 2.9 1.1-6L3.4 9.8l6-.8L12 3.4Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></symbol>
+  <symbol id="i-pocao" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3h4"/><path d="M10.7 3v5.2L6.9 16a3.2 3.2 0 0 0 2.9 4.7h4.4A3.2 3.2 0 0 0 17.1 16l-3.8-7.8V3"/><path d="M8.1 13.6h7.8"/></g></symbol>
+  <symbol id="i-escada" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M7.5 3.5v17M16.5 3.5v17"/><path d="M7.5 7.4h9M7.5 12h9M7.5 16.6h9"/></g></symbol>
+  <symbol id="i-mochila" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M6 9.6A4 4 0 0 1 10 6h4a4 4 0 0 1 4 3.6v8.6A2.2 2.2 0 0 1 15.8 20H8.2A2.2 2.2 0 0 1 6 18.2V9.6Z"/><path d="M9.6 6.2V5a2.4 2.4 0 0 1 4.8 0v1.2"/><path d="M9.4 13.2h5.2v3.4H9.4z"/></g></symbol>
+  <symbol id="i-forja" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5h9.5c2.6 0 4-1.4 4.7-3h2.3v3.6c0 2.6-2.4 4.4-5.2 4.4H9.6"/><path d="M9.6 15.5 8.2 20h7.2l-1.4-4.5"/><path d="M6.6 20h10.2"/><path d="M4 10.5 6.2 8"/></g></symbol>
+  <symbol id="i-reliquia" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="m9.6 2.8 1.5 3.6 3.6 1.5-3.6 1.5-1.5 3.6-1.5-3.6L4.5 7.9l3.6-1.5 1.5-3.6Z"/><path d="m16.8 13 1 2.4 2.4 1-2.4 1-1 2.4-1-2.4-2.4-1 2.4-1 1-2.4Z"/></g></symbol>
+  <symbol id="i-bestiario" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M4 4.6h5.2A2.8 2.8 0 0 1 12 7.4v12a2.4 2.4 0 0 0-2.4-2.1H4V4.6Z"/><path d="M20 4.6h-5.2A2.8 2.8 0 0 0 12 7.4v12a2.4 2.4 0 0 1 2.4-2.1H20V4.6Z"/></g></symbol>
+  <symbol id="i-conquista" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7.4 3.6h9.2v5.2a4.6 4.6 0 0 1-9.2 0V3.6Z"/><path d="M7.4 5.2H4.8v1.6a3 3 0 0 0 2.8 3M16.6 5.2h2.6v1.6a3 3 0 0 1-2.8 3"/><path d="M12 13.4v3.4M8.6 20.4h6.8l-.8-3.6H9.4l-.8 3.6Z"/></g></symbol>
+  <symbol id="i-dado" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 2.8 20.6 8v8L12 21.2 3.4 16V8L12 2.8Z"/><path d="M12 2.8v6.4M12 9.2 3.4 8M12 9.2 20.6 8"/></g></symbol>
+  <symbol id="i-fugir" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13.6 5.2a1.5 1.5 0 1 0 0-.1"/><path d="m9 20.4 2.4-5.2-2.6-2.6.9-4.4 3.5 2.3 3 .6"/><path d="m11.4 15.2 3.4 2.2 1.2 3M8.7 8.2 5.4 9.6l-1 3"/></g></symbol>
+  <symbol id="i-diario" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.6 3.6h10a2 2 0 0 1 2 2v12.8a2 2 0 0 1-2 2h-9a2.4 2.4 0 0 1-2.4-2.4V6a2.4 2.4 0 0 1 2.4-2.4Z"/><path d="M8.6 8h7M8.6 11.6h7M8.6 15.2h4.4"/></g></symbol>
+  <symbol id="i-escapar" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13.4 3.6H6.8a1.6 1.6 0 0 0-1.6 1.6v13.6a1.6 1.6 0 0 0 1.6 1.6h6.6"/><path d="M17 8.4 20.6 12 17 15.6M20.2 12h-9"/></g></symbol>
+  <symbol id="i-ferro" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M5.6 14.6h12.8l1.8 4.4H3.8l1.8-4.4Z"/><path d="M8.4 9.4h8l1.4 4.2H7l1.4-4.2Z"/></g></symbol>
+  <symbol id="i-couro" viewBox="0 0 24 24"><path d="M6.2 4.8c3.4-1.6 8.2-1.6 11.6 0 1 3 .6 6.2-.8 8.6-1.2 2-1.2 3.6-.4 5.4-3 1.2-6.8 1.2-9.8 0 .8-1.8.8-3.4-.4-5.4-1.4-2.4-1.8-5.6-.8-8.6Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></symbol>
+  <symbol id="i-cristal" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="m12 2.6 6.6 6.2L12 21.4 5.4 8.8 12 2.6Z"/><path d="M5.4 8.8h13.2M12 2.6v18.8"/></g></symbol>
+  <symbol id="i-erva" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.4c0-6 2.2-9.8 7.4-11.6.8 6.4-2 11-7.4 11.6Z"/><path d="M11.4 20.4C10.8 15.6 8.4 12.6 4.4 11.4c-.4 4.8 2.2 8.2 7 9Z"/><path d="M12 20.4v-4"/></g></symbol>
+  <symbol id="i-essencia" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><circle cx="12" cy="12" r="7.4"/><path d="M9 8.6c-1.2.9-2 2.2-2.2 3.7"/><path d="M14.6 15.4c1.1-.8 1.9-2 2.2-3.4"/></g></symbol>
+</defs></svg>
 <div class="app">
   <header class="hero">
     <div>
@@ -723,9 +763,9 @@
             <div id="missaoBox"></div>
             <div id="metaBox"></div>
             <div class="atalhos">
-              <button class="atalho" id="btnRelics"><span>✨</span>Relíquias<b id="lbRelCount"></b></button>
-              <button class="atalho" id="btnBestiary"><span>📖</span>Bestiário<b id="lbBestCount"></b></button>
-              <button class="atalho" id="btnAchieve"><span>🏆</span>Conquistas<b id="lbAchCount"></b></button>
+              <button class="atalho" id="btnRelics"><span><svg class="ico g" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-reliquia"/></svg></span>Relíquias<b id="lbRelCount"></b></button>
+              <button class="atalho" id="btnBestiary"><span><svg class="ico g" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-bestiario"/></svg></span>Bestiário<b id="lbBestCount"></b></button>
+              <button class="atalho" id="btnAchieve"><span><svg class="ico g" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-conquista"/></svg></span>Conquistas<b id="lbAchCount"></b></button>
               <button class="atalho" id="btnTutorial"><span>❓</span>Como jogar<b></b></button>
             </div>
             <div class="scoreline">
@@ -750,11 +790,11 @@
   <div class="play-top">
     <button class="icon-btn" id="playExit" aria-label="Sair do jogo">✕</button>
     <div class="life">
-      <div class="life-top"><span>Vida</span><b><span id="pHp">20</span> / <span id="pHpMax">20</span></b></div>
+      <div class="life-top"><span><svg class="ico " viewBox="0 0 24 24" aria-hidden="true"><use href="#i-vida"/></svg> Vida</span><b><span id="pHp">20</span> / <span id="pHpMax">20</span></b></div>
       <div class="life-bar"><div class="life-fill" id="pLife"></div></div>
     </div>
-    <button class="icon-btn" id="playRelics" aria-label="Relíquias">✨</button>
-    <button class="icon-btn" id="playDiary" aria-label="Diário da aventura">📜</button>
+    <button class="icon-btn" id="playRelics" aria-label="Relíquias"><svg class="ico g" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-reliquia"/></svg></button>
+    <button class="icon-btn" id="playDiary" aria-label="Diário da aventura"><svg class="ico g" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-diario"/></svg></button>
   </div>
 
   <div class="chips" id="pChips"></div>
@@ -1290,8 +1330,11 @@ const PASTA_ARTE = 'img/';
 function arte(b, cls){
   return `<img class="${cls} arte" src="${PASTA_ARTE}${b.id}.png" alt="${escapeHtml(b.nome)}" data-emoji="${b.icone}">`;
 }
-function arteItem(id, emoji, cls){
-  return `<img class="${cls} arte" src="${PASTA_ARTE}itens/${id}.png" alt="" data-emoji="${emoji}">`;
+function arteItem(id, emoji, cls, svgNome){
+  /* O reserva é um atributo, e SVG não cabe em atributo: guardamos o nome do
+     ícone e montamos o desenho só se a imagem faltar. */
+  const reserva = svgNome ? ` data-ico="${svgNome}"` : '';
+  return `<img class="${cls} arte" src="${PASTA_ARTE}itens/${id}.png" alt="" data-emoji="${escapeHtml(emoji || '')}"${reserva}>`;
 }
 function ligarArte(raiz){
   (raiz || document).querySelectorAll('img.arte').forEach(img => {
@@ -1300,7 +1343,8 @@ function ligarArte(raiz){
     img.onerror = () => {
       const s = document.createElement('span');
       s.className = img.className.replace('arte','');
-      s.textContent = img.dataset.emoji;
+      if(img.dataset.ico) s.innerHTML = ico(img.dataset.ico);
+      else s.textContent = img.dataset.emoji;
       img.replaceWith(s);
     };
     if(img.complete && img.naturalWidth === 0) img.onerror();
@@ -1308,13 +1352,13 @@ function ligarArte(raiz){
 }
 
 const MATERIAIS = {
-  ferro:   {nome:'Ferro',   icone:'🔩'},
-  couro:   {nome:'Couro',   icone:'🟫'},
-  cristal: {nome:'Cristal', icone:'🔷'},
-  erva:    {nome:'Erva',    icone:'🌿'},
+  ferro:   {nome:'Ferro',   icone:'🔩', svg:'ferro'},
+  couro:   {nome:'Couro',   icone:'🟫', svg:'couro'},
+  cristal: {nome:'Cristal', icone:'🔷', svg:'cristal'},
+  erva:    {nome:'Erva',    icone:'🌿', svg:'erva'},
   /* Só cai de guardião — é o que separa o equipamento lendário de
      simplesmente ter juntado ouro. */
-  essencia:{nome:'Essência', icone:'🔮', soChefe:true}
+  essencia:{nome:'Essência', icone:'🔮', svg:'essencia', soChefe:true}
 };
 
 /* o que cada região dá de material ao vasculhar */
@@ -1336,7 +1380,7 @@ function materiaisDaRegiao(regiao){
   caem.forEach(k => conta[k] = (conta[k]||0) + 1);
   return Object.entries(conta)
     .sort((a,b) => b[1]-a[1])
-    .map(([k,n]) => `${MATERIAIS[k].icone} ${MATERIAIS[k].nome}${n > 1 ? ` <b>×${n}</b>` : ''}`)
+    .map(([k,n]) => `${icoMat(k)} ${MATERIAIS[k].nome}${n > 1 ? ` <b>×${n}</b>` : ''}`)
     .join('   ');
 }
 
@@ -1752,6 +1796,12 @@ const iAt = (x,y) => y*N+x;
 const espera = ms => new Promise(r => setTimeout(r, ms));
 const faixaDe = (v, faixas) => faixas.find(f => v >= f.min && v <= f.max);
 function vibrar(ms){ try{ navigator.vibrate?.(ms); }catch(e){} }
+/* Ícone da interface. Herda a cor de quem o usa, então o mesmo desenho
+   serve no selo dourado, no botão e no texto acinzentado. */
+const ico = (nome, cls='') => `<svg class="ico ${cls}" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-${nome}"/></svg>`;
+/* Material: a arte que você subir em img/itens/mat-<id>.png ganha do ícone;
+   sem ela, entra o desenho da interface em vez do emoji. */
+const icoMat = k => MATERIAIS[k] && MATERIAIS[k].svg ? ico(MATERIAIS[k].svg) : (MATERIAIS[k] ? MATERIAIS[k].icone : '');
 const bicho = id => BESTIARIO.find(b => b.id === id);
 const receita = id => RECEITAS.find(r => r.id === id);
 /* Vale para os dois espaços: nem forjar duas vezes a mesma peça, nem
@@ -1945,10 +1995,10 @@ function temMateriais(r){
 function faltaPara(r){
   const faltas = [];
   const preco = precoForja(r);
-  if(G.ouro < preco) faltas.push(`🪙 ${preco - G.ouro}`);
+  if(G.ouro < preco) faltas.push(`${ico('ouro')} ${preco - G.ouro}`);
   Object.entries(r.mats).forEach(([k,q]) => {
     const tem = G.mats[k] || 0;
-    if(tem < q) faltas.push(`${MATERIAIS[k].icone} ${q - tem}`);
+    if(tem < q) faltas.push(`${icoMat(k)} ${q - tem}`);
   });
   return faltas.join('  ');
 }
@@ -3325,7 +3375,7 @@ function abrirForja(){
 function desenharForja(){
   $('#forgeGold').textContent = G.ouro;
   $('#forgeMats').innerHTML = Object.entries(MATERIAIS).map(([k,m]) =>
-    `<span class="chip">${arteItem('mat-'+k, m.icone, 'mat-art')} ${m.nome} <b>${G.mats[k]||0}</b></span>`
+    `<span class="chip">${arteItem('mat-'+k, m.icone, 'mat-art', m.svg)} ${m.nome} <b>${G.mats[k]||0}</b></span>`
   ).join('');
   /* Dezenove receitas soltas numa lista só viravam parede de texto. Agora é
      uma linha por espaço, mostrando o que você usa e o próximo degrau —
@@ -3339,8 +3389,8 @@ function desenharForja(){
   ];
   const linhaCusto = r => {
     const preco = precoForja(r);
-    return [`🪙 ${preco}`]
-      .concat(Object.entries(r.mats).map(([k,q]) => `${MATERIAIS[k].icone} ${q}`)).join('  ');
+    return [`${ico('ouro')} ${preco}`]
+      .concat(Object.entries(r.mats).map(([k,q]) => `${icoMat(k)} ${q}`)).join('  ');
   };
 
   let html = '';
@@ -3515,7 +3565,7 @@ function desenharMochila(){
 
   const mats = Object.entries(MATERIAIS).map(([k,m]) => {
     const q = G.mats[k]||0;
-    return `<span class="chip ${q?'':'vazio'}">${arteItem('mat-'+k, m.icone, 'mat-art')} ${m.nome} <b>${q}</b></span>`;
+    return `<span class="chip ${q?'':'vazio'}">${arteItem('mat-'+k, m.icone, 'mat-art', m.svg)} ${m.nome} <b>${q}</b></span>`;
   }).join('');
 
   /* De onde sai cada número: sem isso o jogador vê "Golpe 7" e não faz ideia
@@ -3883,16 +3933,16 @@ function render(){
     ? `<span class="chip clima" title="${cl.desc}">${cl.icone} ${cl.nome}</span>` : '';
   const falta = G.masmorra && !ultimoAndar() ? faltaMatar() : 0;
   const chipCota = G.masmorra && !ultimoAndar()
-    ? `<span class="chip cota ${falta?'':'ok'}" title="a escada só abre quando a cota do andar for cumprida">🪜 <b>${
+    ? `<span class="chip cota ${falta?'':'ok'}" title="a escada só abre quando a cota do andar for cumprida">${ico('escada')} <b>${
         falta ? `faltam ${falta}` : 'escada aberta'}</b></span>`
     : '';
   /* Sem selo de bênção aqui: numa tela estreita ele quebra a linha dos
      selos e o tabuleiro encolhe. A lista fica no botão ✨ da barra. */
   $('#pChips').innerHTML = chipLocal + chipClima + chipCota + chipSeq + `
-    <span class="chip">⭐ <b>${G.pontos}</b></span>
-    <span class="chip">⚔️ <b>${golpeTotal()}</b></span>
-    <span class="chip">🛡️ <b>${defesaTotal()}</b></span>
-    <span class="chip">🪙 <b>${G.ouro}</b></span>`;
+    <span class="chip">${ico('pontos')} <b>${G.pontos}</b></span>
+    <span class="chip">${ico('golpe')} <b>${golpeTotal()}</b></span>
+    <span class="chip">${ico('defesa')} <b>${defesaTotal()}</b></span>
+    <span class="chip">${ico('ouro')} <b>${G.ouro}</b></span>`;
 
   const mid = $('#playMid'), acts = $('#pActs');
   if(G.modo !== 'mapa') $('#banner').classList.remove('on');
@@ -3947,7 +3997,7 @@ function render(){
                   <span>🪙 recompensa ×${nv.premio.toFixed(1)}</span>
                   <span>✨ ${nv.frags} relíquia${nv.frags>1?'s':''}</span>
                 </span>
-                <span class="offer-mats">⛏️ ${materiaisDaRegiao(of.regiao)}</span>
+                <span class="offer-mats">${materiaisDaRegiao(of.regiao)}</span>
                 ${aviso}
               </button>`;
           }).join('')}
@@ -3955,10 +4005,10 @@ function render(){
       </div>`;
     $$('[data-entrar]').forEach(b => b.onclick = () => entrarNaMasmorra(+b.dataset.entrar));
     acts.innerHTML = `
-      <button class="act main" data-act="forja">⚒️ Forja<small>gaste ouro e materiais</small></button>
-      <button class="act" data-act="reliquias">✨ Relíquias<small>${RELIQUIAS.filter(r=>nivelRel(r.id)>0).length}/${RELIQUIAS.length} encontradas</small></button>
-      <button class="act" data-act="mochila">🎒 Mochila<small>equipamento e materiais</small></button>
-      <button class="act" data-act="conquistas">🏆 Conquistas<small>${Object.keys(META.conquistas||{}).length}/${CONQUISTAS.length} desbloqueadas</small></button>`;
+      <button class="act main" data-act="forja"><span class="act-t">${ico('forja','g')} Forja</span><small>gaste ouro e materiais</small></button>
+      <button class="act" data-act="reliquias"><span class="act-t">${ico('reliquia','g')} Relíquias</span><small>${RELIQUIAS.filter(r=>nivelRel(r.id)>0).length}/${RELIQUIAS.length} encontradas</small></button>
+      <button class="act" data-act="mochila"><span class="act-t">${ico('mochila','g')} Mochila</span><small>equipamento e materiais</small></button>
+      <button class="act" data-act="conquistas"><span class="act-t">${ico('conquista','g')} Conquistas</span><small>${Object.keys(META.conquistas||{}).length}/${CONQUISTAS.length} desbloqueadas</small></button>`;
   }else if(G.modo === 'vitoria'){
     mid.innerHTML = `
       <div class="over-panel">
@@ -3980,7 +4030,7 @@ function render(){
       </div>`;
     acts.innerHTML = `
       <button class="act main wide" data-act="renascer">Recomeçar com as relíquias</button>
-      <button class="act" data-act="bestiario">📖 Bestiário</button>
+      <button class="act" data-act="bestiario"><span class="act-t">${ico('bestiario','g')} Bestiário</span></button>
       <button class="act" data-act="sair">Sair</button>`;
   }else if(G.modo === 'combate'){
     const inim = G.inimigo;
@@ -4014,19 +4064,19 @@ function render(){
         </div>
       </div>`;
     acts.innerHTML = `
-      <button class="act ${pedeGuarda?'':'main'}" data-act="atacar">⚔️ Atacar<small>${
+      <button class="act ${pedeGuarda?'':'main'}" data-act="atacar"><span class="act-t">${ico('golpe','g')} Atacar</span><small>${
         G.guardaCarregada ? 'guarda reforçada: +60% de dano'
         : inim.guardando ? 'ele apara boa parte agora' : 'gira o dado'}</small></button>
-      <button class="act ${pedeGuarda?'main urgente':''}" data-act="defender">🛡️ Defender<small>${
+      <button class="act ${pedeGuarda?'main urgente':''}" data-act="defender"><span class="act-t">${ico('defesa','g')} Defender</span><small>${
         pedeGuarda ? INTENCOES[inim.intencao].resposta : 'leva um terço do dano e reforça seu golpe'
       }</small></button>
       <button class="act ${poderPronto()?'poder':''}" data-act="poder" ${poderPronto()?'':'disabled'}>${
         poderDaClasse().icone} ${poderDaClasse().nome}<small>${
         poderPronto() ? poderDaClasse().desc : `pronta em ${G.recarga} ${G.recarga===1?'turno':'turnos'}`}</small></button>
-      <button class="act" data-act="pocao" ${G.pocoes>0?'':'disabled'}>🧪 Poção<small>${G.pocoes} restantes • +${curaDaPocao()} de vida</small></button>
-      <button class="act" data-act="itens" ${quantosUsaveis()?'':'disabled'}>🎒 Itens<small>${
+      <button class="act" data-act="pocao" ${G.pocoes>0?'':'disabled'}><span class="act-t">${ico('pocao','g')} Poção</span><small>${G.pocoes} restantes • +${curaDaPocao()} de vida</small></button>
+      <button class="act" data-act="itens" ${quantosUsaveis()?'':'disabled'}><span class="act-t">${ico('mochila','g')} Itens</span><small>${
         quantosUsaveis() ? quantosUsaveis()+' para usar' : 'nenhum item de uso'}</small></button>
-      <button class="act wide" data-act="fugir" ${inim.chefe?'disabled':''}>🏃 Fugir<small>${
+      <button class="act wide" data-act="fugir" ${inim.chefe?'disabled':''}><span class="act-t">${ico('fugir','g')} Fugir</span><small>${
         inim.chefe ? 'não dá para fugir de um guardião'
         : (G.sequencia > 1 ? `perde a sequência de ${G.sequencia}`
                            : 'precisa tirar '+faixasFuga().find(f=>f.ok).min+' ou mais')
@@ -4060,10 +4110,10 @@ function render(){
     $$('[data-cell]').forEach(b => b.onclick = () => irAte(+b.dataset.cell));
     const tentativas = FUGAS_POR_MASMORRA - (G.fugasUsadas || 0);
     acts.innerHTML = `
-      <button class="act" data-act="mochila">🎒 Mochila<small>equipamento e materiais</small></button>
-      <button class="act" data-act="pocao" ${G.pocoes>0?'':'disabled'}>🧪 Poção<small>${G.pocoes} restantes • +${curaDaPocao()} de vida</small></button>
-      <button class="act" data-act="bestiario">📖 Bestiário<small>${Object.keys(META.bestiario).length}/${BESTIARIO.length} criaturas</small></button>
-      <button class="act" data-act="escapar" ${tentativas>0?'':'disabled'}>🚪 Escapar<small>${
+      <button class="act" data-act="mochila"><span class="act-t">${ico('mochila','g')} Mochila</span><small>equipamento e materiais</small></button>
+      <button class="act" data-act="pocao" ${G.pocoes>0?'':'disabled'}><span class="act-t">${ico('pocao','g')} Poção</span><small>${G.pocoes} restantes • +${curaDaPocao()} de vida</small></button>
+      <button class="act" data-act="bestiario"><span class="act-t">${ico('bestiario','g')} Bestiário</span><small>${Object.keys(META.bestiario).length}/${BESTIARIO.length} criaturas</small></button>
+      <button class="act" data-act="escapar" ${tentativas>0?'':'disabled'}><span class="act-t">${ico('escapar','g')} Escapar</span><small>${
         tentativas > 0
           ? `tire ${alvoDaFuga()}+ no dado • ${tentativas} ${tentativas===1?'tentativa':'tentativas'}`
           : 'sem tentativas — agora é seguir ou cair'
@@ -4404,7 +4454,7 @@ $('#novoComecar').onclick = () => {
 };
 /* Sobe junto com o arquivo: se a home mostra outra data, o aparelho ainda
    está servindo a versão velha do cache. */
-const VERSAO = 'v16 · 18/08 · primeira jornada';
+const VERSAO = 'v17 · 18/08 · ícones';
 $('#lbVersao').textContent = VERSAO;
 $('#btnStart').onclick = () => {
   /* Na primeira vez o jogo começa e pronto: escolher classe e distribuir
@@ -4455,9 +4505,9 @@ desenharBotaoSom();
 document.addEventListener('visibilitychange', () => { if(!document.hidden) retomarSom(); });
 function desenharBotaoDado(){
   const b = $('#btnDado');
-  if(b) b.textContent = dadoLento()
-    ? '🎲 Dado: tela cheia a cada golpe'
-    : '🎲 Dado: rápido no golpe comum';
+  if(b) b.innerHTML = ico('dado','g') + (dadoLento()
+    ? ' Dado: tela cheia a cada golpe'
+    : ' Dado: rápido no golpe comum');
 }
 $('#zerarConfirma').onclick = zerarTudo;
 $('#tutNext').onclick = avancarTutorial;
