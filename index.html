@@ -293,16 +293,24 @@
     .band.hit{border-color:#a87c3d;background:#251b12;color:#f3d190}
     /* A mochila é a única tela que entra pelo lado: o gesto lembra abrir
        uma bolsa, e a diferença de movimento já diz qual tela é antes de ler. */
-    .ov.lateral{place-items:stretch;justify-items:end;padding:0}
+    /* A linha precisa ser presa em minmax(0,1fr): como linha automática ela
+       cresce até o conteúdo, o painel herda essa altura e escorre para fora
+       da tela em aparelho baixo. */
+    .ov.lateral{place-items:stretch;justify-items:end;padding:0;grid-template-rows:minmax(0,1fr)}
+    .ov.lateral.on{animation:fade .46s ease-out}
     .painel{
-      background:#131010;border-left:1px solid var(--line);width:min(100%,440px);height:100%;
-      display:grid;grid-template-rows:auto auto 1fr;
+      background:#131010;border-left:1px solid var(--line);width:min(100%,440px);
+      height:100%;max-height:100%;
+      /* minmax(0,1fr), não 1fr: com 1fr a linha do corpo se recusa a encolher
+         abaixo do próprio conteúdo, o painel fica mais alto que a tela e o
+         último botão some por baixo em vez de rolar. */
+      display:grid;grid-template-rows:auto auto minmax(0,1fr);
       box-shadow:-22px 0 48px rgba(0,0,0,.55);
       padding:calc(env(safe-area-inset-top,0px) + 12px) calc(env(safe-area-inset-right,0px) + 14px)
               calc(env(safe-area-inset-bottom,0px) + 14px) 14px;
-      animation:entraLado .26s cubic-bezier(.22,.9,.3,1);
+      animation:entraLado .46s cubic-bezier(.2,.85,.25,1);
     }
-    @keyframes entraLado{from{transform:translateX(100%);opacity:.4}to{transform:translateX(0);opacity:1}}
+    @keyframes entraLado{from{transform:translateX(100%)}to{transform:translateX(0)}}
     @media(prefers-reduced-motion:reduce){.painel{animation:none}}
     .painel-topo{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:10px}
     .painel-topo h3{margin:0;font:700 18px Georgia,serif;color:#f6deb0}
@@ -314,7 +322,10 @@
     .aba{background:transparent;border:0;border-radius:9px;padding:9px 6px;color:var(--muted);
       font:600 13px system-ui,sans-serif;cursor:pointer;transition:background .15s ease,color .15s ease}
     .aba.on{background:#2a2019;color:#f6deb0}
-    .painel-corpo{overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding-right:2px}
+    /* Folga no fim: sem ela o último botão encostava na borda de baixo e
+       parecia cortado, ainda mais com a barra do Safari por cima. */
+    .painel-corpo{min-height:0;overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+      padding:0 2px calc(env(safe-area-inset-bottom,0px) + 26px) 0}
     .aba-pag{display:none;gap:12px}
     .aba-pag.on{display:grid;animation:sobeAba .2s ease-out}
     @keyframes sobeAba{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
@@ -2880,7 +2891,7 @@ function contraAtaque(){
     inim.pulaTurno = false;
     anotar(`🌫️ O ${inim.nome} tateia na fumaça e perde o turno.`, 'good');
     if(inim.sangra) sangrarInimigo();
-    inim.intencao = proximaIntencao(inim);
+    if(G.modo === 'combate') inim.intencao = proximaIntencao(inim);
     return;
   }
   const intencao = inim.intencao || 'golpe';
@@ -2906,7 +2917,8 @@ function contraAtaque(){
     inim.guardando = true;
     anotar(`🛡️ O ${inim.nome} levanta a guarda: o seu próximo golpe rende menos.`, '');
     G.defendendo = false;
-    inim.intencao = proximaIntencao(inim);
+    if(inim.sangra) sangrarInimigo();
+    if(G.modo === 'combate') inim.intencao = proximaIntencao(inim);
     return;
   }
   if(intencao === 'cura'){
@@ -2916,7 +2928,8 @@ function contraAtaque(){
     anotar(`💚 O ${inim.nome} lambe as feridas: <b>+${volta}</b> de vida dele.`, 'bad');
     flutuarDano('#foeIcon', '+' + volta, 'cura');
     G.defendendo = false;
-    inim.intencao = proximaIntencao(inim);
+    if(inim.sangra) sangrarInimigo();
+    if(G.modo === 'combate') inim.intencao = proximaIntencao(inim);
     return;
   }
 
@@ -2938,7 +2951,8 @@ function contraAtaque(){
   if(G.imune){
     G.imune = false;
     anotar(`🧿 O talismã absorve o golpe do ${inim.nome} por inteiro.`, 'good');
-    inim.intencao = proximaIntencao(inim);
+    if(inim.sangra) sangrarInimigo();
+    if(G.modo === 'combate') inim.intencao = proximaIntencao(inim);
     return;
   }
   /* Segunda Casca: o primeiro golpe de cada combate não te alcança. */
@@ -2946,7 +2960,8 @@ function contraAtaque(){
     G.cascaUsada = true;
     G.defendendo = false;
     anotar(`🥚 <b>Segunda Casca:</b> o primeiro golpe do ${inim.nome} racha a casca e não te alcança.`, 'good');
-    inim.intencao = proximaIntencao(inim);
+    if(inim.sangra) sangrarInimigo();
+    if(G.modo === 'combate') inim.intencao = proximaIntencao(inim);
     return;
   }
   if(G.semGuarda){ G.semGuarda = false; G.defendendo = false; }
@@ -3878,6 +3893,21 @@ function render(){
   $('#pMsg').innerHTML = '<span>' + (G.msg || 'Toque numa sala vizinha para andar.') + '</span>';
   ligarArte($('#play'));
   dimensionarMapa();
+  ajustarRolagem();
+}
+
+/* Numa tela baixa a briga não cabe inteira: a criatura, o aviso de
+   intenção e as fichas de estado somam mais do que a área do meio, e o que
+   sobrava ficava cortado por baixo — foi assim que a "guarda reforçada"
+   sumiu pela metade. Em vez de chutar alturas, medimos: se o conteúdo passa
+   da caixa, a caixa rola. */
+function ajustarRolagem(){
+  const mid = $('#playMid');
+  if(!mid || !G) return;
+  if(G.modo === 'mapa') return;                                    // dimensionarMapa já decide
+  if(['hub','fim','vitoria','bencao'].includes(G.modo)) return;    // já nascem roláveis
+  mid.classList.remove('rolavel');
+  if(mid.scrollHeight > mid.clientHeight + 1) mid.classList.add('rolavel');
 }
 
 /* O mapa é quadrado e precisa caber na área do meio, que muda de altura
