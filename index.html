@@ -184,6 +184,14 @@
     .foe-name{font:700 clamp(20px,5.5vw,28px) Georgia,serif;color:#ffd3ae;margin:0}
     .foe-life{width:min(320px,82vw)}
     .foe-afixo{margin:-6px 0 0;font-size:12.5px;color:#e0a08a}
+    .intencao{display:grid;grid-template-columns:26px 1fr;gap:9px;align-items:center;text-align:left;
+      background:#171310;border:1px solid #3a2d23;border-radius:12px;padding:8px 11px;width:min(320px,82vw)}
+    .intencao.grave{border-color:#8a4a3a;background:#1f1512}
+    .int-ico{font-size:19px;text-align:center}
+    .int-txt{display:grid;gap:1px;min-width:0}
+    .int-txt b{font-size:13px;color:#e9d9be}
+    .intencao.grave .int-txt b{color:#ffb0a2}
+    .int-txt small{font-size:11px;color:var(--muted);line-height:1.35}
     .foe-estado{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;min-height:22px}
     .est{font-size:11px;border-radius:999px;padding:3px 9px;border:1px solid currentColor}
     .est.perigo{color:#ff9a90}
@@ -209,6 +217,8 @@
     .act small{font-weight:400;font-size:11px;color:var(--muted)}
     .act:active{background:#291f18}
     .act.main{background:linear-gradient(180deg,var(--gold2),var(--gold));color:#24170b;border:none}
+    .act.poder{border-color:#6d5a8a;background:#1d1728;color:#d9c6f5}
+    .act.poder small{color:#a292c4}
     .act.main small{color:#6b4a19}
     .act:disabled{opacity:.38}
     .act.wide{grid-column:1/-1}
@@ -329,6 +339,8 @@
       border:1px solid #3b2f26;background:#141010;color:var(--text);line-height:1.3;touch-action:manipulation;
     }
     .classcard.sel{border-color:var(--gold);background:#271c12;box-shadow:0 0 0 2px rgba(215,168,79,.14)}
+    .cc-poder{display:block;font-size:11px;color:#c0aee0;line-height:1.4;margin-top:3px}
+    .cc-poder b{color:#d9c6f5}
     .classcard.travada{opacity:.5;border-style:dashed}
     .classcard.travada b{color:var(--muted)}
     .classcard .cc-ico{font-size:26px}
@@ -875,8 +887,8 @@ const NIVEIS = [
   {id:'incomum',  nome:'Incomum',  icone:'🟢', cor:'#7fc98a', andares:4,  forca:1.5,  chefeVida:1.25,premio:1.5, frags:1, chance:.5,  regioes:['campo','deserto']},
   {id:'rara',     nome:'Rara',     icone:'🔵', cor:'#79b8e2', andares:5,  forca:2.1,  chefeVida:1.3, premio:2.2, frags:1, chance:.7,  regioes:['deserto','gelo']},
   {id:'epica',    nome:'Épica',    icone:'🟣', cor:'#b78de2', andares:6,  forca:2.8,  chefeVida:1.35,premio:3.0, frags:2, chance:.9,  regioes:['gelo','masmorra']},
-  {id:'lendaria', nome:'Lendária', icone:'🟠', cor:'#e8a24d', andares:8,  forca:3.1,  chefeVida:1.35, premio:4.2, frags:3, chance:1,   regioes:['masmorra','covil']},
-  {id:'demonio',  nome:'Demônio',  icone:'🔴', cor:'#e3564a', andares:10, forca:3.8,  chefeVida:1.4, premio:6.0, frags:5, chance:1,   regioes:['covil'], final:true}
+  {id:'lendaria', nome:'Lendária', icone:'🟠', cor:'#e8a24d', andares:8,  forca:3.5,  chefeVida:1.45, premio:4.2, frags:3, chance:1,   regioes:['masmorra','covil']},
+  {id:'demonio',  nome:'Demônio',  icone:'🔴', cor:'#e3564a', andares:10, forca:4.4,  chefeVida:1.55, premio:6.0, frags:5, chance:1,   regioes:['covil'], final:true}
 ];
 
 /* Afixos: o mesmo bestiário de 51 criaturas rende brigas diferentes quando
@@ -920,6 +932,36 @@ const AFIXOS = [
   {id:'furioso',  nome:'Furioso',  icone:'😤', desc:'bate cada vez mais forte',         vida:.95, golpe:.85, fura:.18}
 ];
 const AFIXO = Object.fromEntries(AFIXOS.map(a => [a.id, a]));
+
+/* Intenção: a criatura anuncia o que vai fazer antes de você escolher.
+   É o que transforma o turno de "aperte atacar" numa leitura — cada
+   intenção tem uma resposta certa diferente. */
+const INTENCOES = {
+  golpe:  {icone:'⚔️', texto:'vai atacar',                 resposta:'atacar de volta ou aparar'},
+  pesado: {icone:'⚠️', texto:'prepara um golpe pesado',    resposta:'defender corta quase tudo'},
+  duplo:  {icone:'💨', texto:'vai atacar duas vezes',      resposta:'defender vale por dois golpes'},
+  veneno: {icone:'🧪', texto:'vai cuspir veneno',          resposta:'defender evita o veneno'},
+  guarda: {icone:'🛡️', texto:'vai levantar a guarda',      resposta:'não desperdice seu melhor golpe agora'},
+  cura:   {icone:'💚', texto:'vai lamber as feridas',      resposta:'bata forte antes que ela se cure'}
+};
+
+/* Sorteia a próxima intenção a partir do estado da briga e do traço. */
+function proximaIntencao(inim){
+  const af = inim.afixo ? AFIXO[inim.afixo] : null;
+  const ferida = inim.vida < inim.vidaMax * .45;
+  const pesos = {golpe: 10, pesado: inim.chefe ? 5 : 3, duplo: 1, veneno: 0, guarda: 1.5, cura: 0};
+  if(af && af.duplo)   pesos.duplo  += 7;
+  if(af && af.veneno)  pesos.veneno += 6;
+  if(af && af.corte)   pesos.guarda += 3;
+  if(ferida && !inim.jaCurou) pesos.cura += inim.chefe ? 4 : 2.5;
+  // não repete a mesma intenção especial duas vezes seguidas
+  if(inim.intencao && inim.intencao !== 'golpe') pesos[inim.intencao] = 0;
+  const lista = Object.entries(pesos).filter(([,w]) => w > 0);
+  const soma = lista.reduce((t,[,w]) => t+w, 0);
+  let r = Math.random()*soma;
+  for(const [id,w] of lista){ r -= w; if(r <= 0) return id; }
+  return 'golpe';
+}
 const chanceDeAfixo = n => ({comum:0, incomum:.12, rara:.24, epica:.38, lendaria:.5, demonio:.62})[n.id] || 0;
 const nivelPorId = id => NIVEIS.find(n => n.id === id);
 
@@ -940,6 +982,24 @@ const CLASSES = [
    trava:{conquista:'rel1', comoDestravar:'Encontre a sua primeira relíquia'}}
 ];
 const classeLiberada = c => !c.trava || !!(META.conquistas||{})[c.trava.conquista];
+
+/* Habilidade de classe: o segundo verbo do combate. Cada uma responde
+   melhor a uma intenção diferente, o que finalmente faz as cinco classes
+   jogarem diferente em vez de serem cinco conjuntos de números. */
+const PODERES = {
+  guerreiro: {nome:'Investida',      icone:'🐗', recarga:4,
+    desc:'dano dobrado, mas você não consegue defender no próximo turno'},
+  cacador:   {nome:'Tiro Certeiro',  icone:'🎯', recarga:3,
+    desc:'rola dois dados e fica com o melhor, e ignora a guarda dela'},
+  alquimista:{nome:'Bomba de Ácido', icone:'🧪', recarga:5,
+    desc:'dano fixo alto que ignora armadura e escamas'},
+  ladino:    {nome:'Punhalada',      icone:'🗡️', recarga:4,
+    desc:'golpe quádruplo se a criatura já estiver ferida'},
+  clerigo:   {nome:'Prece',          icone:'✨', recarga:5,
+    desc:'cura você, limpa o veneno e reforça o próximo golpe'}
+};
+const poderDaClasse = () => G ? PODERES[G.classe] : null;
+const poderPronto = () => !!poderDaClasse() && (G.recarga || 0) <= 0;
 
 const REGIOES = [
   {id:'campo',    nome:'Campo Aberto',   icone:'🌿', de:1,  ate:3,
@@ -1570,6 +1630,7 @@ function novaAventura(nome, classeId, pontos){
     mats: {ferro:0, couro:0, cristal:0, erva:0, essencia:0}, pocaoNivel: 0,
     defendendo: false, masmorra: null, ofertas: [],
     bencaos: [], ofertaBencaos: [], vidaBencao: 0, peleUsada: false, fugasUsadas: 0, abatesNoAndar: 0,
+    recarga: 0, semGuarda: false,
     grid: [], pos: 0, inimigo: null, log: [], msg: '', modo: 'hub'
   };
   G.vidaMax += nivelRel('coracao')*3;
@@ -2033,6 +2094,9 @@ function chamarInimigo(id, afixoDado){
   G.guardaCarregada = false;
   G.veneno = 0;
   G.modo = 'combate';
+  G.inimigo.intencao = proximaIntencao(G.inimigo);
+  G.recarga = 0;
+  G.semGuarda = false;
   if(af) anotar(`${af.icone} Esta vem <b>${af.nome}</b> — ${af.desc}.`, 'bad');
 }
 const afixoDoInimigo = () => (G.inimigo && G.inimigo.afixo) ? AFIXO[G.inimigo.afixo] : null;
@@ -2271,15 +2335,18 @@ async function atacar(){
   }
 
   await espera(450);
+  const eraDuplo = G.inimigo && G.inimigo.intencao === 'duplo';
+  const guardaEra = G.defendendo;
   contraAtaque();
-  /* Veloz bate duas vezes — golpes mais fracos, mas o dobro de chances de
-     te pegar sem guarda. */
-  const af = afixoDoInimigo();
-  if(af && af.duplo && G.modo === 'combate'){
+  if(eraDuplo && G.modo === 'combate'){
     render();
-    await espera(420);
+    await espera(400);
     anotar('💨 E vem o segundo golpe.', 'bad');
+    G.defendendo = guardaEra;      // a guarda vale para os dois golpes
+    const guardado = G.inimigo.intencao;
+    G.inimigo.intencao = 'golpe';
     contraAtaque();
+    if(G.inimigo) G.inimigo.intencao = G.inimigo.intencao || guardado;
   }
   sofrerVeneno();
   ocupado = false;
@@ -2295,12 +2362,63 @@ function sofrerVeneno(){
   G.veneno = Math.max(0, G.veneno - 1);
 }
 
+async function usarPoder(){
+  if(G.modo !== 'combate' || ocupado || !poderPronto()) return;
+  const p = poderDaClasse();
+  const inim = G.inimigo;
+  ocupado = true;
+  G.recarga = p.recarga;
+  anotar(`${p.icone} <b>${p.nome}!</b>`, 'gold');
+
+  if(G.classe === 'clerigo'){
+    const cura = Math.round(G.vidaMax * .3);
+    curar(cura);
+    G.veneno = 0;
+    G.guardaCarregada = true;
+    anotar(`✨ Você reza: <b>+${cura} de vida</b>, veneno limpo e o próximo golpe reforçado.`, 'good');
+    render();
+    await espera(400);
+  }else if(G.classe === 'alquimista'){
+    const dano = Math.round(golpeTotal() * 1.9);
+    inim.vida -= dano;
+    anotar(`🧪 A bomba estoura no ${inim.nome}: <b>${dano}</b>, sem chance de aparar.`, 'good');
+    flutuarDano('#foeIcon', '−' + dano, 'forte', 'bomba');
+    bater('batida'); tremerTela();
+    if(inim.vida <= 0){
+      const ic = $('#foeIcon'); if(ic){ ic.classList.add('morrendo'); await espera(430); }
+      vencer(); ocupado = false; salvar(); render(); mostrarGanhoDeReliquia(); return;
+    }
+    render();
+    await espera(400);
+  }else{
+    /* Guerreiro, Caçador e Ladino batem — cada um do seu jeito. */
+    G.poderAtivo = G.classe;
+    await darUmGolpe(`${p.icone} ${p.nome} no ${inim.nome}`);
+    G.poderAtivo = null;
+    if(!G.inimigo){ ocupado = false; salvar(); render(); mostrarGanhoDeReliquia(); return; }
+    if(G.classe === 'guerreiro') G.semGuarda = true;
+    await espera(400);
+  }
+
+  contraAtaque();
+  sofrerVeneno();
+  ocupado = false;
+  salvar(); render();
+  mostrarGanhoDeReliquia();
+}
+
 /* Devolve o valor do dado, ou null se a criatura caiu no golpe. */
 async function darUmGolpe(titulo){
   const inim = G.inimigo;
-  const {valor, faixa} = await rolarDado({titulo, faixas:faixasGolpe(), rolar:dadoDoHeroi,
+  const mira = G.poderAtivo === 'cacador'
+    ? () => Math.max(dadoDoHeroi(), dadoDoHeroi())
+    : dadoDoHeroi;
+  const {valor, faixa} = await rolarDado({titulo, faixas:faixasGolpe(), rolar:mira,
                                           rapido: !(G.inimigo && G.inimigo.chefe)});
-  let dano = golpeTotal() * faixa.mult;
+  const ferida0 = inim.vida <= inim.vidaMax/2;
+  const critoDaPunhalada = G.poderAtivo === 'ladino' && ferida0;
+  let dano = golpeTotal() * (critoDaPunhalada ? 4 : faixa.mult);
+  if(G.poderAtivo === 'guerreiro' && dano > 0) dano *= 2;
   const reforcado = G.guardaCarregada && dano > 0;
   if(G.guardaCarregada){ G.guardaCarregada = false; if(dano > 0) dano = Math.round(dano * (temB('ritmo') ? 2.2 : 1.6)); }
 
@@ -2309,12 +2427,20 @@ async function darUmGolpe(titulo){
   if(dano > 0 && ferida && temB('carniceiro')) dano = Math.round(dano*1.5);
   const af = afixoDoInimigo();
   if(dano > 0 && af && af.corte) dano = Math.max(1, Math.round(dano*(1-af.corte)));
+  let aparou = false;
+  if(G.poderAtivo === 'cacador') inim.guardando = false;   // Tiro Certeiro fura a guarda
+  if(dano > 0 && inim.guardando){
+    dano = Math.max(1, Math.round(dano*.45));
+    inim.guardando = false;
+    aparou = true;
+  }
   if(dano > 0 && af && temB('feras')) dano = Math.round(dano*1.4);
 
   if(dano > 0){
     inim.vida -= dano;
     const carne = ferida && temB('carniceiro');
-    const nota = (carne ? ' <b>(Carniceiro)</b>' : '') + (reforcado ? ' <b>(guarda reforçada)</b>' : '');
+    const nota = (carne ? ' <b>(Carniceiro)</b>' : '') + (reforcado ? ' <b>(guarda reforçada)</b>' : '')
+               + (aparou ? ' <i>— ele aparou boa parte</i>' : '');
     anotar(`⚔️ ${faixa.texto} Você tira <b>${dano}</b> de vida do ${inim.nome}.${nota}`, 'good');
     bater('batida');
     if(faixa.mult >= 5){ clarao(); tremerTela(); }
@@ -2347,15 +2473,33 @@ async function darUmGolpe(titulo){
 function contraAtaque(){
   const inim = G.inimigo;
   if(!inim || G.modo !== 'combate') return;
+  const intencao = inim.intencao || 'golpe';
+
+  /* Guardar e curar gastam o turno da criatura — não há golpe nenhum. */
+  if(intencao === 'guarda'){
+    inim.guardando = true;
+    anotar(`🛡️ O ${inim.nome} levanta a guarda: o seu próximo golpe rende menos.`, '');
+    G.defendendo = false;
+    inim.intencao = proximaIntencao(inim);
+    return;
+  }
+  if(intencao === 'cura'){
+    inim.jaCurou = true;
+    const volta = Math.max(1, Math.round(inim.vidaMax * .14));
+    inim.vida = Math.min(inim.vidaMax, inim.vida + volta);
+    anotar(`💚 O ${inim.nome} lambe as feridas: <b>+${volta}</b> de vida dele.`, 'bad');
+    flutuarDano('#foeIcon', '+' + volta, 'cura');
+    G.defendendo = false;
+    inim.intencao = proximaIntencao(inim);
+    return;
+  }
+
   let bruto = inim.golpe + Math.floor(Math.random()*3);
   if(inim.furia) bruto = Math.round(bruto * (1 + inim.furia));
 
-  /* Golpe pesado: anunciado um turno antes, é o momento em que defender
-     deixa de ser desperdício de turno e passa a ser a jogada certa. */
-  const pesado = inim.carregando;
+  const pesado = intencao === 'pesado';
   if(pesado){
     bruto = Math.round(bruto*2.6);
-    inim.carregando = false;
     /* Atento: o golpe pesado nunca te acha de guarda baixa. */
     if(temB('atento') && !G.defendendo){
       G.defendendo = true;
@@ -2363,6 +2507,7 @@ function contraAtaque(){
     }
   }
 
+  if(G.semGuarda){ G.semGuarda = false; G.defendendo = false; }
   if(G.defendendo){
     bruto = temB('muralha') ? Math.ceil(bruto/5) : Math.ceil(bruto/3);
     G.defendendo = false;
@@ -2388,17 +2533,18 @@ function contraAtaque(){
     anotar(`${inim.icone} O ${inim.nome} te acerta: <b>−${dano} de vida</b>.${grito}`, 'bad');
   }
   const af2 = afixoDoInimigo();
-  if(af2 && af2.veneno && G.modo === 'combate' && !G.defendendo && !temB('antidoto')){
-    G.veneno = (G.veneno || 0) + af2.veneno;
-    anotar(`🧪 O golpe do ${inim.nome} te envenena.`, 'bad');
+  if(intencao === 'veneno' && G.modo === 'combate' && !G.defendendo && !temB('antidoto')){
+    G.veneno = (G.veneno || 0) + (af2?.veneno || 3);
+    anotar(`🧪 O veneno do ${inim.nome} te pega.`, 'bad');
   }
   if(af2 && af2.fura) inim.furia = (inim.furia || 0) + af2.fura;
 
-  /* Decide se o próximo golpe vem carregado — e avisa, para dar ao jogador
-     a chance de levantar a guarda. */
-  if(G.modo === 'combate' && !inim.carregando && Math.random() < (inim.chefe ? .34 : .2)){
-    inim.carregando = true;
-    anotar(`⚠️ O ${inim.nome} recua e <b>prepara um golpe pesado</b>. Defender agora vale a pena.`, 'bad');
+  if(G.recarga > 0) G.recarga--;
+  /* Escolhe e anuncia o próximo movimento, para você poder responder. */
+  if(G.modo === 'combate'){
+    inim.intencao = proximaIntencao(inim);
+    const it = INTENCOES[inim.intencao];
+    if(inim.intencao !== 'golpe') anotar(`${it.icone} O ${inim.nome} ${it.texto}. <i>${it.resposta}.</i>`, 'bad');
   }
 }
 
@@ -2487,9 +2633,13 @@ function defender(){
   ocupado = true;
   G.defendendo = true;
   anotar('🛡️ Você levanta a guarda e espera o golpe.', '');
+  const eraDuplo = G.inimigo && G.inimigo.intencao === 'duplo';
   contraAtaque();
-  const af = afixoDoInimigo();
-  if(af && af.duplo && G.modo === 'combate'){ G.defendendo = true; contraAtaque(); }
+  if(eraDuplo && G.modo === 'combate'){
+    G.defendendo = true;
+    G.inimigo.intencao = 'golpe';
+    contraAtaque();
+  }
   sofrerVeneno();
   ocupado = false;
   salvar(); render();
@@ -3047,6 +3197,7 @@ function render(){
       <button class="act" data-act="sair">Sair</button>`;
   }else if(G.modo === 'combate'){
     const inim = G.inimigo;
+    const pedeGuarda = ['pesado','duplo','veneno'].includes(inim.intencao);
     const pct = Math.max(0, (inim.vida/inim.vidaMax)*100);
     mid.innerHTML = `
       <div class="foe">
@@ -3057,20 +3208,32 @@ function render(){
           <div class="life-top"><span>Vida dele</span><b>${Math.max(0,inim.vida)} / ${inim.vidaMax}</b></div>
           <div class="life-bar"><div class="life-fill" style="width:${pct}%"></div></div>
         </div>
+        ${(() => {
+          const it = INTENCOES[inim.intencao || 'golpe'];
+          const grave = ['pesado','duplo','veneno'].includes(inim.intencao);
+          return `<div class="intencao ${grave?'grave':''}">
+            <span class="int-ico">${it.icone}</span>
+            <span class="int-txt"><b>${it.texto}</b><small>${it.resposta}</small></span>
+          </div>`;
+        })()}
         <div class="foe-estado">
-          ${inim.carregando ? '<span class="est perigo">⚠️ preparando golpe pesado</span>' : ''}
+          ${inim.guardando ? '<span class="est ruim">🛡️ ele está de guarda</span>' : ''}
           ${G.guardaCarregada ? '<span class="est bom">🛡️ guarda reforçada</span>' : ''}
           ${G.veneno ? `<span class="est ruim">🧪 envenenado −${G.veneno}/turno</span>` : ''}
         </div>
       </div>`;
     acts.innerHTML = `
-      <button class="act ${inim.carregando?'':'main'}" data-act="atacar">⚔️ Atacar<small>${
-        G.guardaCarregada ? 'guarda reforçada: +60% de dano' : 'gira o dado'}</small></button>
-      <button class="act ${inim.carregando?'main urgente':''}" data-act="defender">🛡️ Defender<small>${
-        inim.carregando ? 'ele vai dar um golpe pesado!' : 'leva um terço do dano e reforça seu golpe'
+      <button class="act ${pedeGuarda?'':'main'}" data-act="atacar">⚔️ Atacar<small>${
+        G.guardaCarregada ? 'guarda reforçada: +60% de dano'
+        : inim.guardando ? 'ele apara boa parte agora' : 'gira o dado'}</small></button>
+      <button class="act ${pedeGuarda?'main urgente':''}" data-act="defender">🛡️ Defender<small>${
+        pedeGuarda ? INTENCOES[inim.intencao].resposta : 'leva um terço do dano e reforça seu golpe'
       }</small></button>
+      <button class="act ${poderPronto()?'poder':''}" data-act="poder" ${poderPronto()?'':'disabled'}>${
+        poderDaClasse().icone} ${poderDaClasse().nome}<small>${
+        poderPronto() ? poderDaClasse().desc : `pronta em ${G.recarga} ${G.recarga===1?'turno':'turnos'}`}</small></button>
       <button class="act" data-act="pocao" ${G.pocoes>0?'':'disabled'}>🧪 Poção<small>${G.pocoes} restantes • +${curaDaPocao()} de vida</small></button>
-      <button class="act" data-act="fugir" ${inim.chefe?'disabled':''}>🏃 Fugir<small>${
+      <button class="act wide" data-act="fugir" ${inim.chefe?'disabled':''}>🏃 Fugir<small>${
         inim.chefe ? 'não dá para fugir de um guardião'
         : (G.sequencia > 1 ? `perde a sequência de ${G.sequencia}`
                            : 'precisa tirar '+faixasFuga().find(f=>f.ok).min+' ou mais')
@@ -3118,6 +3281,7 @@ function render(){
     const a = b.dataset.act;
     if(a === 'atacar') atacar();
     else if(a === 'defender') defender();
+    else if(a === 'poder') usarPoder();
     else if(a === 'pocao') beberPocao();
     else if(a === 'fugir') fugir();
     else if(a === 'escapar') escaparDaMasmorra();
@@ -3213,6 +3377,8 @@ function abrirDiario(){
 const TUTORIAL = [
   {icone:'🎲', titulo:'Uma regra só',
    texto:'Na hora de bater, o dado aparece na tela. <b>Quanto maior o número, maior o estrago.</b> Tirou 1, você erra; tirou 20, o dano é cinco vezes maior. É só isso que você precisa entender para jogar.'},
+  {icone:'👁️', titulo:'Ela avisa o que vem',
+   texto:'Antes de você escolher, a criatura mostra <b>o que vai fazer no turno seguinte</b> — golpe pesado, veneno, dois ataques, levantar a guarda ou se curar. Cada aviso pede uma resposta diferente: defender, bater forte agora, ou guardar o seu melhor golpe. Toda classe também tem uma <b>habilidade própria</b> com recarga.'},
   {icone:'👣', titulo:'Andando pelas salas',
    texto:'Toque numa <b>sala vizinha</b> para caminhar até ela. As salas escondem inimigos, baús, materiais, fontes que curam e forjas. O que você já visitou fica marcado no mapa.'},
   {icone:'🏕️', titulo:'O acampamento',
@@ -3366,6 +3532,7 @@ function desenharNovo(){
       <span class="cc-stats">${livre
         ? `❤️ ${x.vida} • ⚔️ ${x.golpe} • 🛡️ ${x.defesa} • 🧪 ${x.pocoes}`
         : 'ainda trancada'}</span>
+      ${livre && PODERES[x.id] ? `<span class="cc-poder">${PODERES[x.id].icone} <b>${PODERES[x.id].nome}</b> — ${PODERES[x.id].desc}</span>` : ''}
     </button>`;
   }).join('');
   $$('#novoClasses [data-classe]').forEach(b => b.onclick = () => {
