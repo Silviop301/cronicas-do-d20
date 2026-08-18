@@ -212,6 +212,11 @@
       border-radius:13px;padding:9px 12px;
     }
     .msg span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    /* A dica toma emprestada a faixa de mensagem, que já fica logo acima dos
+       botões: não empurra o tabuleiro e não tapa o botão que ela manda tocar. */
+    .msg.dica{border-color:#6b5330;background:#1e1812;color:#f6e2bb;animation:acendeDica .3s ease-out}
+    @keyframes acendeDica{from{opacity:.3;transform:translateY(6px)}to{opacity:1;transform:none}}
+    @media(prefers-reduced-motion:reduce){.msg.dica{animation:none}}
     .play-top,.chips,.acts{flex:none}
     .msg b{color:#f3d190}
     .acts{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
@@ -513,6 +518,8 @@
     .offer-top .reg{font-size:13px;color:#e9dcc4;font-weight:400}
     .offer-floors{font-size:12px;color:var(--muted)}
     .offer-bot{display:flex;gap:11px;flex-wrap:wrap;font-size:11px;color:var(--muted)}
+    .offer-mats{font-size:11px;color:#9db98f}
+    .offer-mats b{color:#c3dbb4}
     .offer-warn{font-size:11px;color:#ffc0b8;background:rgba(185,77,69,.16);border-radius:8px;padding:5px 8px;margin-top:3px}
 
     .banner{
@@ -1319,6 +1326,20 @@ const COLHEITA = {
   covil:    ['cristal','ferro','erva']
 };
 
+/* Quanto cada região rende de cada material, em chances. Estava só na
+   tabela: o jogador escolhia a entrada sem saber se ia voltar com o ferro
+   de que precisava. */
+function materiaisDaRegiao(regiao){
+  const caem = COLHEITA[regiao] || [];
+  if(!caem.length) return 'nada de especial';
+  const conta = {};
+  caem.forEach(k => conta[k] = (conta[k]||0) + 1);
+  return Object.entries(conta)
+    .sort((a,b) => b[1]-a[1])
+    .map(([k,n]) => `${MATERIAIS[k].icone} ${MATERIAIS[k].nome}${n > 1 ? ` <b>×${n}</b>` : ''}`)
+    .join('   ');
+}
+
 /* slot 'arma' soma no golpe; elmo, peito e escudo somam na defesa.
    Quatro degraus por espaço: o ouro do fim de jogo não tinha onde ser
    gasto, então a escada agora sobe até o lendário — e o lendário pede
@@ -2047,6 +2068,9 @@ function sortearOfertas(){
 function entrarNaMasmorra(idx){
   const of = G.ofertas[idx];
   if(!of || ocupado) return;
+  const primeira = naPrimeiraJornada();
+  META.jornadas = (META.jornadas || 0) + 1;
+  salvarMeta();
   const n = nivelPorId(of.nivel);
   if(n.final && !confirmar('Esta é uma masmorra Demônio: dez andares e o Dragonete de Ferro no fim. Vencer aqui encerra o jogo — e quase ninguém consegue sem as relíquias no máximo.\n\nEntrar mesmo assim?')) return;
   G.masmorra = {nivel:n.id, regiao:of.regiao, andares:n.andares, clima:of.clima || 'calmaria'};
@@ -2066,9 +2090,12 @@ function entrarNaMasmorra(idx){
   mostrarFaixa(reg);
   const cl = CLIMA[G.masmorra.clima];
   if(cl && cl.id !== 'calmaria') anotar(`${cl.icone} <b>${cl.nome}</b> — ${cl.desc}.`, 'gold');
-  oferecerBencao();
-  if(cl && cl.bencaoExtra && G.modo === 'bencao') G.bencaoDupla = true;
+  if(!primeira){
+    oferecerBencao();
+    if(cl && cl.bencaoExtra && G.modo === 'bencao') G.bencaoDupla = true;
+  }
   salvar(); render();
+  if(primeira) guia('andar');
 }
 
 /* ---------- escapar da masmorra ----------
@@ -2083,7 +2110,11 @@ function cotaDoAndar(){
   const dureza = NIVEIS.indexOf(nivelAtual());
   return Math.min(7, 2 + Math.floor(dureza/2) + Math.floor((G.andar - 1)/3));
 }
-const faltaMatar = () => Math.max(0, cotaDoAndar() - (G.abatesNoAndar || 0));
+function faltaMatar(){
+  const falta = Math.max(0, cotaDoAndar() - (G.abatesNoAndar || 0));
+  if(!falta && G.masmorra && G.modo === 'mapa') guia('escada');
+  return falta;
+}
 function alvoDaFuga(){
   const n = nivelAtual();
   const dureza = NIVEIS.indexOf(n);
@@ -2140,6 +2171,7 @@ function voltarAoAcampamento(motivo){
   G.andar = 0;
   G.modo = 'hub';
   G.sequencia = 0;
+  if(G.ouro > 0) guia('acampamento');
   /* As bênçãos morrem com a masmorra — é o que faz cada descida ser uma
      partida própria em vez de um herói que só acumula poder para sempre.
      Devolvemos só o que elas deram de vida; o +2 por andar descido fica. */
@@ -2542,6 +2574,7 @@ function chamarInimigo(id, afixoDado){
   G.semGuarda = false;
   G.congelado = false;
   som(G.inimigo.chefe ? 'chefe' : 'abrir');
+  guia('criatura');
   const gdi = GUARDIOES[G.inimigo.id];
   if(gdi){
     if(gdi.placas) G.inimigo.placas = gdi.placas;
@@ -2701,6 +2734,7 @@ function oferecerBencao(){
     sorteadas.push(pote.splice(Math.floor(Math.random()*pote.length), 1)[0].id);
   }
   G.ofertaBencaos = sorteadas;
+  guia('bencao');
   G.voltaPara = G.modo;
   G.modo = 'bencao';
 }
@@ -2756,6 +2790,7 @@ function machucar(bruto, ignoraArmadura=false){
   if(!ignoraArmadura && temTraco('draconico')) dano = Math.max(1, dano - 2);
   G.vida = Math.max(0, G.vida - dano);
   if(dano > 0) som('dano');
+  if(G.vida > 0 && G.vida < G.vidaMax*.45 && G.pocoes > 0) guia('ferido');
   const aparado = !ignoraArmadura && bruto - dano > 0 ? `−${bruto - dano} aparado` : '';
   flutuarDano('.life-bar', '−' + dano, 'nele', aparado);
   const espelho = (temRumo('escama-espelho') ? .12 : 0) + (temTraco('espinhos') ? .12 : 0);
@@ -3135,6 +3170,7 @@ function contraAtaque(){
     inim.intencao = proximaIntencao(inim);
     const it = INTENCOES[inim.intencao];
     if(inim.intencao !== 'golpe') anotar(`${it.icone} O ${inim.nome} ${it.texto}. <i>${it.resposta}.</i>`, 'bad');
+    if(['pesado','duplo','veneno'].includes(inim.intencao)) guia('aviso');
   }
 }
 
@@ -3425,7 +3461,7 @@ function forjar(id){
        Forjou uma peça menor de propósito (pelo traço dela)? Ela entra
        direto na reserva, sem trocar o que você está usando. */
     if(!atual || r.valor > atual.valor){
-      if(atual) G.reserva[r.slot] = atual;
+      if(atual){ G.reserva[r.slot] = atual; guia('reserva'); }
       G.equip[r.slot] = peca;
       anotar(`⚒️ Forjado: <b>${r.nome}</b>. ${r.slot === 'arma' ? `Golpe agora é ${golpeTotal()}` : `Defesa agora é ${defesaTotal()}`}.`
            + (atual ? ` <i>${atual.nome} foi para a reserva.</i>` : ''), 'gold');
@@ -3678,6 +3714,47 @@ function mostrarFaixa(reg){
   if(G.modo !== 'mapa') el.classList.remove('on');
 }
 
+/* ---------- guia da primeira jornada ----------
+   Medindo o caminho de quem abre o jogo pela primeira vez, dava 681 palavras
+   e três decisões de estratégia antes de rolar o primeiro dado: oito cartas
+   de tutorial, criar herói, escolher a entrada e escolher bênção — tudo
+   antes de entender o que qualquer coisa significa. Ninguém chega ao dado.
+
+   A troca: nada para ler na entrada, herói pronto na primeira jornada, e
+   uma frase de cada vez, no instante em que aquilo aparece pela primeira
+   vez na vida do jogador. Some sozinha e nunca repete. */
+const DICAS = {
+  andar:    'Toque numa sala vizinha para andar até ela.',
+  criatura: 'Uma criatura! Toque em Atacar — o dado decide o estrago.',
+  aviso:    'Ela avisou o que vem. Defender agora corta quase todo o golpe.',
+  ferido:   'Você está machucado. A poção cura na hora, sem gastar o turno.',
+  escada:   'A escada abriu. Descer rende mais, mas lá embaixo é pior.',
+  bencao:   'Uma bênção. Vale até você voltar ao acampamento.',
+  acampamento: 'Voltou vivo com ouro. Na forja ele vira equipamento.',
+  reserva:  'A peça antiga foi para a reserva. Troque na mochila quando quiser.'
+};
+let dicaAtiva = null;
+function guia(id){
+  if(!DICAS[id] || !G) return;
+  META.dicas = META.dicas || {};
+  if(META.dicas[id]) return;          // cada uma aparece uma vez na vida
+  META.dicas[id] = 1;
+  salvarMeta();
+  dicaAtiva = DICAS[id];
+  som('abrir');
+  clearTimeout(guia._t);
+  guia._t = setTimeout(() => { dicaAtiva = null; if(G) render(); }, 5600);
+  render();
+}
+function dispensarDica(){
+  if(!dicaAtiva) return;
+  clearTimeout(guia._t);
+  dicaAtiva = null;
+  render();
+}
+/* A primeira jornada da vida do jogador: nela o jogo segura a mão. */
+const naPrimeiraJornada = () => !META.jornadas;
+
 /* ---------- desenho da tela ---------- */
 const NOME_SALA = {
   inimigo:'criatura', tesouro:'baú', material:'material', armadilha:'armadilha',
@@ -3870,6 +3947,7 @@ function render(){
                   <span>🪙 recompensa ×${nv.premio.toFixed(1)}</span>
                   <span>✨ ${nv.frags} relíquia${nv.frags>1?'s':''}</span>
                 </span>
+                <span class="offer-mats">⛏️ ${materiaisDaRegiao(of.regiao)}</span>
                 ${aviso}
               </button>`;
           }).join('')}
@@ -4011,7 +4089,12 @@ function render(){
     else if(a === 'sair') sairDoJogo();
   });
 
-  $('#pMsg').innerHTML = '<span>' + (G.msg || 'Toque numa sala vizinha para andar.') + '</span>';
+  const faixaMsg = $('#pMsg');
+  faixaMsg.classList.toggle('dica', !!dicaAtiva);
+  faixaMsg.innerHTML = dicaAtiva
+    ? `<span>💡 ${dicaAtiva}</span>`
+    : '<span>' + (G.msg || 'Toque numa sala vizinha para andar.') + '</span>';
+  faixaMsg.onclick = dicaAtiva ? dispensarDica : null;
   ligarArte($('#play'));
   dimensionarMapa();
   ajustarRolagem();
@@ -4321,9 +4404,27 @@ $('#novoComecar').onclick = () => {
 };
 /* Sobe junto com o arquivo: se a home mostra outra data, o aparelho ainda
    está servindo a versão velha do cache. */
-const VERSAO = 'v15 · 18/08 · som';
+const VERSAO = 'v16 · 18/08 · primeira jornada';
 $('#lbVersao').textContent = VERSAO;
-$('#btnStart').onclick = abrirNovoHeroi;
+$('#btnStart').onclick = () => {
+  /* Na primeira vez o jogo começa e pronto: escolher classe e distribuir
+     pontos antes de saber o que é um golpe é decidir no escuro. A tela de
+     criação aparece da segunda jornada em diante, quando as palavras já
+     querem dizer alguma coisa. */
+  if(naPrimeiraJornada() && !G) comecarDeCara();
+  else abrirNovoHeroi();
+};
+
+const NOMES_SUGERIDOS = ['Bran','Kira','Túlio','Nina','Vasco','Lia','Ravi','Duda'];
+function comecarDeCara(){
+  novaAventura(sorteio(NOMES_SUGERIDOS), 'guerreiro', {vida:0, golpe:0, defesa:0});
+  /* Uma Comum de campo, em Calmaria: a primeira masmorra da vida de alguém
+     não é hora de sortear Nevasca nem de oferecer três dificuldades. */
+  G.ofertas = [{nivel:'comum', regiao:'campo', clima:'calmaria'}];
+  abrirJogo();
+  entrarNaMasmorra(0);
+  salvar(); render();
+}
 $('#btnRelics').onclick = abrirReliquias;
 $('#btnBestiary').onclick = abrirBestiario;
 $('#btnAchieve').onclick = abrirConquistas;
@@ -4397,7 +4498,11 @@ document.addEventListener('keydown', e => {
   mover(iAt(nx, ny));
 });
 
-if(!store.get(TKEY)) setTimeout(() => abrirTutorial(0), 400);
+/* O tutorial não abre mais sozinho. Eram 355 palavras entre abrir o jogo e
+   jogar, e é onde a maioria desiste. Ele continua inteiro no "Como jogar",
+   para quem quiser — o resto aprende jogando, uma frase por vez.
+   Na primeira jornada a bênção também não abre a masmorra: ela chega ao
+   descer para o segundo andar, quando bater já quer dizer alguma coisa. */
 
 
 carregarJogo();
