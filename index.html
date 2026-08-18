@@ -591,6 +591,18 @@
 
     /* ===== Folhas: mochila, forja, bestiário ===== */
     .sheet-body{display:grid;gap:8px;max-height:52vh;overflow:auto;padding-right:2px}
+    /* Criação do herói em etapas: nome, depois classe, depois pontos — em
+       vez de tudo despejado numa tela só que ninguém lia até o fim. Cada
+       etapa entra deslizando do lado pra onde o jogador está indo. */
+    .novo-dots{display:flex;gap:6px;justify-content:center;margin:-2px 0 2px}
+    .novo-dots i{width:7px;height:7px;border-radius:50%;background:#3c2f25;transition:background .2s}
+    .novo-dots i.on{background:var(--gold)}
+    .novo-passo{display:none}
+    .novo-passo.on{display:grid;gap:8px;animation:entraPassoFrente .32s cubic-bezier(.22,.8,.3,1)}
+    .novo-passo.on.entra-volta{animation-name:entraPassoVolta}
+    @keyframes entraPassoFrente{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
+    @keyframes entraPassoVolta{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:none}}
+    @media(prefers-reduced-motion:reduce){.novo-passo.on{animation:none}}
     .sheet-sub{margin:0;color:var(--muted);font-size:12px}
     .sheet h4, .painel h4{margin:6px 0 0;font:700 13px Georgia,serif;color:#f6deb0}
     .sheet h4 .fade, .painel h4 .fade{font-weight:400;color:var(--muted);font-size:11px}
@@ -890,19 +902,26 @@
 <div class="ov" id="novoOv">
   <div class="sheet">
     <h3>⚔️ Novo herói</h3>
+    <div class="novo-dots" id="novoDots"></div>
     <div class="sheet-body">
-      <label class="namefield">Nome do herói
-        <input id="novoNome" maxlength="22" placeholder="Como querem te chamar?">
-      </label>
-      <h4>Escolha um jeito de jogar</h4>
-      <div class="classes" id="novoClasses"></div>
-      <h4>Distribua <span id="novoRestam"></span></h4>
-      <div class="pontos" id="novoPontos"></div>
-      <div class="resumo" id="novoResumo"></div>
+      <section class="novo-passo" data-passo="0">
+        <label class="namefield">Nome do herói
+          <input id="novoNome" maxlength="22" placeholder="Como querem te chamar?">
+        </label>
+      </section>
+      <section class="novo-passo" data-passo="1">
+        <h4>Escolha um jeito de jogar</h4>
+        <div class="classes" id="novoClasses"></div>
+      </section>
+      <section class="novo-passo" data-passo="2">
+        <h4>Distribua <span id="novoRestam"></span></h4>
+        <div class="pontos" id="novoPontos"></div>
+        <div class="resumo" id="novoResumo"></div>
+      </section>
     </div>
     <div class="sheet-acoes">
-      <button class="btn" data-fechar="novoOv">Cancelar</button>
-      <button class="btn primary" id="novoComecar">Começar jornada</button>
+      <button class="btn" id="novoVoltar">Cancelar</button>
+      <button class="btn primary" id="novoAvancar">Continuar</button>
     </div>
   </div>
 </div>
@@ -4612,6 +4631,7 @@ const GASTOS = [
 let pontosGastos = {vida:0, golpe:0, defesa:0};
 const pontosRestantes = () => PONTOS_TOTAL - GASTOS.reduce((s,g) => s + pontosGastos[g.id], 0);
 
+let passoNovo = 0;
 function abrirNovoHeroi(){
   if(G && G.modo !== 'fim' && G.modo !== 'vitoria'
      && !confirmar('Começar uma jornada nova? A atual será perdida.')) return;
@@ -4621,7 +4641,25 @@ function abrirNovoHeroi(){
   const atual = CLASSES.find(c => c.id === classeEscolhida);
   if(!atual || !classeLiberada(atual)) classeEscolhida = CLASSES[0].id;
   desenharNovo();
+  passoNovo = 0;
+  desenharPassoNovo();
   $('#novoOv').classList.add('on');
+}
+/* Nome, depois classe, depois pontos — nunca tudo de uma vez. Troca a
+   etapa visível e deixa a animação (CSS) contar qual direção foi. */
+function irParaPassoNovo(alvo){
+  const direcao = alvo > passoNovo ? 'frente' : 'volta';
+  passoNovo = Math.max(0, Math.min(2, alvo));
+  desenharPassoNovo(direcao);
+}
+function desenharPassoNovo(direcao='frente'){
+  $$('.novo-passo').forEach(sec => {
+    sec.classList.toggle('on', +sec.dataset.passo === passoNovo);
+    sec.classList.toggle('entra-volta', direcao === 'volta');
+  });
+  $('#novoDots').innerHTML = [0,1,2].map(i => `<i class="${i===passoNovo?'on':''}"></i>`).join('');
+  $('#novoVoltar').textContent = passoNovo === 0 ? 'Cancelar' : '← Voltar';
+  $('#novoAvancar').textContent = passoNovo === 2 ? 'Começar jornada' : 'Continuar →';
 }
 
 function desenharNovo(){
@@ -4688,14 +4726,19 @@ function desenharNovo(){
     ${comRel ? '<small class="resumo-nota">já contando suas relíquias</small>' : ''}`;
 }
 
-$('#novoComecar').onclick = () => {
+$('#novoVoltar').onclick = () => {
+  if(passoNovo === 0) $('#novoOv').classList.remove('on');
+  else irParaPassoNovo(passoNovo - 1);
+};
+$('#novoAvancar').onclick = () => {
+  if(passoNovo < 2){ irParaPassoNovo(passoNovo + 1); return; }
   $('#novoOv').classList.remove('on');
   novaAventura($('#novoNome').value, classeEscolhida, pontosGastos);
   abrirJogo();
 };
 /* Sobe junto com o arquivo: se a home mostra outra data, o aparelho ainda
    está servindo a versão velha do cache. */
-const VERSAO = 'v20 · 18/08 · hierarquia da mochila';
+const VERSAO = 'v21 · 18/08 · herói em etapas';
 $('#lbVersao').textContent = VERSAO;
 $('#btnStart').onclick = () => {
   /* Na primeira vez o jogo começa e pronto: escolher classe e distribuir
