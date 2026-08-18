@@ -152,7 +152,14 @@
     .foe-icon{
       font-size:clamp(62px,20vw,104px);line-height:1;filter:drop-shadow(0 10px 22px rgba(0,0,0,.55));
       display:grid;place-items:center;
+      /* Sem golpe acontecendo, a criatura pintada é só um quadro pregado no
+         tabuleiro — com emoji isso não incomodava, com arte de verdade
+         incomoda. Um flutuar lento entre os turnos é o que faz parecer viva. */
+      animation:respira 3.6s ease-in-out infinite;
     }
+    .foe-icon.chefe{animation-duration:4.6s}
+    @keyframes respira{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-6px) scale(1.02)}}
+    @media(prefers-reduced-motion:reduce){.foe-icon{animation:none}}
     .foe-icon:has(.foe-art){
       background:radial-gradient(circle at 50% 55%,var(--luz,rgba(215,168,79,.14)),transparent 68%);
       border-radius:50%;padding:6px;
@@ -3226,6 +3233,8 @@ function contraAtaque(){
 
 function vencer(){
   const inim = G.inimigo;
+  META.abatesTotais = (META.abatesTotais || 0) + 1;
+  salvarMeta();
   /* A sequência é o que torna caçar melhor que desviar: cada abate seguido
      engorda a recompensa do próximo, e fugir zera tudo. */
   G.sequencia = (G.sequencia || 0) + 1;
@@ -3921,7 +3930,11 @@ function render(){
   $('#pLife').style.width = pctVida + '%';
   $('#pLife').classList.toggle('critica', pctVida <= 25 && G.vida > 0);
   const n = G.masmorra ? nivelAtual() : null;
-  const chipLocal = G.masmorra
+  /* No combate, nível/andar, a cota da escada e o ouro não ajudam a decidir
+     entre Atacar e Defender — são informação do mapa, e cada selo a menos
+     é espaço a mais para a criatura. Voltam assim que a briga acaba. */
+  const emCombate = G.modo === 'combate';
+  const chipLocal = G.masmorra && !emCombate
     ? `<span class="chip nivel" style="--nc:${n.cor}">${n.icone} ${n.nome} • Andar <b>${G.andar}/${G.masmorra.andares}</b>${ultimoAndar()?' <i>final</i>':''}</span>`
     : '';
   const b = bonusDeSequencia();
@@ -3932,17 +3945,18 @@ function render(){
   const chipClima = (cl && cl.id !== 'calmaria')
     ? `<span class="chip clima" title="${cl.desc}">${cl.icone} ${cl.nome}</span>` : '';
   const falta = G.masmorra && !ultimoAndar() ? faltaMatar() : 0;
-  const chipCota = G.masmorra && !ultimoAndar()
+  const chipCota = G.masmorra && !ultimoAndar() && !emCombate
     ? `<span class="chip cota ${falta?'':'ok'}" title="a escada só abre quando a cota do andar for cumprida">${ico('escada')} <b>${
         falta ? `faltam ${falta}` : 'escada aberta'}</b></span>`
     : '';
+  const chipOuro = emCombate ? '' : `<span class="chip">${ico('ouro')} <b>${G.ouro}</b></span>`;
   /* Sem selo de bênção aqui: numa tela estreita ele quebra a linha dos
      selos e o tabuleiro encolhe. A lista fica no botão ✨ da barra. */
   $('#pChips').innerHTML = chipLocal + chipClima + chipCota + chipSeq + `
     <span class="chip">${ico('pontos')} <b>${G.pontos}</b></span>
     <span class="chip">${ico('golpe')} <b>${golpeTotal()}</b></span>
     <span class="chip">${ico('defesa')} <b>${defesaTotal()}</b></span>
-    <span class="chip">${ico('ouro')} <b>${G.ouro}</b></span>`;
+    ${chipOuro}`;
 
   const mid = $('#playMid'), acts = $('#pActs');
   if(G.modo !== 'mapa') $('#banner').classList.remove('on');
@@ -4035,6 +4049,11 @@ function render(){
   }else if(G.modo === 'combate'){
     const inim = G.inimigo;
     const pedeGuarda = ['pesado','duplo','veneno'].includes(inim.intencao);
+    /* Os subtítulos são texto de ensino: fazem sentido na primeira dúzia de
+       brigas e viram ruído depois — o jogador já sabe o que Atacar faz. As
+       explicações urgentes (golpe telegrafado, guarda reforçada, poder
+       pronto) continuam sempre, porque mudam turno a turno. */
+    const veterano = (META.abatesTotais || 0) >= 25;
     const pct = Math.max(0, (inim.vida/inim.vidaMax)*100);
     mid.innerHTML = `
       <div class="foe">
@@ -4064,18 +4083,20 @@ function render(){
         </div>
       </div>`;
     acts.innerHTML = `
-      <button class="act ${pedeGuarda?'':'main'}" data-act="atacar"><span class="act-t">${ico('golpe','g')} Atacar</span><small>${
-        G.guardaCarregada ? 'guarda reforçada: +60% de dano'
-        : inim.guardando ? 'ele apara boa parte agora' : 'gira o dado'}</small></button>
-      <button class="act ${pedeGuarda?'main urgente':''}" data-act="defender"><span class="act-t">${ico('defesa','g')} Defender</span><small>${
-        pedeGuarda ? INTENCOES[inim.intencao].resposta : 'leva um terço do dano e reforça seu golpe'
-      }</small></button>
-      <button class="act ${poderPronto()?'poder':''}" data-act="poder" ${poderPronto()?'':'disabled'}>${
-        poderDaClasse().icone} ${poderDaClasse().nome}<small>${
+      <button class="act ${pedeGuarda?'':'main'}" data-act="atacar"><span class="act-t">${ico('golpe','g')} Atacar</span>${
+        G.guardaCarregada ? '<small>guarda reforçada: +60% de dano</small>'
+        : inim.guardando ? '<small>ele apara boa parte agora</small>'
+        : (veterano ? '' : '<small>gira o dado</small>')}</button>
+      <button class="act ${pedeGuarda?'main urgente':''}" data-act="defender"><span class="act-t">${ico('defesa','g')} Defender</span>${
+        pedeGuarda ? `<small>${INTENCOES[inim.intencao].resposta}</small>`
+        : (veterano ? '' : '<small>leva um terço do dano e reforça seu golpe</small>')
+      }</button>
+      <button class="act ${poderPronto()?'poder':''}" data-act="poder" ${poderPronto()?'':'disabled'}><span class="act-t">${
+        poderDaClasse().icone} ${poderDaClasse().nome}</span><small>${
         poderPronto() ? poderDaClasse().desc : `pronta em ${G.recarga} ${G.recarga===1?'turno':'turnos'}`}</small></button>
       <button class="act" data-act="pocao" ${G.pocoes>0?'':'disabled'}><span class="act-t">${ico('pocao','g')} Poção</span><small>${G.pocoes} restantes • +${curaDaPocao()} de vida</small></button>
-      <button class="act" data-act="itens" ${quantosUsaveis()?'':'disabled'}><span class="act-t">${ico('mochila','g')} Itens</span><small>${
-        quantosUsaveis() ? quantosUsaveis()+' para usar' : 'nenhum item de uso'}</small></button>
+      <button class="act" data-act="itens" ${quantosUsaveis()?'':'disabled'}><span class="act-t">${ico('mochila','g')} Itens</span>${
+        quantosUsaveis() ? `<small>${quantosUsaveis()} para usar</small>` : (veterano ? '' : '<small>nenhum item de uso</small>')}</button>
       <button class="act wide" data-act="fugir" ${inim.chefe?'disabled':''}><span class="act-t">${ico('fugir','g')} Fugir</span><small>${
         inim.chefe ? 'não dá para fugir de um guardião'
         : (G.sequencia > 1 ? `perde a sequência de ${G.sequencia}`
@@ -4454,7 +4475,7 @@ $('#novoComecar').onclick = () => {
 };
 /* Sobe junto com o arquivo: se a home mostra outra data, o aparelho ainda
    está servindo a versão velha do cache. */
-const VERSAO = 'v17 · 18/08 · ícones';
+const VERSAO = 'v18 · 18/08 · combate refinado';
 $('#lbVersao').textContent = VERSAO;
 $('#btnStart').onclick = () => {
   /* Na primeira vez o jogo começa e pronto: escolher classe e distribuir
