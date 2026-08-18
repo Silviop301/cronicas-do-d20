@@ -578,6 +578,8 @@
     .over-panel .title.vit{color:#9ee0a8}
     .over-panel .keep{font-size:13px;color:#f3d190;background:#1d1710;border:1px solid #4a3a2b;border-radius:11px;padding:9px 12px}
     .over-panel .relics{width:min(420px,86vw);text-align:left}
+    .share-prev{width:100%;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#0b0908}
+    .share-prev img{width:100%;display:block}
 
     /* ===== Folhas: mochila, forja, bestiário ===== */
     .sheet-body{display:grid;gap:8px;max-height:52vh;overflow:auto;padding-right:2px}
@@ -830,6 +832,20 @@
     <h3>Diário da jornada</h3>
     <div class="diary" id="diary"></div>
     <button class="btn" data-fechar="logOv">Fechar</button>
+  </div>
+</div>
+
+<!-- ===== Cartão de fim de jornada: aparece quando o navegador não sabe
+     compartilhar imagem sozinho — baixar e copiar continuam funcionando. ===== -->
+<div class="ov" id="shareOv">
+  <div class="sheet">
+    <h3>Sua jornada</h3>
+    <div class="share-prev"><img id="shareImg" alt="Cartão da jornada"></div>
+    <div class="sheet-acoes">
+      <button class="btn" data-fechar="shareOv">Fechar</button>
+      <button class="btn primary" id="shareBaixar">⬇️ Baixar imagem</button>
+    </div>
+    <button class="btn" id="shareCopiar" style="width:100%">📋 Copiar o texto</button>
   </div>
 </div>
 
@@ -2867,6 +2883,10 @@ function machucar(bruto, ignoraArmadura=false){
   return dano;
 }
 function cair(){
+  /* Para o cartão de compartilhar: quem exatamente derrubou o herói. Sem
+     isso a tela de morte era só um número — nada que alguém quisesse
+     mostrar pros amigos. */
+  G.causaMorte = G.inimigo ? {nome:G.inimigo.nome, icone:G.inimigo.icone} : null;
   G.modo = 'fim';
   G.inimigo = null;
   META.mortes++;
@@ -3741,6 +3761,181 @@ function efeitoRel(r, n){
   const quando = m === n + 1 ? 'próximo' : `nível ${m}`;
   return `<small><b class="rel-hoje">${hoje}</b> · ${quando}: ${r.desc(m)}</small>`;
 }
+/* ---------- cartão de fim de jornada ----------
+   Morrer virava só um número na tela. Este é o motivo pra mostrar pros
+   amigos: uma imagem gerada na hora, sem pedir nada de fora — mesmas cores
+   e fonte do jogo, desenhadas direto no canvas. */
+function desenharCartaoJornada(){
+  const cv = document.createElement('canvas');
+  const L = 1080, A = 1350;
+  cv.width = L; cv.height = A;
+  const x = cv.getContext('2d');
+  const cls = CLASSES.find(c => c.id === G.classe) || CLASSES[0];
+  const vitoria = G.modo === 'vitoria';
+  const nv = G.masmorra ? nivelPorId(G.masmorra.nivel) : null;
+
+  // fundo: o mesmo gradiente quente do jogo, não uma cor chapada
+  const fundo = x.createRadialGradient(L/2, A*.3, 60, L/2, A*.3, L*.95);
+  fundo.addColorStop(0, '#241a10');
+  fundo.addColorStop(1, '#0f0d0c');
+  x.fillStyle = fundo; x.fillRect(0, 0, L, A);
+  x.strokeStyle = 'rgba(215,168,79,.35)'; x.lineWidth = 3;
+  x.strokeRect(22, 22, L-44, A-44);
+
+  // marca d'água: enche o vazio do meio sem competir com o texto
+  x.save();
+  x.globalAlpha = .05;
+  x.font = '640px sans-serif';
+  x.textAlign = 'center'; x.textBaseline = 'middle';
+  x.fillText(vitoria ? '🐉' : '💀', L/2, A*.685);
+  x.restore();
+
+  const linhaOrnada = cy => {
+    x.strokeStyle = 'rgba(215,168,79,.3)'; x.lineWidth = 2;
+    x.beginPath(); x.moveTo(L*.32, cy); x.lineTo(L*.68, cy); x.stroke();
+  };
+
+  const centro = t => { x.textAlign = 'center'; x.fillText(t, L/2, y); };
+  let y = 150;
+  x.fillStyle = vitoria ? '#9ee0a8' : '#ff9a90';
+  x.font = '700 40px Georgia, serif';
+  centro(vitoria ? '🐉 JORNADA VENCIDA' : '☠️ FIM DE JORNADA'); y += 96;
+
+  x.font = '800 64px Georgia, serif';
+  x.fillStyle = '#f6eadc';
+  centro(`${cls.icone}  ${G.nome}`); y += 52;
+  x.font = '400 30px Georgia, serif';
+  x.fillStyle = '#bda995';
+  centro(cls.nome); y += 74;
+  linhaOrnada(y); y += 66;
+
+  x.font = '800 148px Georgia, serif';
+  x.fillStyle = '#f1cc7b';
+  centro(String(G.pontos)); y += 48;
+  x.font = '400 28px Georgia, serif';
+  x.fillStyle = '#bda995';
+  centro('pontos'); y += 84;
+
+  // selo do nível: a mesma cor que o jogo usa pra essa dificuldade
+  if(nv){
+    x.font = '600 30px Georgia, serif';
+    const rotulo = `${nv.nome} • andar ${G.andar} de ${G.masmorra.andares}`;
+    const largura = x.measureText(rotulo).width;
+    const px = 26, ph = 54;
+    x.fillStyle = 'rgba(255,255,255,.05)';
+    x.strokeStyle = nv.cor; x.lineWidth = 2;
+    const bx = L/2 - largura/2 - px, bw = largura + px*2;
+    const bTop = y - ph + 14;
+    x.beginPath();
+    x.roundRect ? x.roundRect(bx, bTop, bw, ph, 27) : x.rect(bx, bTop, bw, ph);
+    x.fill(); x.stroke();
+    x.fillStyle = nv.cor;
+    centro(rotulo);
+    y += 84;
+  }else if(vitoria){
+    x.font = '400 32px Georgia, serif';
+    x.fillStyle = '#e9d9be';
+    centro('derrubou o Dragonete de Ferro'); y += 60;
+  }
+
+  if(!vitoria && G.causaMorte){
+    x.font = '400 30px Georgia, serif';
+    x.fillStyle = '#ff9a90';
+    centro(`abatido por ${G.causaMorte.icone} ${G.causaMorte.nome}`); y += 60;
+  }
+
+  // A parte de baixo usa posições fixas a partir da borda — não uma
+  // continuação do fluxo de cima — porque o texto de cima varia de altura
+  // (com ou sem selo de nível, com ou sem causa da morte) e dependia disso
+  // pra não colidir com as estatísticas.
+  x.textBaseline = 'alphabetic';
+  const statsY = A - 320;
+  linhaOrnada(statsY - 74);
+  const stats = vitoria
+    ? [['⚔️', G.abates, 'abates'], ['🗺️', G.limpas, 'masmorras'], ['⭐', G.pontos, 'pontos']]
+    : [['⚔️', G.abates, 'abates'], ['🪙', G.ouro||0, 'ouro'], ['⭐', META.recorde||G.pontos, 'recorde']];
+  const passo = L / (stats.length + 1);
+  stats.forEach(([ic, n, rot], i) => {
+    const cx = passo * (i+1);
+    x.textAlign = 'center';
+    x.font = '46px sans-serif'; x.fillStyle = '#f6eadc';
+    x.fillText(ic, cx, statsY);
+    x.font = '700 34px Georgia, serif'; x.fillStyle = '#f1cc7b';
+    x.fillText(String(n), cx, statsY+46);
+    x.font = '400 22px Georgia, serif'; x.fillStyle = '#8a7a67';
+    x.fillText(rot, cx, statsY+78);
+  });
+
+  // relíquias: o que sobrevive à queda, é isso que separa uma tentativa da outra
+  const guardadas = RELIQUIAS.filter(r => nivelRel(r.id) > 0);
+  if(guardadas.length){
+    const relY = A - 170;
+    x.textAlign = 'center';
+    x.font = '400 24px Georgia, serif';
+    x.fillStyle = '#8a7a67';
+    x.fillText('relíquias guardadas', L/2, relY);
+    x.font = '42px sans-serif';
+    x.fillStyle = '#f6eadc';
+    x.fillText(guardadas.slice(0, 6).map(r => r.icone).join('   '), L/2, relY+42);
+  }
+
+  x.font = '700 30px Georgia, serif';
+  x.fillStyle = '#d7a84f';
+  x.textAlign = 'center';
+  x.fillText('CLIMBIX', L/2, A - 66);
+  x.font = '400 22px Georgia, serif';
+  x.fillStyle = '#8a7a67';
+  x.fillText('desça a masmorra, role o dado, volte vivo', L/2, A - 34);
+
+  return cv;
+}
+function textoCompartilhar(){
+  const cls = CLASSES.find(c => c.id === G.classe) || CLASSES[0];
+  if(G.modo === 'vitoria')
+    return `🐉 ${G.nome}, ${cls.nome}, zerou o Climbix com ${G.pontos} pontos! climbix.app`;
+  const onde = G.masmorra ? `andar ${G.andar} de ${G.masmorra.andares}` : 'no acampamento';
+  const quem = G.causaMorte ? ` — abatido por ${G.causaMorte.nome}` : '';
+  return `☠️ ${G.nome}, ${cls.nome}, caiu no ${onde} com ${G.pontos} pontos${quem}. climbix.app`;
+}
+async function compartilharJornada(){
+  if(!G) return;
+  let blob;
+  try{ blob = await new Promise(r => desenharCartaoJornada().toBlob(r, 'image/png')); }catch(e){ blob = null; }
+  const texto = textoCompartilhar();
+
+  if(blob && navigator.canShare && navigator.share){
+    const arquivo = new File([blob], 'climbix.png', {type:'image/png'});
+    if(navigator.canShare({files:[arquivo]})){
+      try{
+        await navigator.share({files:[arquivo], title:'Climbix', text:texto});
+        return;
+      }catch(e){ if(e && e.name === 'AbortError') return; }   // cancelou: não insiste
+    }
+  }
+  if(navigator.share){
+    try{ await navigator.share({title:'Climbix', text:texto}); return; }
+    catch(e){ if(e && e.name === 'AbortError') return; }
+  }
+  /* Sem Web Share (a maioria dos navegadores de desktop): mostra o cartão
+     numa folha, com um botão para baixar e outro para copiar o texto. */
+  abrirCartaoJornada(blob, texto);
+}
+function abrirCartaoJornada(blob, texto){
+  const url = blob ? URL.createObjectURL(blob) : null;
+  if(url) $('#shareImg').src = url;
+  $('#shareOv').classList.add('on');
+  $('#shareBaixar').onclick = () => {
+    if(!url) return;
+    const a = document.createElement('a');
+    a.href = url; a.download = 'climbix.png';
+    document.body.appendChild(a); a.click(); a.remove();
+  };
+  $('#shareCopiar').onclick = async () => {
+    try{ await navigator.clipboard.writeText(texto); anotar('📋 Texto copiado.', 'good'); render(); }
+    catch(e){}
+  };
+}
+
 function tirinhaReliquias(detalhe=false){
   return RELIQUIAS.map(r => {
     const n = nivelRel(r.id);
@@ -4031,7 +4226,8 @@ function render(){
         <div class="sum">pontos • ${G.abates} criaturas derrotadas • ${G.limpas} masmorras limpas<br>${escapeHtml(G.nome)} enfrentou uma masmorra Demônio e derrubou o Dragonete de Ferro.</div>
       </div>`;
     acts.innerHTML = `
-      <button class="act main wide" data-act="denovo">Nova jornada</button>
+      <button class="act main wide" data-act="compartilhar"><span class="act-t">📤 Compartilhar</span></button>
+      <button class="act wide" data-act="denovo">Nova jornada</button>
       <button class="act wide" data-act="sair">Voltar para a ficha</button>`;
   }else if(G.modo === 'fim'){
     mid.innerHTML = `
@@ -4044,6 +4240,7 @@ function render(){
       </div>`;
     acts.innerHTML = `
       <button class="act main wide" data-act="renascer">Recomeçar com as relíquias</button>
+      <button class="act wide" data-act="compartilhar"><span class="act-t">📤 Compartilhar a queda</span></button>
       <button class="act" data-act="bestiario"><span class="act-t">${ico('bestiario','g')} Bestiário</span></button>
       <button class="act" data-act="sair">Sair</button>`;
   }else if(G.modo === 'combate'){
@@ -4154,6 +4351,7 @@ function render(){
     else if(a === 'mochila') abrirMochila();
     else if(a === 'bestiario') abrirBestiario();
     else if(a === 'conquistas') abrirConquistas();
+    else if(a === 'compartilhar') compartilharJornada();
     else if(a === 'renascer') renascer();
     else if(a === 'denovo') renascer();
     else if(a === 'reliquias') abrirReliquias();
@@ -4475,7 +4673,7 @@ $('#novoComecar').onclick = () => {
 };
 /* Sobe junto com o arquivo: se a home mostra outra data, o aparelho ainda
    está servindo a versão velha do cache. */
-const VERSAO = 'v18 · 18/08 · combate refinado';
+const VERSAO = 'v19 · 18/08 · cartão pra compartilhar';
 $('#lbVersao').textContent = VERSAO;
 $('#btnStart').onclick = () => {
   /* Na primeira vez o jogo começa e pronto: escolher classe e distribuir
