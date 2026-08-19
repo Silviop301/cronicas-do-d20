@@ -122,6 +122,18 @@
     .life-fill{height:100%;background:linear-gradient(90deg,#8c332c,#e0685a);transition:width .3s}
     .chips{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;font-size:13px}
     .ico{width:1.05em;height:1.05em;vertical-align:-.16em;flex:none}
+    /* Os emojis se distinguiam pela cor antes de qualquer outra coisa: o
+       🔩 cinza, o 🌿 verde, o 🔮 roxo. Em traço monocromático os cinco
+       materiais viravam cinco rabiscos iguais. Só o que precisa de
+       reconhecimento instantâneo recebe cor — os ícones de botão continuam
+       herdando a cor de quem os contém, senão brigam com o fundo dourado. */
+    .ico-ferro{color:#a8b6c2}
+    .ico-couro{color:#c08350}
+    .ico-cristal{color:#63bfe4}
+    .ico-erva{color:#8cc46a}
+    .ico-essencia{color:#c294e8}
+    .ico-ouro{color:#e8b855}
+    .ico-vida{color:#e0736a}
     .ico.g{width:1.25em;height:1.25em;vertical-align:-.24em}
     .chip{background:#151110;border:1px solid #35291f;border-radius:999px;padding:5px 11px;color:#e9d9be}
     /* Numa tela estreita os cinco selos passam de uma linha e roubam altura
@@ -133,9 +145,16 @@
     .chip b{color:#f3d190;font-variant-numeric:tabular-nums}
     .play-mid{flex:1;min-height:0;display:grid;place-items:center;overflow:hidden}
     .play-mid.rolavel{place-items:start center;overflow-y:auto;overscroll-behavior:contain;padding:2px}
-    .map{display:grid;gap:5px;width:min(100%,92vw);max-width:100%}
+    /* Antes o tabuleiro inteiro era espremido na largura disponível: num
+       8×8 a casa ficava com 40px, menor que a ponta do dedo. Agora a casa
+       tem um tamanho mínimo confortável e, quando o andar não cabe, a
+       janela rola atrás do herói em vez de encolher tudo. */
+    .map-view{max-width:100%;overflow:auto;overscroll-behavior:contain;
+      -webkit-overflow-scrolling:touch;scrollbar-width:none;border-radius:12px}
+    .map-view::-webkit-scrollbar{display:none}
+    .map{display:grid;gap:5px;width:max-content;margin:0 auto}
     .cell{
-      aspect-ratio:1;border-radius:10px;border:1px solid #2f2419;background:#151110;
+      width:var(--casa);height:var(--casa);border-radius:10px;border:1px solid #2f2419;background:#151110;
       display:grid;place-items:center;font-size:clamp(15px,4.4vw,22px);color:#6b5947;padding:0;
       cursor:default;touch-action:manipulation;transition:background .15s,border-color .15s;
     }
@@ -1094,12 +1113,12 @@ function confirmar(msg){
    a Demônio não era difícil. A curva agora é exponencial e o guardião tem
    o seu próprio multiplicador de vida, para durar uma briga de verdade. */
 const NIVEIS = [
-  {id:'comum',    nome:'Comum',    icone:'⚪', cor:'#9fb0a4', andares:3,  forca:1.0,  chefeVida:1.2, premio:1.0, frags:1, chance:.35, regioes:['campo']},
-  {id:'incomum',  nome:'Incomum',  icone:'🟢', cor:'#7fc98a', andares:4,  forca:1.5,  chefeVida:1.25,premio:1.5, frags:1, chance:.5,  regioes:['campo','deserto']},
-  {id:'rara',     nome:'Rara',     icone:'🔵', cor:'#79b8e2', andares:5,  forca:2.1,  chefeVida:1.3, premio:2.2, frags:1, chance:.7,  regioes:['deserto','gelo']},
-  {id:'epica',    nome:'Épica',    icone:'🟣', cor:'#b78de2', andares:6,  forca:3.0,  chefeVida:1.35,premio:3.0, frags:2, chance:.9,  regioes:['gelo','masmorra']},
-  {id:'lendaria', nome:'Lendária', icone:'🟠', cor:'#e8a24d', andares:8,  forca:4.3,  chefeVida:1.45, premio:4.2, frags:3, chance:1,   regioes:['masmorra','covil']},
-  {id:'demonio',  nome:'Demônio',  icone:'🔴', cor:'#e3564a', andares:10, forca:5.85, chefeVida:1.65, premio:6.0, frags:5, chance:1,   regioes:['covil'], final:true}
+  {id:'comum',    nome:'Comum',    icone:'⚪', cor:'#9fb0a4', andares:3,  lados:[5,6],   forca:1.0,  chefeVida:1.2, premio:1.0, frags:1, chance:.35, regioes:['campo']},
+  {id:'incomum',  nome:'Incomum',  icone:'🟢', cor:'#7fc98a', andares:4,  lados:[5,6,7], forca:1.5,  chefeVida:1.25,premio:1.5, frags:1, chance:.5,  regioes:['campo','deserto']},
+  {id:'rara',     nome:'Rara',     icone:'🔵', cor:'#79b8e2', andares:5,  lados:[6,7],   forca:2.1,  chefeVida:1.3, premio:2.2, frags:1, chance:.7,  regioes:['deserto','gelo']},
+  {id:'epica',    nome:'Épica',    icone:'🟣', cor:'#b78de2', andares:6,  lados:[6,7,8], forca:3.0,  chefeVida:1.35,premio:3.0, frags:2, chance:.9,  regioes:['gelo','masmorra']},
+  {id:'lendaria', nome:'Lendária', icone:'🟠', cor:'#e8a24d', andares:8,  lados:[7,8],   forca:4.1,  chefeVida:1.45, premio:4.2, frags:3, chance:1,   regioes:['masmorra','covil']},
+  {id:'demonio',  nome:'Demônio',  icone:'🔴', cor:'#e3564a', andares:10, lados:[7,8],  forca:5.35, chefeVida:1.65, premio:6.0, frags:5, chance:1,   regioes:['covil'], final:true}
 ];
 
 /* Afixos: o mesmo bestiário de 51 criaturas rende brigas diferentes quando
@@ -1845,7 +1864,12 @@ function migrarSaveAntigo(){
   store.del('chatgpt_rpg_game_v2');
 }
 migrarSaveAntigo();
-const N = 6;
+/* O tabuleiro era 6×6 em toda masmorra, de toda dificuldade, do primeiro
+   ao último andar — a mesma planta 36 vezes. N agora é o lado do andar
+   atual e muda a cada descida; quem lê N (xy, iAt, os BFS, revelar) já
+   pega o valor certo porque tudo roda depois de gerarAndar. */
+let N = 6;
+const LADO_MIN = 5, LADO_MAX = 8;
 
 let G = null;
 let META = {recorde:0, vitorias:0, mortes:0, bestiario:{}, reliquias:{}};
@@ -1862,7 +1886,7 @@ const faixaDe = (v, faixas) => faixas.find(f => v >= f.min && v <= f.max);
 function vibrar(ms){ try{ navigator.vibrate?.(ms); }catch(e){} }
 /* Ícone da interface. Herda a cor de quem o usa, então o mesmo desenho
    serve no selo dourado, no botão e no texto acinzentado. */
-const ico = (nome, cls='') => `<svg class="ico ${cls}" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-${nome}"/></svg>`;
+const ico = (nome, cls='') => `<svg class="ico ico-${nome} ${cls}" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-${nome}"/></svg>`;
 /* Material: a arte que você subir em img/itens/mat-<id>.png ganha do ícone;
    sem ela, entra o desenho da interface em vez do emoji. */
 const icoMat = k => MATERIAIS[k] && MATERIAIS[k].svg ? ico(MATERIAIS[k].svg) : (MATERIAIS[k] ? MATERIAIS[k].icone : '');
@@ -2120,7 +2144,23 @@ function carregarJogo(){
   carregarMeta();
   try{
     const dados = JSON.parse(store.get(GKEY));
-    if(dados && Array.isArray(dados.grid) && dados.grid.length === N*N){
+    /* O tamanho do andar agora vive no save, não numa constante: um jogo
+       salvo dentro de um 7×7 precisa voltar como 7×7. Aceita qualquer
+       quadrado perfeito dentro da faixa, o que inclui os saves de 6×6
+       feitos antes desta mudança.
+
+       O grid vazio também vale: é o herói parado no acampamento, que ainda
+       não entrou em masmorra nenhuma. A conferência antiga exigia 36 casas
+       exatas e jogava esse save fora — quem criava um herói e fechava o
+       jogo antes de descer perdia o herói. */
+    const temGrid = dados && Array.isArray(dados.grid);
+    const lado = temGrid ? Math.round(Math.sqrt(dados.grid.length)) : -1;
+    const gridValido = temGrid && (
+      dados.grid.length === 0 ||
+      (lado >= LADO_MIN && lado <= LADO_MAX && lado*lado === dados.grid.length)
+    );
+    if(gridValido){
+      if(dados.grid.length) N = lado;
       G = dados;
       G.log = Array.isArray(G.log) ? G.log : [];
       G.mats = G.mats || {ferro:0, couro:0, cristal:0, erva:0};
@@ -2301,7 +2341,17 @@ function voltarAoAcampamento(motivo){
 }
 
 /* ---------- geração do andar ---------- */
+/* O lado do andar. Sorteado dentro da faixa do nível, mas nunca igual ao
+   andar anterior quando a faixa permite variar — descer e encontrar
+   exatamente a mesma planta era metade da sensação de "sempre igual". */
+function sortearLado(){
+  const faixa = (nivelAtual().lados || [6]).filter(l => l >= LADO_MIN && l <= LADO_MAX);
+  if(!faixa.length) return 6;
+  const outros = faixa.filter(l => l !== N);
+  return sorteio(outros.length ? outros : faixa);
+}
 function gerarAndar(){
+  N = sortearLado();
   const total = N*N;
   const reg = regiaoAtual();
   const grid = Array.from({length:total}, () => ({tipo:'vazio', visto:false, limpo:false}));
@@ -2313,11 +2363,22 @@ function gerarAndar(){
   livres.sort(() => Math.random()-.5);
 
   const cl = climaAtual();
+  /* Antes os números eram fixos, calibrados para as 36 casas do 6×6: num
+     5×5 o andar ficava entupido e num 8×8 ficava deserto. Agora tudo sai
+     de uma densidade por casa — e as criaturas têm um piso, senão a cota
+     de abates do andar não teria como ser cumprida. */
+  const area = total - 1;
+  const porArea = (frac, min) => Math.max(min, Math.round(area * frac));
+  const quantosBichos = Math.max(
+    cotaDoAndar() + 2,
+    Math.min(18, porArea(.20, 5) + Math.floor(G.andar/2) + (cl?.maisBichos || 0))
+  );
   const plano = [
-    ...Array(Math.min(13, 5 + G.andar + (cl?.maisBichos || 0))).fill('inimigo'),
-    ...Array(3 + (cl?.maisBaus || 0)).fill('tesouro'),
-    ...Array(3).fill('material'),
-    ...Array(2).fill('armadilha'),
+    ...Array(quantosBichos).fill('inimigo'),
+    ...Array(porArea(.085, 2) + (cl?.maisBaus || 0)).fill('tesouro'),
+    ...Array(porArea(.085, 2)).fill('material'),
+    ...Array(porArea(.055, 1)).fill('armadilha'),
+    ...Array(porArea(.07, 2)).fill('misterio'),
     'fonte', 'altar'
   ];
   plano.forEach(tipo => { const i = livres.pop(); if(i !== undefined) grid[i].tipo = tipo; });
@@ -2622,6 +2683,7 @@ async function irAte(destino){
     som('passo');
     revelar();
     render();
+    seguirHeroi(true);
     const sala = G.grid[passo];
     if(!sala.limpo){
       ocupado = false;
@@ -2643,6 +2705,7 @@ async function mover(i){
   som('passo');
   revelar();
   render();
+  seguirHeroi(true);
   const sala = G.grid[i];
   if(!sala.limpo) await entrarNaSala(sala);
   ocupado = false;
@@ -2743,6 +2806,18 @@ async function entrarNaSala(sala){
       G.mats[mat] = (G.mats[mat]||0) + qtd;
       pontuar(8);
       anotar(`${MATERIAIS[mat].icone} Você recolhe <b>${qtd} ${MATERIAIS[mat].nome}</b> por aqui.`, 'good');
+      break;
+    }
+    /* A sala de interrogação. O mapa mostra o que tem em toda sala — foi o
+       que tirou o atrito de andar às cegas, mas tirou junto a aposta: com
+       tudo conhecido, descer virou executar uma lista. Estas voltam com a
+       dúvida sem trazer o atrito de volta, porque só ELAS são desconhecidas:
+       o resto do andar continua legível, e entrar aqui é uma escolha. */
+    case 'misterio': {
+      sala.limpo = true;
+      render();
+      const {valor} = await rolarDado({titulo:'❓ O que será que tem aqui?', faixas:FAIXAS_MISTERIO});
+      await resolverMisterio(valor, reg);
       break;
     }
     case 'armadilha': {
@@ -3407,8 +3482,12 @@ function beberPocao(){
   G.pocoes--;
   const cura = curaDaPocao();
   curar(cura);
-  anotar(`🧪 Você bebe a poção: <b>+${cura} de vida</b>.`, 'good');
-  if(G.modo === 'combate'){ contraAtaque(); sofrerVeneno(); }
+  /* Beber não gasta mais o turno. Media na Lendária: a poção básica curava
+     16 e o troco do turno perdido tirava 16,2 — beber deixava o herói com
+     menos vida do que antes. Na Demônio o saldo era −10. Era um item que
+     traía justo onde ele fazia falta. O limite da poção é quantas você
+     tem, não quantos turnos ela custa. */
+  anotar(`🧪 Você bebe a poção: <b>+${cura} de vida</b>. <i>(não gasta o turno)</i>`, 'good');
   ocupado = false;
   salvar(); render();
 }
@@ -4051,13 +4130,78 @@ function dispensarDica(){
 const naPrimeiraJornada = () => !META.jornadas;
 
 /* ---------- desenho da tela ---------- */
+/* A aposta da sala de interrogação, lida no próprio dado: o jogador vê a
+   escala antes de girar e sabe exatamente o que está arriscando. */
+const FAIXAS_MISTERIO = [
+  {min:1,  max:3,  ok:false, texto:'Emboscada!',   cor:'ruim', legenda:'algo estava esperando'},
+  {min:4,  max:7,  ok:false, texto:'Cilada',       cor:'ruim', legenda:'você se machuca'},
+  {min:8,  max:11, ok:true,  texto:'Nada demais',  cor:'',     legenda:'poeira e silêncio'},
+  {min:12, max:16, ok:true,  texto:'Bom achado!',  cor:'bom',  legenda:'vale a pena'},
+  {min:17, max:19, ok:true,  texto:'Tesouro!',     cor:'bom',  legenda:'achado e tanto'},
+  {min:20, max:20, ok:true,  texto:'RELÍQUIA!',    cor:'bom',  legenda:'o achado de uma jornada'}
+];
+async function resolverMisterio(valor, reg){
+  if(valor === 20){
+    ganharReliquia();
+    anotar('❓ <b>Uma relíquia esquecida!</b> Dessas que ficam com você para sempre.', 'gold');
+    return;
+  }
+  if(valor >= 17){
+    const ouro = Math.round((entre([25,45]) + G.andar*6) * (1 + doClima('ouroPct')));
+    G.ouro += ouro;
+    const mat = sorteio(COLHEITA[reg.id]);
+    G.mats[mat] = (G.mats[mat]||0) + 3;
+    G.pocoes++;
+    pontuar(60);
+    anotar(`❓ <b>Um esconderijo cheio!</b> ${ouro} de ouro, ${icoMat(mat)} 3 ${MATERIAIS[mat].nome} e uma poção.`, 'gold');
+    marcarOuro();
+    return;
+  }
+  if(valor >= 12){
+    /* Metade das vezes um item de uso, metade material e ouro — para o
+       "bom achado" não virar sempre a mesma coisa. */
+    if(Math.random() < .5){
+      const uid = sorteiaUsavel();
+      G.usaveis[uid] = (G.usaveis[uid]||0) + 1;
+      pontuar(25);
+      anotar(`❓ Escondido num vão: <b>${USAVEL[uid].icone} ${USAVEL[uid].nome}</b>.`, 'good');
+    }else{
+      const ouro = Math.round((entre([10,20]) + G.andar*3) * (1 + doClima('ouroPct')));
+      G.ouro += ouro;
+      const mat = sorteio(COLHEITA[reg.id]);
+      G.mats[mat] = (G.mats[mat]||0) + 1;
+      pontuar(25);
+      anotar(`❓ Um bom achado: <b>${ouro} de ouro</b> e ${icoMat(mat)} 1 ${MATERIAIS[mat].nome}.`, 'good');
+      marcarOuro();
+    }
+    return;
+  }
+  if(valor >= 8){
+    pontuar(5);
+    anotar('❓ Poeira, pedra e mais nada. Segue o jogo.', '');
+    return;
+  }
+  if(valor >= 4){
+    const dano = 4 + G.andar*2;
+    machucar(dano, true);
+    anotar(`❓ O chão cede e você se machuca na queda: <b>−${dano} de vida</b>.`, 'bad');
+    return;
+  }
+  /* Emboscada: a criatura vem com afixo, é o pior resultado da aposta. */
+  const comuns = BESTIARIO.filter(b => b.regiao === reg.id && !b.chefe);
+  const bicho = sorteio(comuns);
+  anotar(`❓ <b>Emboscada!</b> Um ${bicho.nome} estava esperando você aqui.`, 'bad');
+  chamarInimigo(bicho.id, sorteio(AFIXOS).id);
+}
+
 const NOME_SALA = {
   inimigo:'criatura', tesouro:'baú', material:'material', armadilha:'armadilha',
+  misterio:'não dá para saber daqui',
   fonte:'fonte que cura', altar:'altar', escada:'escada para o próximo andar',
   guardiao:'guardião', chefefinal:'o Dragonete de Ferro', inicio:'entrada', vazio:'sala vazia'
 };
 const ICONES = {
-  inicio:'🚩', inimigo:'👹', tesouro:'💰', material:'⛏️',
+  inicio:'🚩', inimigo:'👹', tesouro:'💰', material:'⛏️', misterio:'❓',
   armadilha:'⚠️', fonte:'⛲', altar:'🕯️', escada:'🪜', guardiao:'👑', chefefinal:'🐉', vazio:'·'
 };
 
@@ -4332,7 +4476,7 @@ function render(){
       <button class="act ${poderPronto()?'poder':''}" data-act="poder" ${poderPronto()?'':'disabled'}><span class="act-t">${
         poderDaClasse().icone} ${poderDaClasse().nome}</span><small>${
         poderPronto() ? poderDaClasse().desc : `pronta em ${G.recarga} ${G.recarga===1?'turno':'turnos'}`}</small></button>
-      <button class="act" data-act="pocao" ${G.pocoes>0?'':'disabled'}><span class="act-t">${ico('pocao','g')} Poção</span><small>${G.pocoes} restantes • +${curaDaPocao()} de vida</small></button>
+      <button class="act" data-act="pocao" ${G.pocoes>0?'':'disabled'}><span class="act-t">${ico('pocao','g')} Poção</span><small>${G.pocoes} restantes • +${curaDaPocao()} sem gastar o turno</small></button>
       <button class="act" data-act="itens" ${quantosUsaveis()?'':'disabled'}><span class="act-t">${ico('mochila','g')} Itens</span>${
         quantosUsaveis() ? `<small>${quantosUsaveis()} para usar</small>` : (veterano ? '' : '<small>nenhum item de uso</small>')}</button>
       <button class="act wide" data-act="fugir" ${inim.chefe?'disabled':''}><span class="act-t">${ico('fugir','g')} Fugir</span><small>${
@@ -4341,7 +4485,7 @@ function render(){
                            : 'precisa tirar '+faixasFuga().find(f=>f.ok).min+' ou mais')
       }</small></button>`;
   }else{
-    mid.innerHTML = `<div class="map" id="map" style="grid-template-columns:repeat(${N},1fr)"></div>`;
+    mid.innerHTML = `<div class="map-view" id="mapView"><div class="map" id="map" style="grid-template-columns:repeat(${N},var(--casa))"></div></div>`;
     const alcance = salasAlcancaveis();
     $('#map').innerHTML = G.grid.map((c,i) => {
       const aqui = i === G.pos;
@@ -4428,23 +4572,67 @@ function ajustarRolagem(){
    conforme o aparelho e a barra do navegador. Medimos em vez de chutar —
    e só depois que a mensagem e os botões já ocuparam o espaço deles,
    senão sobra altura no meio e o mapa nasce grande demais. */
+/* Uma casa nunca menor que isto: abaixo daqui o dedo erra o alvo. É o que
+   decide se o andar inteiro cabe na tela ou se a janela vai rolar. */
+const CASA_MIN = 46, CASA_MAX = 62, VAO = 5;
 function dimensionarMapa(){
-  const mid = $('#playMid'), mapa = $('#map');
-  if(!mid || !mapa) return;
+  const mid = $('#playMid'), mapa = $('#map'), janela = $('#mapView');
+  if(!mid || !mapa || !janela) return;
   /* No Safari a barra de endereço e a de baixo entram e saem, e a área
      realmente visível às vezes é menor que a caixa que medimos. Cruzar as
      duas medidas evita o tabuleiro nascer maior do que cabe na tela. */
   const vv = window.visualViewport;
   const larguraVis = vv ? vv.width  - 26 : Infinity;
   const alturaVis  = vv ? vv.height - 26 : Infinity;
-  const cabe = Math.min(mid.clientWidth, mid.clientHeight, larguraVis, alturaVis);
-  /* Abaixo disso a casa fica menor que a ponta do dedo e o tabuleiro
-     deixa de ser jogável. Em tela deitada o meio às vezes é mais baixo
-     que isso — aí é melhor deixar rolar do que cortar linhas fora. */
-  const MINIMO = 200;
-  const lado = Math.max(MINIMO, cabe);
-  mapa.style.width = lado + 'px';
-  mid.classList.toggle('rolavel', lado > cabe);
+  /* Os dois eixos são medidos separado: numa tela baixa e larga sobra
+     largura e falta altura, e uma janela quadrada calculada só pela menor
+     das duas ou desperdiça espaço ou estoura para fora da área. */
+  const larguraDisp = Math.min(mid.clientWidth, larguraVis);
+  const alturaDisp  = Math.min(mid.clientHeight, alturaVis);
+  const base = Math.max(200, Math.min(larguraDisp, alturaDisp));
+
+  /* Quanto sobraria para cada casa se o andar inteiro tivesse que caber. */
+  const seCoubesse = Math.floor((base - VAO*(N-1)) / N);
+  const casa = Math.max(CASA_MIN, Math.min(CASA_MAX, seCoubesse));
+  mapa.style.setProperty('--casa', casa + 'px');
+
+  const larguraTotal = casa*N + VAO*(N-1);
+  const jw = Math.min(Math.max(200, larguraDisp), larguraTotal);
+  const jh = Math.min(Math.max(200, alturaDisp),  larguraTotal);
+  janela.style.width  = jw + 'px';
+  janela.style.height = jh + 'px';
+  /* Só rola quando o andar é maior que a janela — nos andares pequenos o
+     tabuleiro inteiro continua à vista, como sempre foi. */
+  janela.classList.toggle('rolando', larguraTotal > jw + 1 || larguraTotal > jh + 1);
+  /* E se nem a janela mínima cabe na altura (tela deitada, teclado aberto),
+     o meio volta a rolar em vez de cortar linhas fora. */
+  mid.classList.toggle('rolavel', jh > alturaDisp + 1);
+  seguirHeroi();
+}
+
+/* A câmera anda atrás do herói: depois de cada passo, a janela desliza para
+   deixá-lo no centro (sem passar das bordas do andar). Usa a rolagem nativa,
+   então o jogador também pode arrastar para espiar o resto do andar. */
+function seguirHeroi(suave=false){
+  const janela = $('#mapView'), mapa = $('#map');
+  if(!janela || !mapa || !G || !G.grid || !G.grid.length) return;
+  if(!janela.classList.contains('rolando')) return;
+  const alvo = mapa.children[G.pos];
+  if(!alvo) return;
+  /* Medido por posição real na tela, e não por offsetLeft/offsetTop: aqueles
+     são relativos ao ancestral posicionado mais próximo, que não é o mapa —
+     o herói aparecia com offsetTop maior que o próprio tabuleiro e a câmera
+     ia parar no canto errado. */
+  const rAlvo = alvo.getBoundingClientRect();
+  const rMapa = mapa.getBoundingClientRect();
+  const destinoX = (rAlvo.left - rMapa.left) - (janela.clientWidth  - rAlvo.width)/2;
+  const destinoY = (rAlvo.top  - rMapa.top)  - (janela.clientHeight - rAlvo.height)/2;
+  const limite = (v, max) => Math.max(0, Math.min(v, max));
+  janela.scrollTo({
+    left: limite(destinoX, mapa.scrollWidth  - janela.clientWidth),
+    top:  limite(destinoY, mapa.scrollHeight - janela.clientHeight),
+    behavior: suave && !window.matchMedia('(prefers-reduced-motion:reduce)').matches ? 'smooth' : 'auto'
+  });
 }
 
 /* A área do meio ainda muda de tamanho depois do render: o Safari recolhe
@@ -4738,7 +4926,7 @@ $('#novoAvancar').onclick = () => {
 };
 /* Sobe junto com o arquivo: se a home mostra outra data, o aparelho ainda
    está servindo a versão velha do cache. */
-const VERSAO = 'v21 · 18/08 · herói em etapas';
+const VERSAO = 'v22 · 18/08 · andares variados';
 $('#lbVersao').textContent = VERSAO;
 $('#btnStart').onclick = () => {
   /* Na primeira vez o jogo começa e pronto: escolher classe e distribuir
