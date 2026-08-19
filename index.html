@@ -42,6 +42,10 @@
       --radius:18px;
     }
     *{box-sizing:border-box}
+    /* Tocar rápido em qualquer botão dava zoom de dois toques no iPhone —
+       o que tornava comprar dez poções uma tortura. Vale para todo botão,
+       não só os que eu lembrei de marcar um por um. */
+    button{touch-action:manipulation}
     html{scroll-behavior:smooth}
     body{
       margin:0;
@@ -572,6 +576,67 @@
     .cena-hora{position:absolute;left:10px;top:8px;font-size:10.5px;color:#cbb69a;
       letter-spacing:.06em;text-transform:uppercase;opacity:.75}
     @media(prefers-reduced-motion:reduce){.cena .fogo,.cena .estrela{animation:none}}
+    /* Forja: grade de peças em vez de parede de texto. A cor da borda diz
+       o estado antes de qualquer leitura. */
+    .fgrupo{margin-top:12px}
+    .fgrupo:first-child{margin-top:0}
+    .fgrade{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:6px}
+    .fpeca{background:#141010;border:1px solid #2f251d;border-radius:12px;padding:9px 8px;
+      display:grid;gap:3px;justify-items:center;text-align:center;color:var(--text);cursor:pointer}
+    /* O cartão largo põe ícone, nome, valor e selo numa linha só — o selo
+       caía na terceira coluna estreita e quebrava palavra por palavra. */
+    .fpeca.larga{grid-template-columns:34px 1fr auto auto;justify-items:start;text-align:left;
+      align-items:center;gap:10px;margin-top:7px}
+    .fpeca.larga .fpeca-selo{white-space:nowrap}
+    .fpeca.pode{border-color:#5f8f69;background:#141a13}
+    .fpeca.tem{border-color:#4a3a2b;opacity:.72}
+    .fpeca.tem.equipado{border-color:var(--gold);opacity:1;background:#1d1710}
+    .fpeca.longe{opacity:.5}
+    .fpeca:active{transform:scale(.985)}
+    .fpeca-ico{font-size:22px;line-height:1}
+    .fpeca-ico .item-art{width:26px;height:26px}
+    .fpeca-nome{font-size:12px;line-height:1.2;color:#f6e2bb}
+    .fpeca-val{font-size:11px;color:#f3d190;font-variant-numeric:tabular-nums}
+    .fpeca-selo{font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+    .fpeca.pode .fpeca-selo{color:#8fd39a}
+    .fpeca.tem.equipado .fpeca-selo{color:var(--gold)}
+    .fpocao{display:grid;grid-template-columns:34px 1fr auto;gap:9px;align-items:center;
+      background:#141010;border:1px solid #2f251d;border-radius:12px;padding:9px 10px;margin-top:6px}
+    .fpocao-ico{font-size:22px;text-align:center;line-height:1}
+    .fpocao-txt{display:grid;gap:1px;min-width:0}
+    .fpocao-txt b{font-size:12.5px;color:#f6e2bb}
+    .fpocao-txt small{font-size:11px;color:var(--muted)}
+    .flotes{display:flex;gap:5px}
+    .flote{background:#241c14;border:1px solid #4a3a2b;border-radius:9px;padding:8px 11px;
+      color:#f3d190;font:700 12.5px system-ui,sans-serif;cursor:pointer;min-width:44px}
+    .flote:disabled{opacity:.35;cursor:default}
+    .flote:not(:disabled):active{transform:scale(.94)}
+    .det-linha{display:flex;justify-content:space-between;gap:10px;align-items:baseline;
+      padding:7px 0;border-bottom:1px dashed #2b2119;font-size:12.5px;color:var(--muted)}
+    .det-linha b{color:#f3d190;font-size:14px}
+    .det-traco{background:rgba(200,166,224,.08);border-radius:10px;padding:9px 11px;margin-top:9px;display:grid;gap:2px}
+    .det-traco b{font-size:12.5px;color:#dcc0f0}
+    .det-traco small{font-size:11.5px;color:#c8a6e0;line-height:1.4}
+    .det-custos{display:grid;gap:5px;margin-top:11px}
+    .det-custo{font-size:12px;padding:6px 9px;border-radius:9px;background:#141010;border:1px solid #2f251d}
+    .det-custo.ok{color:#9fc9a5}
+    .det-custo.falta{color:#e0a08a;border-color:#5a3a30}
+    .det-custo b{font-variant-numeric:tabular-nums}
+    #detTitulo .item-art{width:24px;height:24px;vertical-align:-4px}
+    .res-lista{display:grid;gap:6px}
+    .res-linha{display:grid;grid-template-columns:26px auto 1fr;gap:9px;align-items:baseline;
+      background:#141010;border:1px solid #2f251d;border-radius:10px;padding:8px 11px}
+    .res-linha.destaque{border-color:#6b5330;background:#1e1812}
+    .res-ic{font-size:17px;text-align:center;line-height:1}
+    .res-n{font:700 17px Georgia,serif;color:#f3d190;font-variant-numeric:tabular-nums}
+    .res-linha.destaque .res-n{color:#f1cc7b}
+    .res-t{font-size:12.5px;color:var(--muted)}
+    .res-vazio{margin:0;color:var(--muted);font-size:12.5px;text-align:center;padding:10px 0}
+    .res-grande{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+    .res-grande span{background:linear-gradient(160deg,#1d160e,#141010 65%);border:1px solid #4a3a2b;
+      border-radius:12px;padding:10px;display:grid;gap:2px;justify-items:center;text-align:center}
+    .res-grande b{font:700 26px Georgia,serif;color:#f3d190;line-height:1;font-variant-numeric:tabular-nums}
+    .res-grande small{font-size:11px;color:var(--muted)}
     .pet-card,.pet-vazio{background:linear-gradient(160deg,#1c1610,#151110 70%);
       border:1px solid #4a3a2b;border-radius:13px;padding:10px 11px;display:grid;gap:8px;width:100%;
       color:var(--text);text-align:left}
@@ -1002,6 +1067,29 @@
       <button class="btn" id="novoVoltar">Cancelar</button>
       <button class="btn primary" id="novoAvancar">Continuar</button>
     </div>
+  </div>
+</div>
+
+<!-- ===== Detalhe de uma peça na forja ===== -->
+<div class="ov" id="detOv">
+  <div class="sheet">
+    <h3 id="detTitulo"></h3>
+    <div class="sheet-body" id="detCorpo"></div>
+    <div class="sheet-acoes">
+      <button class="btn" data-fechar="detOv">Voltar</button>
+      <button class="btn primary" id="detForjar">⚒️ Forjar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Resumo de andar / masmorra ===== -->
+<div class="ov" id="resumoOv">
+  <div class="sheet">
+    <h3 id="resumoTitulo">Andar concluído</h3>
+    <p class="sheet-sub" id="resumoSub"></p>
+    <div class="sheet-body" id="resumoCorpo"></div>
+    <div id="resumoRodape"></div>
+    <button class="btn primary" data-fechar="resumoOv" style="width:100%">Continuar</button>
   </div>
 </div>
 
@@ -2307,6 +2395,8 @@ function entrarNaMasmorra(idx){
   G.abatesNoAndar = 0;
   G.guardaCarregada = temRumo('coracao-brasa');
   G.trocasNoAndar = 0;
+  G.fotoMasmorra = fotoDoEstado();
+  G.fotoAndar = fotoDoEstado();
   if(temTraco('bolso')) G.pocoes++;
   const doPet = Math.ceil(bonusPet('pocao')/2);
   if(doPet){
@@ -2363,6 +2453,8 @@ async function escaparDaMasmorra(){
 
   if(faixa.ok){
     const n = nivelPorId(G.masmorra.nivel);
+    mostrarResumoMasmorra('o que deu para trazer na fuga');
+    G.fotoMasmorra = null; G.fotoAndar = null;
     G.masmorra = null; G.andar = 0; G.modo = 'hub';
     G.sequencia = 0;
     const tinha = G.bencaos.length;
@@ -2396,6 +2488,11 @@ function voltarAoAcampamento(motivo){
   META.niveisLimpos = META.niveisLimpos || {};
   META.niveisLimpos[n.id] = (META.niveisLimpos[n.id]||0) + 1;
   salvarMeta();
+  /* O resumo da masmorra sai antes de zerar G.masmorra: ele usa o nível
+     e o andar para dizer de onde você está voltando. */
+  mostrarResumoMasmorra(motivo === 'escapou' ? 'o que deu para trazer na fuga' : 'tudo o que você trouxe de volta');
+  G.fotoMasmorra = null;
+  G.fotoAndar = null;
   G.masmorra = null;
   G.andar = 0;
   G.modo = 'hub';
@@ -2452,8 +2549,11 @@ function gerarAndar(){
     ...Array(quantosBichos).fill('inimigo'),
     ...Array(porArea(.085, 2) + (cl?.maisBaus || 0)).fill('tesouro'),
     ...Array(porArea(.085, 2)).fill('material'),
-    ...Array(porArea(.055, 1)).fill('armadilha'),
-    ...Array(porArea(.07, 2)).fill('misterio'),
+    /* A sala ⚠️ saiu: ela anunciava "aqui tem coisa ruim" e a única
+       decisão era desviar. A ❓ faz o mesmo trabalho melhor, porque o
+       risco vem sem aviso — a cilada dela cobre o que a armadilha fazia.
+       O que era armadilha virou mais mistério. */
+    ...Array(porArea(.085, 2)).fill('misterio'),
     'fonte', 'altar'
   ];
   plano.forEach(tipo => { const i = livres.pop(); if(i !== undefined) grid[i].tipo = tipo; });
@@ -2895,20 +2995,6 @@ async function entrarNaSala(sala){
       await resolverMisterio(valor, reg);
       break;
     }
-    case 'armadilha': {
-      sala.limpo = true;
-      render();
-      const {faixa} = await rolarDado({titulo:'⚠️ Armadilha! Gire para desviar', faixas:FAIXAS_SORTE});
-      if(faixa.ok){
-        pontuar(10);
-        anotar('⚠️ Você pula para trás bem na hora. +10 pontos', 'good');
-      }else{
-        const dano = 3 + G.andar;
-        machucar(dano, true);
-        anotar(`⚠️ A armadilha te pega: <b>−${dano} de vida</b>.`, 'bad');
-      }
-      break;
-    }
     case 'fonte': {
       sala.limpo = true;
       const cura = Math.ceil(G.vidaMax * (climaAtual()?.fonteDobra ? .8 : .4));
@@ -2954,6 +3040,7 @@ async function entrarNaSala(sala){
 
 function descer(){
   const n = nivelAtual();
+  const andarFeito = G.andar;
   const ganho = Math.round(40 * G.andar * n.premio);
   pontuar(ganho);
   G.andar++;
@@ -2983,6 +3070,10 @@ function descer(){
   anotar(`🪜 Você desce para o <b>andar ${G.andar} de ${G.masmorra.andares}</b>${ultimoAndar()?' — o último':''}. +${ganho} pontos`, 'gold');
   gerarAndar();
   mostrarFaixa(regiaoAtual());
+  /* O resumo sai antes da bênção: primeiro o que você tirou do andar,
+     depois a escolha do próximo. */
+  mostrarResumoAndar(andarFeito);
+  G.fotoAndar = fotoDoEstado();
   oferecerBencao();
 }
 
@@ -3601,117 +3692,135 @@ function desenharForja(){
   $('#forgeMats').innerHTML = Object.entries(MATERIAIS).map(([k,m]) =>
     `<span class="chip">${arteItem('mat-'+k, m.icone, 'mat-art', m.svg)} ${m.nome} <b>${G.mats[k]||0}</b></span>`
   ).join('');
-  /* Dezenove receitas soltas numa lista só viravam parede de texto. Agora é
-     uma linha por espaço, mostrando o que você usa e o próximo degrau —
-     a escada inteira fica atrás do "ver degraus". */
-  const grupos = [
-    {slot:'arma',      titulo:'Arma',      unidade:'Golpe'},
-    {slot:'elmo',      titulo:'Elmo',      unidade:'Defesa'},
-    {slot:'peito',     titulo:'Peitoral',  unidade:'Defesa'},
-    {slot:'escudo',    titulo:'Escudo',    unidade:'Defesa'},
-    {slot:'qualidade', titulo:'Poções',    unidade:'Cura'}
-  ];
-  const linhaCusto = r => {
-    const preco = precoForja(r);
-    return [`${ico('ouro')} ${preco}`]
-      .concat(Object.entries(r.mats).map(([k,q]) => `${icoMat(k)} ${q}`)).join('  ');
+
+  /* A forja virou parede: cinco grupos, cada um com botão, custo em
+     códigos e uma gaveta de degraus. Agora é uma grade de peças — ícone,
+     nome e uma cor dizendo se dá para forjar — e o detalhe inteiro só
+     aparece quando você toca numa. */
+  const cartao = r => {
+    const tenho = jaTenho(r);
+    const pode = !tenho && temMateriais(r);
+    const equipado = G.equip[r.slot] && G.equip[r.slot].id === r.id;
+    const classe = tenho ? (equipado ? 'tem equipado' : 'tem') : pode ? 'pode' : 'longe';
+    const selo = equipado ? 'usando' : tenho ? 'reserva' : pode ? 'dá para forjar' : 'falta material';
+    return `<button class="fpeca ${classe}" data-peca="${r.id}">
+      <span class="fpeca-ico">${arteItem(r.id, r.icone, 'item-art')}</span>
+      <b class="fpeca-nome">${r.nome}</b>
+      <span class="fpeca-val">${r.slot === 'arma' ? '+'+r.valor+' golpe' : '+'+r.valor+' defesa'}</span>
+      <span class="fpeca-selo">${selo}</span>
+    </button>`;
   };
 
-  let html = '';
-  for(const g of grupos){
-    const degraus = RECEITAS.filter(r => r.slot === g.slot).sort((a,b) => a.valor - b.valor);
-    const tenho = g.slot === 'qualidade' ? (G.pocaoNivel || 0) : (G.equip[g.slot]?.valor || 0);
-    const equipado = g.slot === 'qualidade'
-      ? NOME_POCAO[G.pocaoNivel || 0]
-      : (G.equip[g.slot]?.nome || 'nada equipado');
-    const proximo = degraus.find(r => r.valor > tenho);
-    const valorAtual = g.slot === 'qualidade' ? FORCA_POCAO[tenho] : tenho;
-    const tracoEquipado = g.slot === 'qualidade' ? null : tracoDe(G.equip[g.slot]);
+  const grupos = ESPACOS.map(sl => {
+    const pecas = RECEITAS.filter(r => r.slot === sl).sort((a,b)=>a.valor-b.valor);
+    const atual = G.equip[sl];
+    return `<section class="fgrupo">
+      <h4>${NOMES_SLOT[sl]} <small class="fade">${atual ? 'usando ' + escapeHtml(atual.nome) : 'nada equipado'}</small></h4>
+      <div class="fgrade">${pecas.map(cartao).join('')}</div>
+    </section>`;
+  }).join('');
 
-    html += `
-      <div class="grupo" data-grupo="${g.slot}">
-        <div class="grupo-topo">
-          <span class="grupo-nome">${g.titulo}</span>
-          <span class="grupo-atual">${escapeHtml(equipado)} <b>${g.unidade} ${valorAtual}</b></span>
-        </div>
-        ${tracoEquipado ? `<p class="grupo-traco">${tracoEquipado.icone} <b>${tracoEquipado.nome}</b> — ${tracoEquipado.desc}</p>` : ''}`;
-    if(!proximo){
-      html += `<p class="grupo-topo-fim">✔ no melhor degrau</p>`;
-    }else{
-      const pode = temMateriais(proximo);
-      const falta = faltaPara(proximo);
-      const ganho = g.slot === 'qualidade'
-        ? `cura ${FORCA_POCAO[proximo.valor]}` : `${g.unidade} ${proximo.valor}`;
-      html += `
-        <button class="recipe" data-forjar="${proximo.id}" ${pode?'':'disabled'}>
-          <span class="recipe-ico">${arteItem(proximo.id, proximo.icone, 'item-art')}</span>
-          <span class="recipe-txt">
-            <b>${proximo.nome}</b>
-            <small>${valorAtual} → <b class="sobe">${g.slot==='qualidade'?FORCA_POCAO[proximo.valor]:proximo.valor}</b> de ${g.unidade.toLowerCase()}</small>
-            ${falta ? `<small class="recipe-falta">falta ${falta}</small>` : ''}
-          </span>
-          <span class="recipe-cost">${linhaCusto(proximo)}</span>
-          ${TRACOS[proximo.traco] ? `<span class="recipe-traco">${TRACOS[proximo.traco].icone} <b>${TRACOS[proximo.traco].nome}</b> — ${TRACOS[proximo.traco].desc}</span>` : ''}
-        </button>`;
-    }
-    /* As outras peças do espaço ficam atrás do "ver as outras" — inclusive
-       as de degrau mais baixo, que agora valem a pena pelo traço: quem quer
-       o Vidente numa Névoa forja o elmo de couro e o leva na reserva. */
-    if(g.slot !== 'qualidade'){
-      const outras = degraus.filter(r => !jaTenho(r) && (!proximo || r.id !== proximo.id));
-      if(outras.length){
-        const rotulo = outras.length === 1
-          ? `ver a outra peça de ${g.titulo.toLowerCase()}`
-          : `ver as outras ${outras.length} peças de ${g.titulo.toLowerCase()}`;
-        html += `<details class="degraus"><summary>${rotulo}</summary>
-          ${outras.map(r => {
-            const pode = temMateriais(r);
-            const t = TRACOS[r.traco];
-            const paraReserva = tenho >= r.valor;
-            return `<button class="degrau degrau-btn" data-forjar="${r.id}" ${pode?'':'disabled'}>
-              <span>${r.icone} ${r.nome}${paraReserva?' <i class="degrau-res">→ reserva</i>':''}</span>
-              <span class="degrau-g">${g.unidade} ${r.valor}</span>
-              ${t ? `<span class="degrau-t">${t.icone} <b>${t.nome}</b> — ${t.desc}</span>` : ''}
-              <span class="degrau-c">${linhaCusto(r)}${pode?'':'  •  falta '+faltaPara(r)}</span></button>`;
-          }).join('')}
-        </details>`;
-      }
-    }else{
-      const acima = degraus.filter(r => r.valor > (proximo ? proximo.valor : tenho));
-      if(acima.length){
-        html += `<details class="degraus"><summary>ver os ${acima.length} degraus acima</summary>
-          ${acima.map(r => `<div class="degrau"><span>${r.icone} ${r.nome}</span>
-            <span class="degrau-g">cura ${FORCA_POCAO[r.valor]}</span>
-            <span class="degrau-c">${linhaCusto(r)}</span></div>`).join('')}
-        </details>`;
-      }
-    }
-    html += `</div>`;
-  }
-
-  // as poções avulsas ficam à parte: compra repetida, não é degrau
+  /* Poções à parte: aqui o problema não era entender, era a repetição —
+     dez toques para dez poções, e o toque rápido dava zoom. */
   const pocao = RECEITAS.find(r => r.slot === 'pocao');
-  html += `
-    <div class="grupo">
-      <div class="grupo-topo">
-        <span class="grupo-nome">Repor poções</span>
-        <span class="grupo-atual">você tem <b>${G.pocoes}</b></span>
-      </div>
-      <button class="recipe" data-forjar="${pocao.id}" ${temMateriais(pocao)?'':'disabled'}>
-        <span class="recipe-ico">${arteItem(pocao.id, pocao.icone, 'item-art')}</span>
-        <span class="recipe-txt">
-          <b>${NOME_POCAO[G.pocaoNivel||0]}</b>
-          <small>+1 poção • cura ${curaDaPocao()}</small>
-          ${faltaPara(pocao) ? `<small class="recipe-falta">falta ${faltaPara(pocao)}</small>` : ''}
-        </span>
-        <span class="recipe-cost">${linhaCusto(pocao)}</span>
-      </button>
-    </div>`;
+  const qualidades = RECEITAS.filter(r => r.slot === 'qualidade').sort((a,b)=>a.valor-b.valor);
+  const proximaQual = qualidades.find(r => r.valor > (G.pocaoNivel||0));
+  const cabem = quantasCabem(pocao);
+  const lote = n => `<button class="flote" data-lote="${n}" ${cabem >= n ? '' : 'disabled'}>×${n}</button>`;
 
-  $('#forgeList').innerHTML = html;
-  $$('[data-forjar]').forEach(b => b.onclick = () => forjar(b.dataset.forjar));
+  $('#forgeList').innerHTML = `
+    <section class="fgrupo">
+      <h4>Poções <small class="fade">você tem ${G.pocoes} • cada uma cura ${curaDaPocao()}</small></h4>
+      <div class="fpocao">
+        <span class="fpocao-ico">${arteItem('pocao', '🧪', 'item-art')}</span>
+        <span class="fpocao-txt"><b>${NOME_POCAO[G.pocaoNivel||0]}</b>
+          <small>${linhaCusto(pocao)} cada</small></span>
+        <span class="flotes">${lote(1)}${lote(5)}${lote(10)}</span>
+      </div>
+      ${proximaQual ? `<button class="fpeca larga ${temMateriais(proximaQual)?'pode':'longe'}" data-peca="${proximaQual.id}">
+        <span class="fpeca-ico">${arteItem(proximaQual.id, proximaQual.icone, 'item-art')}</span>
+        <b class="fpeca-nome">${proximaQual.nome}</b>
+        <span class="fpeca-val">cura ${FORCA_POCAO[proximaQual.valor]}</span>
+        <span class="fpeca-selo">${temMateriais(proximaQual)?'dá para forjar':'falta material'}</span>
+      </button>` : '<p class="grupo-topo-fim">✔ suas poções estão no melhor grau</p>'}
+    </section>
+    ${grupos}`;
+
+  $$('[data-peca]').forEach(b => b.onclick = () => abrirDetalhePeca(b.dataset.peca));
+  $$('[data-lote]').forEach(b => b.onclick = () => {
+    const n = +b.dataset.lote;
+    let feitas = 0;
+    for(let i=0;i<n && temMateriais(pocao);i++){ forjarSilencioso(pocao); feitas++; }
+    if(feitas) anotar(`⚒️ Você prepara <b>${feitas} ${feitas===1?'poção':'poções'}</b>. Agora tem ${G.pocoes}.`, 'gold');
+    salvar(); desenharForja(); render();
+  });
   ligarArte($('#forgeOv'));
 }
+
+/* Quantas cabem no que você tem — é o que decide se o ×5 e o ×10 ficam
+   apagados em vez de darem um toque perdido. */
+function quantasCabem(r){
+  let n = Math.floor(G.ouro / precoForja(r));
+  for(const [k,q] of Object.entries(r.mats)) n = Math.min(n, Math.floor((G.mats[k]||0) / q));
+  return Math.max(0, n);
+}
+function linhaCusto(r){
+  return [`${ico('ouro')} ${precoForja(r)}`]
+    .concat(Object.entries(r.mats).map(([k,q]) => `${icoMat(k)} ${q}`)).join('  ');
+}
+
+/* O detalhe de uma peça: tudo o que a lista não cabia dizer. */
+function abrirDetalhePeca(id){
+  const r = receita(id);
+  if(!r) return;
+  const t = TRACOS[r.traco];
+  const tenho = jaTenho(r);
+  const equipado = G.equip[r.slot] && G.equip[r.slot].id === r.id;
+  const pode = !tenho && temMateriais(r);
+  const atual = G.equip[r.slot];
+  const qualidade = r.slot === 'qualidade';
+  const jaTemQual = qualidade && (G.pocaoNivel||0) >= r.valor;
+
+  const custo = Object.entries(r.mats).map(([k,q]) => {
+    const tem = G.mats[k] || 0;
+    return `<div class="det-custo ${tem>=q?'ok':'falta'}">${icoMat(k)} <b>${tem}</b>/${q} ${MATERIAIS[k].nome}</div>`;
+  }).join('');
+  const preco = precoForja(r);
+
+  $('#detTitulo').innerHTML = `${arteItem(r.id, r.icone, 'item-art')} ${escapeHtml(r.nome)}`;
+  $('#detCorpo').innerHTML = `
+    <div class="det-linha"><span>${qualidade ? 'Cura' : (r.slot === 'arma' ? 'Golpe' : 'Defesa')}</span>
+      <b>${qualidade ? FORCA_POCAO[r.valor] : '+'+r.valor}</b></div>
+    ${!qualidade && atual ? `<div class="det-linha"><span>Você usa hoje</span>
+      <b>${escapeHtml(atual.nome)} (+${atual.valor})</b></div>` : ''}
+    ${t ? `<div class="det-traco"><b>${t.icone} ${t.nome}</b><small>${t.desc}</small></div>` : ''}
+    <div class="det-custos">
+      <div class="det-custo ${G.ouro>=preco?'ok':'falta'}">${ico('ouro')} <b>${G.ouro}</b>/${preco} de ouro</div>
+      ${custo}
+    </div>`;
+  const btn = $('#detForjar');
+  btn.disabled = tenho || jaTemQual || !temMateriais(r);
+  btn.textContent = equipado ? 'Já está equipada'
+                  : tenho ? 'Já está na reserva'
+                  : jaTemQual ? 'Suas poções já são melhores'
+                  : temMateriais(r) ? '⚒️ Forjar' : 'Falta material';
+  btn.onclick = () => { forjar(r.id); $('#detOv').classList.remove('on'); desenharForja(); };
+  $('#detOv').classList.add('on');
+  ligarArte($('#detOv'));
+}
+
+/* Forja sem alarde: usada pelo lote de poções, para não escrever dez
+   linhas no diário nem tocar dez sons. */
+function forjarSilencioso(r){
+  if(!temMateriais(r)) return false;
+  G.ouro -= precoForja(r);
+  Object.entries(r.mats).forEach(([k,q]) => G.mats[k] -= q);
+  G.pocoes++;
+  pontuar(15);
+  progredirMissao('forjou');
+  return true;
+}
+
 function forjar(id){
   const r = receita(id);
   if(!r || !temMateriais(r)) return;
@@ -3990,15 +4099,31 @@ function desenharCartaoJornada(){
     x.beginPath(); x.moveTo(L*.32, cy); x.lineTo(L*.68, cy); x.stroke();
   };
 
+  /* Nada de emoji dentro de linha centralizada: o Safari mede emoji a
+     menos do que desenha, e a linha inteira saía deslocada para a direita
+     (o nome do herói chegou a vazar da borda). Emoji aqui só em posição
+     calculada, um a um — como a fileira de estatísticas, que sempre saiu
+     certa justamente por isso. */
   const centro = t => { x.textAlign = 'center'; x.fillText(t, L/2, y); };
+  /* Encolhe a fonte até o texto caber na largura segura: nome comprido
+     não pode vazar do cartão. */
+  const centroQueCabe = (t, tamanho, peso='800', larguraMax = L - 160) => {
+    let px = tamanho;
+    x.font = `${peso} ${px}px Georgia, serif`;
+    while(px > 24 && x.measureText(t).width > larguraMax){
+      px -= 4;
+      x.font = `${peso} ${px}px Georgia, serif`;
+    }
+    centro(t);
+  };
+
   let y = 150;
   x.fillStyle = vitoria ? '#9ee0a8' : '#ff9a90';
   x.font = '700 40px Georgia, serif';
-  centro(vitoria ? '🐉 JORNADA VENCIDA' : '☠️ FIM DE JORNADA'); y += 96;
+  centro(vitoria ? 'JORNADA VENCIDA' : 'FIM DE JORNADA'); y += 96;
 
-  x.font = '800 64px Georgia, serif';
   x.fillStyle = '#f6eadc';
-  centro(`${cls.icone}  ${G.nome}`); y += 52;
+  centroQueCabe(G.nome, 64); y += 52;
   x.font = '400 30px Georgia, serif';
   x.fillStyle = '#bda995';
   centro(cls.nome); y += 74;
@@ -4034,9 +4159,9 @@ function desenharCartaoJornada(){
   }
 
   if(!vitoria && G.causaMorte){
-    x.font = '400 30px Georgia, serif';
     x.fillStyle = '#ff9a90';
-    centro(`abatido por ${G.causaMorte.icone} ${G.causaMorte.nome}`); y += 60;
+    centroQueCabe(`abatido por ${G.causaMorte.nome}`, 30, '400');
+    y += 60;
   }
 
   // A parte de baixo usa posições fixas a partir da borda — não uma
@@ -4062,16 +4187,20 @@ function desenharCartaoJornada(){
   });
 
   // relíquias: o que sobrevive à queda, é isso que separa uma tentativa da outra
-  const guardadas = RELIQUIAS.filter(r => nivelRel(r.id) > 0);
+  const guardadas = RELIQUIAS.filter(r => nivelRel(r.id) > 0).slice(0, 6);
   if(guardadas.length){
     const relY = A - 170;
     x.textAlign = 'center';
     x.font = '400 24px Georgia, serif';
     x.fillStyle = '#8a7a67';
     x.fillText('relíquias guardadas', L/2, relY);
+    /* Um a um, em posição calculada — juntar num texto só devolvia o
+       mesmo deslocamento das linhas com emoji. */
     x.font = '42px sans-serif';
     x.fillStyle = '#f6eadc';
-    x.fillText(guardadas.slice(0, 6).map(r => r.icone).join('   '), L/2, relY+42);
+    const vao = 64;
+    const x0 = L/2 - (guardadas.length - 1) * vao / 2;
+    guardadas.forEach((r,i) => x.fillText(r.icone, x0 + i*vao, relY + 44));
   }
 
   x.font = '700 30px Georgia, serif';
@@ -4224,6 +4353,88 @@ function cenaDoAcampamento(){
     <span class="barraca"></span><span class="brasa"></span><span class="fogo"></span>
     <span class="cena-hora">${faixa.nome}</span>
   </div>`;
+}
+
+/* ---------- resumo do que foi pego ----------
+   Em vez de instrumentar cada lugar que dá ouro, material, poção ou item
+   — são muitos, e cada um novo seria um lugar a mais para esquecer — o
+   resumo tira uma foto do estado no começo do andar e compara no fim. */
+function fotoDoEstado(){
+  return {
+    ouro: G.ouro, pontos: G.pontos, abates: G.abates, pocoes: G.pocoes,
+    mats: {...G.mats},
+    usaveis: {...(G.usaveis || {})},
+    reliquias: RELIQUIAS.reduce((s,r) => s + nivelRel(r.id), 0)
+  };
+}
+function diferenca(antes){
+  if(!antes) return null;
+  const agora = fotoDoEstado();
+  const mats = {};
+  for(const k in agora.mats){
+    const d = (agora.mats[k]||0) - (antes.mats[k]||0);
+    if(d > 0) mats[k] = d;
+  }
+  const usaveis = {};
+  for(const k in agora.usaveis){
+    const d = (agora.usaveis[k]||0) - (antes.usaveis[k]||0);
+    if(d > 0) usaveis[k] = d;
+  }
+  return {
+    ouro: agora.ouro - antes.ouro,
+    pontos: agora.pontos - antes.pontos,
+    abates: agora.abates - antes.abates,
+    /* Poção pode ter caído (você bebeu) — só conta o que sobrou a mais. */
+    pocoes: agora.pocoes - antes.pocoes,
+    reliquias: agora.reliquias - antes.reliquias,
+    mats, usaveis
+  };
+}
+/* As linhas do resumo, na ordem em que interessam. */
+function linhasDoResumo(d){
+  const l = [];
+  if(d.abates)    l.push({ic:'⚔️', n:d.abates,  t:d.abates===1?'criatura derrotada':'criaturas derrotadas'});
+  if(d.ouro > 0)  l.push({svg:'ouro', n:d.ouro, t:'de ouro'});
+  Object.entries(d.mats).forEach(([k,q]) => l.push({mat:k, n:q, t:MATERIAIS[k].nome}));
+  if(d.pocoes > 0) l.push({ic:'🧪', n:d.pocoes, t:d.pocoes===1?'poção':'poções'});
+  Object.entries(d.usaveis).forEach(([k,q]) => l.push({ic:USAVEL[k].icone, n:q, t:USAVEL[k].nome}));
+  if(d.reliquias) l.push({ic:'✨', n:d.reliquias, t:d.reliquias===1?'nível de relíquia':'níveis de relíquia', destaque:true});
+  return l;
+}
+function htmlDoResumo(d){
+  const linhas = linhasDoResumo(d);
+  if(!linhas.length) return '<p class="res-vazio">Você saiu de mãos abanando deste andar.</p>';
+  return `<div class="res-lista">${linhas.map(x => `
+    <div class="res-linha ${x.destaque?'destaque':''}">
+      <span class="res-ic">${x.svg ? ico(x.svg) : x.mat ? icoMat(x.mat) : x.ic}</span>
+      <b class="res-n">${x.n}</b>
+      <span class="res-t">${x.t}</span>
+    </div>`).join('')}</div>`;
+}
+function mostrarResumoAndar(andarFeito){
+  const d = diferenca(G.fotoAndar);
+  if(!d) return;
+  $('#resumoTitulo').textContent = `Andar ${andarFeito} concluído`;
+  $('#resumoSub').textContent = 'o que você tirou daqui';
+  $('#resumoCorpo').innerHTML = htmlDoResumo(d);
+  $('#resumoRodape').innerHTML = '';
+  $('#resumoOv').classList.add('on');
+  som('brilho');
+}
+function mostrarResumoMasmorra(motivo){
+  const d = diferenca(G.fotoMasmorra);
+  if(!d) return;
+  const n = G.masmorra ? nivelPorId(G.masmorra.nivel) : null;
+  $('#resumoTitulo').textContent = n ? `${n.nome} limpa!` : 'Masmorra limpa!';
+  $('#resumoSub').textContent = motivo || 'tudo o que você trouxe de volta';
+  $('#resumoCorpo').innerHTML = htmlDoResumo(d);
+  $('#resumoRodape').innerHTML = `
+    <div class="res-grande">
+      <span><b>${d.pontos}</b><small>pontos na jornada</small></span>
+      <span><b>${G.andar || (n?n.andares:0)}</b><small>andares descidos</small></span>
+    </div>`;
+  $('#resumoOv').classList.add('on');
+  som('vitoria');
 }
 
 /* ---------- o bicho do acampamento ----------
@@ -4495,14 +4706,14 @@ async function resolverMisterio(valor, reg){
 }
 
 const NOME_SALA = {
-  inimigo:'criatura', tesouro:'baú', material:'material', armadilha:'armadilha',
+  inimigo:'criatura', tesouro:'baú', material:'material',
   misterio:'não dá para saber daqui',
   fonte:'fonte que cura', altar:'altar', escada:'escada para o próximo andar',
   guardiao:'guardião', chefefinal:'o Dragonete de Ferro', inicio:'entrada', vazio:'sala vazia'
 };
 const ICONES = {
   inicio:'🚩', inimigo:'👹', tesouro:'💰', material:'⛏️', misterio:'❓',
-  armadilha:'⚠️', fonte:'⛲', altar:'🕯️', escada:'🪜', guardiao:'👑', chefefinal:'🐉', vazio:'·'
+  fonte:'⛲', altar:'🕯️', escada:'🪜', guardiao:'👑', chefefinal:'🐉', vazio:'·'
 };
 
 /* No Safari as duas barras comem uns 20% da altura e o tabuleiro encolhe.
@@ -4829,12 +5040,15 @@ function render(){
       if(aqui) icone = '🧝';
       else if(c.visto) icone = c.limpo ? '·'
              : (c.tipo === 'escada' && faltaMatar() > 0) ? '🔒'
-             : (c.tipo === 'inimigo' && c.bicho) ? (bicho(c.bicho)?.icone || '👹')
              : (ICONES[c.tipo] || '·');
+      /* Todas as criaturas com o mesmo ícone e o mesmo rótulo: dava para
+         ler o mapa e escolher o adversário fácil, desviando do difícil.
+         O anel do afixo continua, porque ele avisa "esta briga é
+         diferente" sem dizer QUAL criatura é. */
       const rotulo = !c.visto ? 'sala inexplorada'
         : c.limpo ? 'sala vazia'
-        : c.tipo === 'inimigo' && c.bicho
-          ? (bicho(c.bicho)?.nome || 'criatura') + (c.afixo ? ' ' + AFIXO[c.afixo].nome : '')
+        : c.tipo === 'inimigo'
+          ? 'criatura' + (c.afixo ? ' — vem com um traço' : '')
           : NOME_SALA[c.tipo] || 'sala';
       return `<button class="${cls}" data-cell="${i}" ${alcancavel?'':'disabled'} title="${rotulo}" aria-label="${rotulo}"><span>${icone}</span></button>`;
     }).join('');
@@ -5271,7 +5485,7 @@ $('#novoAvancar').onclick = () => {
 };
 /* Sobe junto com o arquivo: se a home mostra outra data, o aparelho ainda
    está servindo a versão velha do cache. */
-const VERSAO = 'v23 · 18/08 · acampamento e bicho';
+const VERSAO = 'v24 · 18/08 · resumos e forja nova';
 $('#lbVersao').textContent = VERSAO;
 $('#btnStart').onclick = () => {
   /* Na primeira vez o jogo começa e pronto: escolher classe e distribuir
