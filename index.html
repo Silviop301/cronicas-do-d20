@@ -544,6 +544,66 @@
     .relic-bar{height:5px;border-radius:999px;background:#241c17;overflow:hidden}
     .relic-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2))}
 
+    /* O acampamento era um título e três botões — um menu, não um lugar.
+       A cena não faz nada mecanicamente: existe para o retorno da masmorra
+       ter para onde voltar. O céu segue a hora real do aparelho, então
+       quem joga de manhã e à noite não vê a mesma tela. */
+    .cena{position:relative;height:clamp(96px,22vw,132px);border-radius:14px;overflow:hidden;
+      border:1px solid var(--line);margin-bottom:2px;
+      background:linear-gradient(180deg,var(--ceu1,#1b2740),var(--ceu2,#3a2b22) 62%,#1a130e)}
+    .cena .estrela{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff;
+      opacity:var(--o,.6);animation:pisca var(--t,4s) ease-in-out infinite}
+    @keyframes pisca{0%,100%{opacity:var(--o,.6)}50%{opacity:.12}}
+    .cena .morro{position:absolute;left:-8%;right:-8%;bottom:0;height:52%;
+      background:var(--morro,#221a14);border-radius:50% 50% 0 0/26% 26% 0 0}
+    .cena .barraca{position:absolute;left:16%;bottom:14%;width:0;height:0;
+      border-left:26px solid transparent;border-right:26px solid transparent;
+      border-bottom:34px solid #4a3626}
+    .cena .barraca::after{content:'';position:absolute;left:-6px;top:14px;
+      border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:20px solid #1a120c}
+    .cena .fogo{position:absolute;right:26%;bottom:16%;width:16px;height:22px;
+      background:radial-gradient(ellipse at 50% 80%,#ffd27a,#e8791f 45%,transparent 72%);
+      border-radius:50% 50% 42% 42%;animation:chama 1.6s ease-in-out infinite;transform-origin:50% 100%}
+    @keyframes chama{0%,100%{transform:scaleY(1) scaleX(1)}35%{transform:scaleY(1.22) scaleX(.86)}70%{transform:scaleY(.92) scaleX(1.1)}}
+    .cena .brasa{position:absolute;right:24%;bottom:12%;width:30px;height:7px;border-radius:50%;
+      background:radial-gradient(ellipse,rgba(232,121,31,.55),transparent 70%)}
+    .cena .luz{position:absolute;right:14%;bottom:2%;width:44%;height:80%;
+      background:radial-gradient(ellipse at 50% 100%,rgba(255,180,90,.20),transparent 68%)}
+    .cena-hora{position:absolute;left:10px;top:8px;font-size:10.5px;color:#cbb69a;
+      letter-spacing:.06em;text-transform:uppercase;opacity:.75}
+    @media(prefers-reduced-motion:reduce){.cena .fogo,.cena .estrela{animation:none}}
+    .pet-card,.pet-vazio{background:linear-gradient(160deg,#1c1610,#151110 70%);
+      border:1px solid #4a3a2b;border-radius:13px;padding:10px 11px;display:grid;gap:8px;width:100%;
+      color:var(--text);text-align:left}
+    .pet-card.fome{border-color:#6b5a2b}
+    .pet-card.faminto{border-color:#7a4a3a}
+    .pet-vazio{grid-template-columns:32px 1fr;align-items:center;gap:10px;border-style:dashed;cursor:pointer}
+    .pet-topo{display:grid;grid-template-columns:34px 1fr auto;gap:9px;align-items:center}
+    .pet-ico{font-size:26px;text-align:center;line-height:1}
+    .pet-txt{display:grid;min-width:0;gap:1px}
+    .pet-txt b{font-size:13.5px;color:#f6e2bb}
+    .pet-txt small{font-size:11px;color:var(--muted);line-height:1.35}
+    .pet-nv{font-style:normal;font-weight:400;font-size:11px;color:#c8a6e0}
+    .pet-nv em{font-style:normal;color:#e0a08a}
+    .pet-estado{font-size:11px;white-space:nowrap}
+    .pet-btn{background:#241c14;border:1px solid #4a3a2b;border-radius:10px;padding:8px 10px;
+      color:#f3d190;font:600 12.5px system-ui,sans-serif;cursor:pointer;display:grid;gap:1px}
+    .pet-btn small{font-weight:400;font-size:10.5px;color:var(--muted)}
+    .pet-btn.forte{background:linear-gradient(180deg,#f1cc7b,#d7a84f);color:#231a10;border-color:#f1cc7b}
+    .pet-btn.forte small{color:#4a3a1a}
+    .pet-btn:disabled{opacity:.45;cursor:default}
+    .pet-btn:not(:disabled):active{transform:scale(.985)}
+    .pet-buscas{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+    .pet-busca{background:#1a1510;border:1px solid #3b2f26;border-radius:10px;padding:7px 4px;
+      display:grid;gap:1px;justify-items:center;color:var(--text);cursor:pointer;text-align:center}
+    .pet-busca span{font-size:17px}
+    .pet-busca b{font-size:10.5px;color:#e9d9be;line-height:1.2}
+    .pet-busca small{font-size:10px;color:#f3d190}
+    .pet-busca:active{transform:scale(.97)}
+    .pet-fora{margin:0;font-size:12px;color:#e9d9be;background:#1a1510;border:1px solid #3b2f26;
+      border-radius:10px;padding:8px 10px;line-height:1.4}
+    .pet-fora b{color:#f3d190}
+    .pet-fora small{display:block;font-size:10.5px;color:var(--muted);margin-top:2px}
     .hub{display:grid;gap:9px;width:100%;max-width:520px;align-content:start}
     .hub-title{margin:0;font:700 clamp(17px,4.4vw,21px) Georgia,serif;color:#f6deb0;text-align:center}
     .hub-sub{margin:0;text-align:center;color:var(--muted);font-size:12px;line-height:1.35}
@@ -942,6 +1002,16 @@
       <button class="btn" id="novoVoltar">Cancelar</button>
       <button class="btn primary" id="novoAvancar">Continuar</button>
     </div>
+  </div>
+</div>
+
+<!-- ===== Adotar um bicho ===== -->
+<div class="ov" id="petOv">
+  <div class="sheet">
+    <h3>🐾 Quem fica com você</h3>
+    <p class="sheet-sub">Ele mora no acampamento, sai para buscar coisas e ajuda na masmorra. Não dá para trocar depois.</p>
+    <div class="sheet-body" id="petEscolhas"></div>
+    <button class="btn" data-fechar="petOv">Agora não</button>
   </div>
 </div>
 
@@ -2238,6 +2308,11 @@ function entrarNaMasmorra(idx){
   G.guardaCarregada = temRumo('coracao-brasa');
   G.trocasNoAndar = 0;
   if(temTraco('bolso')) G.pocoes++;
+  const doPet = Math.ceil(bonusPet('pocao')/2);
+  if(doPet){
+    G.pocoes += doPet;
+    anotar(`${PET[META.pet.tipo].icone} A ${PET[META.pet.tipo].nome} guardou <b>${doPet} ${doPet===1?'poção':'poções'}</b> para a estrada.`, 'good');
+  }
   gerarAndar();
   const reg = regiaoAtual();
   anotar(`${n.icone} Você entra numa masmorra <b>${n.nome}</b> — ${reg.nome}, ${n.andares} andares.`, 'gold');
@@ -2802,7 +2877,7 @@ async function entrarNaSala(sala){
     case 'material': {
       sala.limpo = true;
       const mat = sorteio(COLHEITA[reg.id]);
-      const qtd = 1 + (Math.random() < .35 ? 1 : 0);
+      const qtd = 1 + (Math.random() < .35 ? 1 : 0) + bonusPet('material');
       G.mats[mat] = (G.mats[mat]||0) + qtd;
       pontuar(8);
       anotar(`${MATERIAIS[mat].icone} Você recolhe <b>${qtd} ${MATERIAIS[mat].nome}</b> por aqui.`, 'good');
@@ -3376,7 +3451,7 @@ function vencer(){
   G.sequencia = (G.sequencia || 0) + 1;
   const bonus = bonusDeSequencia();
   const ouroBase = Math.round(inim.pts * .8) + entre([3,8]) + G.andar*2 + (inim.chefe ? 45 : 0);
-  const ouroMult = 1 + bonus + somaB('ouroPct') + doClima('ouroPct')
+  const ouroMult = 1 + bonus + somaB('ouroPct') + doClima('ouroPct') + bonusPet('ouro')*.08
                  + (temRumo('bolsa-faro') ? .25 : 0) + (temB('pacto') ? 1 : 0);
   const ouro = Math.round(ouroBase * ouroMult);
   const pts = Math.round(inim.pts * (1 + bonus));
@@ -4088,6 +4163,231 @@ function mostrarFaixa(reg){
   if(G.modo !== 'mapa') el.classList.remove('on');
 }
 
+/* O cartão do bicho no acampamento: estado, o que ele rende, e o que dá
+   para mandar ele fazer. Fica logo abaixo da cena — é a primeira coisa
+   que se vê ao voltar de uma masmorra. */
+function cartaoDoPet(){
+  const p = pet();
+  if(!p){
+    return `<button class="pet-vazio" data-act="adotar">
+      <span class="pet-ico">🐾</span>
+      <span class="pet-txt"><b>Um bicho apareceu no acampamento</b>
+      <small>escolha um para ficar com você</small></span></button>`;
+  }
+  const b = PET[p.tipo], est = estadoPet(), nv = nivelPet();
+  const fora = emBusca(), pronta = buscaPronta();
+  const podeComer = (G.mats.erva || 0) >= CUSTO_REFEICAO;
+
+  let acao;
+  if(pronta){
+    acao = `<button class="pet-btn forte" data-act="recolher">${BUSCA[p.busca.tipo].icone} ${b.nome} voltou! Ver o que trouxe</button>`;
+  }else if(fora){
+    acao = `<p class="pet-fora">${BUSCA[p.busca.tipo].icone} fora, ${BUSCA[p.busca.tipo].nome.toLowerCase()} — volta em <b>${textoDeEspera(faltaDaBusca())}</b>
+      <small>sem o dom dele enquanto estiver fora</small></p>`;
+  }else{
+    acao = `<div class="pet-buscas">${BUSCAS.map(x =>
+      `<button class="pet-busca" data-buscar="${x.id}" title="${x.desc}">
+         <span>${x.icone}</span><b>${x.nome}</b><small>${x.horas < 1 ? Math.round(x.horas*60)+' min' : x.horas+'h'}</small>
+       </button>`).join('')}</div>`;
+  }
+
+  return `<div class="pet-card ${est.id}">
+    <div class="pet-topo">
+      <span class="pet-ico">${b.icone}</span>
+      <span class="pet-txt">
+        <b>${b.nome} <i class="pet-nv">nível ${p.nivel}${nv < p.nivel ? ` <em>(rende ${nv})</em>` : ''}</i></b>
+        <small>${b.efeito(nv)}${fora ? ' — <i>fora agora</i>' : ''}</small>
+      </span>
+      <span class="pet-estado" style="color:${est.cor}">${est.icone} ${est.nome}</span>
+    </div>
+    ${acao}
+    <button class="pet-btn" data-act="alimentar" ${podeComer?'':'disabled'}>
+      🌿 Alimentar <small>${CUSTO_REFEICAO} erva • você tem ${G.mats.erva||0}</small></button>
+  </div>`;
+}
+
+/* A cena: céu pela hora real do aparelho, estrelas só à noite. Não muda
+   nada de mecânica — existe para o acampamento ser um lugar. */
+function cenaDoAcampamento(){
+  const h = new Date().getHours();
+  const faixa = h < 6  ? {nome:'madrugada', c1:'#0d1424', c2:'#1a1a2e', morro:'#151020', estrelas:14}
+              : h < 11 ? {nome:'manhã',     c1:'#3d4a63', c2:'#7a5c3e', morro:'#241a13', estrelas:0}
+              : h < 17 ? {nome:'tarde',     c1:'#4a6180', c2:'#8a6a44', morro:'#2a1e15', estrelas:0}
+              : h < 20 ? {nome:'entardecer',c1:'#5a3a44', c2:'#a5622e', morro:'#251a12', estrelas:2}
+              :          {nome:'noite',     c1:'#111b31', c2:'#2c2233', morro:'#1a1310', estrelas:10};
+  const estrelas = Array.from({length:faixa.estrelas}, () => {
+    const x = 4 + Math.random()*92, y = 6 + Math.random()*38;
+    return `<i class="estrela" style="left:${x.toFixed(1)}%;top:${y.toFixed(1)}%;--o:${(.35+Math.random()*.5).toFixed(2)};--t:${(2.5+Math.random()*3).toFixed(1)}s"></i>`;
+  }).join('');
+  return `<div class="cena" style="--ceu1:${faixa.c1};--ceu2:${faixa.c2};--morro:${faixa.morro}" aria-hidden="true">
+    ${estrelas}<span class="morro"></span><span class="luz"></span>
+    <span class="barraca"></span><span class="brasa"></span><span class="fogo"></span>
+    <span class="cena-hora">${faixa.nome}</span>
+  </div>`;
+}
+
+/* ---------- o bicho do acampamento ----------
+   Você pediu um motivo para voltar amanhã. A versão comum disso em jogo
+   mobile é o bicho que MORRE se você sumir — funciona, e funciona porque
+   fabrica ansiedade. Este não morre nunca. Ele fica com fome, rende menos
+   e volta ao normal quando você aparece. A vontade de voltar vem do que
+   ele te dá, não do medo de perdê-lo.
+
+   O tempo é medido no relógio do aparelho: adiantar o relógio adianta a
+   fome, e é isso mesmo — não vale a pena travar o jogo para impedir. */
+const BICHOS_PET = [
+  {id:'corvo',  nome:'Corvo',   icone:'🐦‍⬛', dom:'ouro',
+   desc:'acha moedas no caminho', efeito:n => `+${n*8}% de ouro na masmorra`},
+  {id:'raposa', nome:'Raposa',  icone:'🦊', dom:'material',
+   desc:'fareja material escondido', efeito:n => `+${n} material ao vasculhar`},
+  {id:'coruja', nome:'Coruja',  icone:'🦉', dom:'pocao',
+   desc:'guarda ervas para a estrada', efeito:n => `+${Math.ceil(n/2)} poção ao entrar`}
+];
+const PET = Object.fromEntries(BICHOS_PET.map(b => [b.id, b]));
+const PET_NIVEL_MAX = 5;
+const REFEICOES_POR_NIVEL = 4;
+const CUSTO_REFEICAO = 2;              // ervas
+const HORAS_ATE_FOME = 20, HORAS_ATE_FAMINTO = 48;
+
+function pet(){ return META.pet || null; }
+function horasSemComer(){
+  const p = pet();
+  if(!p || !p.ultimaRefeicao) return 0;
+  return (Date.now() - p.ultimaRefeicao) / 36e5;
+}
+/* Três estados, e o pior deles ainda deixa o bicho vivo e útil pela metade
+   do nível 1 — nunca zero, nunca perdido. */
+function estadoPet(){
+  const h = horasSemComer();
+  if(h < HORAS_ATE_FOME)    return {id:'cheio',   nome:'satisfeito', icone:'💚', mult:1,   cor:'#8fd39a'};
+  if(h < HORAS_ATE_FAMINTO) return {id:'fome',    nome:'com fome',   icone:'🍽️', mult:.5,  cor:'#e0c06a'};
+  return                           {id:'faminto', nome:'faminto',    icone:'😿', mult:.25, cor:'#e0a08a'};
+}
+/* O nível efetivo é o que a fome deixa — arredondado para cima, para o
+   bicho nunca chegar a zero por descuido. */
+function nivelPet(){
+  const p = pet();
+  if(!p) return 0;
+  return Math.max(1, Math.ceil(p.nivel * estadoPet().mult));
+}
+const temPet = dom => !!(pet() && PET[pet().tipo] && PET[pet().tipo].dom === dom);
+/* Fora em busca, o bicho não está com você — o dom dele não conta. */
+const bonusPet = dom => (temPet(dom) && !emBusca()) ? nivelPet() : 0;
+
+/* Buscas: o bicho sai por um tempo de relógio e volta com coisa. É o que
+   dá motivo de abrir o jogo amanhã — e, principalmente, é uma escolha:
+   enquanto ele está fora, você fica sem o dom dele na masmorra. Levar
+   junto ou mandar buscar são duas jogadas diferentes. */
+const BUSCAS = [
+  {id:'curta', nome:'Volta rápida', icone:'🌿', horas:0.35,
+   desc:'ali perto, volta logo'},
+  {id:'media', nome:'Batida no mato', icone:'🍂', horas:2,
+   desc:'some por umas horas'},
+  {id:'longa', nome:'Sumiço de um dia', icone:'🌙', horas:8,
+   desc:'volta cheio — bom para deixar de um dia para o outro'}
+];
+const BUSCA = Object.fromEntries(BUSCAS.map(b => [b.id, b]));
+const buscaAtiva = () => (pet() && pet().busca) ? pet().busca : null;
+const emBusca = () => !!buscaAtiva();
+function buscaPronta(){
+  const b = buscaAtiva();
+  return !!b && Date.now() >= b.fim;
+}
+function faltaDaBusca(){
+  const b = buscaAtiva();
+  if(!b) return 0;
+  return Math.max(0, b.fim - Date.now());
+}
+function textoDeEspera(ms){
+  const min = Math.ceil(ms/6e4);
+  if(min < 60) return `${min} min`;
+  const h = Math.floor(min/60), m = min%60;
+  return m ? `${h}h ${m}min` : `${h}h`;
+}
+function mandarBuscar(id){
+  const p = pet(), b = BUSCA[id];
+  if(!p || !b || emBusca()) return false;
+  p.busca = {tipo:id, fim: Date.now() + b.horas*36e5};
+  salvarMeta();
+  som('abrir');
+  return true;
+}
+/* O que ele traz escala com o nível e com a fome: bicho faminto procura mal. */
+function recolherBusca(){
+  const p = pet();
+  if(!p || !buscaPronta() || !G) return null;
+  const b = BUSCA[p.busca.tipo];
+  const forca = nivelPet();                       // já descontado pela fome
+  const achados = {mats:{}, ouro:0, usavel:null, essencia:0};
+
+  const quantos = Math.round((1 + b.horas*1.4) * (0.6 + forca*0.35));
+  const regioes = Object.keys(COLHEITA);
+  for(let i=0;i<quantos;i++){
+    const m = sorteio(COLHEITA[sorteio(regioes)]);
+    achados.mats[m] = (achados.mats[m]||0) + 1;
+    G.mats[m] = (G.mats[m]||0) + 1;
+  }
+  achados.ouro = Math.round(b.horas * 18 * (0.7 + forca*0.3));
+  G.ouro += achados.ouro;
+  /* A busca longa é a única com chance de essência — o material que só cai
+     de guardião. Dá ao sumiço de um dia um motivo que a rápida não tem. */
+  if(b.id === 'longa' && Math.random() < .07 + forca*.025){
+    achados.essencia = 1;
+    G.mats.essencia = (G.mats.essencia||0) + 1;
+  }
+  if(b.horas >= 2 && Math.random() < .5){
+    const uid = sorteiaUsavel();
+    G.usaveis[uid] = (G.usaveis[uid]||0) + 1;
+    achados.usavel = uid;
+  }
+  delete p.busca;
+  salvarMeta(); salvar(); marcarOuro(); som('moeda');
+  return achados;
+}
+
+function abrirAdocao(){
+  $('#petEscolhas').innerHTML = BICHOS_PET.map(b => `
+    <button class="recipe" data-adotar="${b.id}">
+      <span class="recipe-ico">${b.icone}</span>
+      <span class="recipe-txt"><b>${b.nome}</b><small>${b.desc}</small>
+        <small class="recipe-traco">${b.efeito(1)} <i>— cresce até o nível ${PET_NIVEL_MAX}</i></small></span>
+    </button>`).join('');
+  $$('[data-adotar]').forEach(x => x.onclick = () => {
+    if(adotarPet(x.dataset.adotar)){
+      $('#petOv').classList.remove('on');
+      anotar(`${PET[pet().tipo].icone} <b>${PET[pet().tipo].nome}</b> fica com você. Alimente com erva para ele crescer.`, 'gold');
+      render();
+    }
+  });
+  $('#petOv').classList.add('on');
+}
+
+function adotarPet(tipo){
+  if(!PET[tipo] || pet()) return false;
+  META.pet = {tipo, nivel:1, refeicoes:0, ultimaRefeicao: Date.now()};
+  salvarMeta();
+  som('brilho');
+  return true;
+}
+function alimentarPet(){
+  const p = pet();
+  if(!p || !G) return false;
+  if((G.mats.erva || 0) < CUSTO_REFEICAO) return false;
+  G.mats.erva -= CUSTO_REFEICAO;
+  const estavaCom = estadoPet().id;
+  p.ultimaRefeicao = Date.now();
+  /* Só sobe de nível quem já estava alimentado: encher o bicho de comida
+     de uma vez não pula etapas, o que faria voltar amanhã não valer nada. */
+  if(estavaCom === 'cheio' && p.nivel < PET_NIVEL_MAX){
+    p.refeicoes = (p.refeicoes || 0) + 1;
+    if(p.refeicoes >= REFEICOES_POR_NIVEL){ p.refeicoes = 0; p.nivel++; }
+  }else if(estavaCom !== 'cheio'){
+    p.refeicoes = p.refeicoes || 0;
+  }
+  salvarMeta(); salvar(); som('cura');
+  return true;
+}
+
 /* ---------- guia da primeira jornada ----------
    Medindo o caminho de quem abre o jogo pela primeira vez, dava 681 palavras
    e três decisões de estratégia antes de rolar o primeiro dado: oito cartas
@@ -4367,6 +4667,8 @@ function render(){
     const pronto = Math.round(poderReliquias()*100);
     mid.innerHTML = `
       <div class="hub">
+        ${cenaDoAcampamento()}
+        ${cartaoDoPet()}
         <p class="hub-title">🏕️ Acampamento</p>
         <p class="hub-sub">Escolha uma entrada. As três só mudam quando você voltar de uma masmorra.</p>
         <div class="offers">
@@ -4398,6 +4700,32 @@ function render(){
         </div>
       </div>`;
     $$('[data-entrar]').forEach(b => b.onclick = () => entrarNaMasmorra(+b.dataset.entrar));
+    $$('[data-buscar]').forEach(b => b.onclick = () => {
+      if(mandarBuscar(b.dataset.buscar)){
+        const x = BUSCA[b.dataset.buscar];
+        anotar(`${x.icone} ${PET[pet().tipo].nome} sai para uma ${x.nome.toLowerCase()}. Volta em ${textoDeEspera(faltaDaBusca())}.`, '');
+      }
+      render();
+    });
+    $$('.hub [data-act]').forEach(b => b.onclick = () => {
+      const a = b.dataset.act;
+      if(a === 'adotar') abrirAdocao();
+      else if(a === 'alimentar'){
+        if(alimentarPet()) anotar(`🌿 ${PET[pet().tipo].nome} come e se aninha perto do fogo.`, 'good');
+        else anotar('🌿 Erva de menos para alimentar o bicho.', '');
+        render();
+      }else if(a === 'recolher'){
+        const t = recolherBusca();
+        if(t){
+          const partes = Object.entries(t.mats).map(([k,q]) => `${icoMat(k)} ${q} ${MATERIAIS[k].nome}`);
+          if(t.ouro) partes.push(`${ico('ouro')} ${t.ouro} de ouro`);
+          if(t.usavel) partes.push(`${USAVEL[t.usavel].icone} ${USAVEL[t.usavel].nome}`);
+          anotar(`${PET[pet().tipo].icone} <b>${PET[pet().tipo].nome} voltou!</b> Trouxe ${partes.join(', ')}.`
+               + (t.essencia ? ' <b>E uma Essência!</b>' : ''), 'gold');
+        }
+        render();
+      }
+    });
     acts.innerHTML = `
       <button class="act main" data-act="forja"><span class="act-t">${ico('forja','g')} Forja</span><small>gaste ouro e materiais</small></button>
       <button class="act" data-act="reliquias"><span class="act-t">${ico('reliquia','g')} Relíquias</span><small>${RELIQUIAS.filter(r=>nivelRel(r.id)>0).length}/${RELIQUIAS.length} encontradas</small></button>
@@ -4537,6 +4865,23 @@ function render(){
     else if(a === 'bestiario') abrirBestiario();
     else if(a === 'conquistas') abrirConquistas();
     else if(a === 'compartilhar') compartilharJornada();
+    else if(a === 'adotar') abrirAdocao();
+    else if(a === 'alimentar'){
+      if(alimentarPet()) anotar(`🌿 ${PET[pet().tipo].nome} come e se aninha perto do fogo.`, 'good');
+      else anotar('🌿 Erva de menos para alimentar o bicho.', '');
+      render();
+    }
+    else if(a === 'recolher'){
+      const t = recolherBusca();
+      if(t){
+        const partes = Object.entries(t.mats).map(([k,q]) => `${icoMat(k)} ${q} ${MATERIAIS[k].nome}`);
+        if(t.ouro) partes.push(`${ico('ouro')} ${t.ouro} de ouro`);
+        if(t.usavel) partes.push(`${USAVEL[t.usavel].icone} ${USAVEL[t.usavel].nome}`);
+        anotar(`${PET[pet().tipo].icone} <b>${PET[pet().tipo].nome} voltou!</b> Trouxe ${partes.join(', ')}.`
+             + (t.essencia ? ' <b>E uma Essência!</b>' : ''), 'gold');
+      }
+      render();
+    }
     else if(a === 'renascer') renascer();
     else if(a === 'denovo') renascer();
     else if(a === 'reliquias') abrirReliquias();
@@ -4696,7 +5041,7 @@ const TUTORIAL = [
   {icone:'🏕️', titulo:'O acampamento',
    texto:'Antes de cada masmorra você escolhe entre <b>três entradas</b>, cada uma com um nível de dificuldade. Escolha com cuidado: elas só mudam quando você voltar de uma masmorra ou cair.'},
   {icone:'⚒️', titulo:'Ouro e forja',
-   texto:'Baús dão ouro e materiais. Na forja do acampamento você troca os dois por <b>armas, armaduras e poções</b>, em quatro degraus até o lendário. Arma aumenta o golpe; armadura corta uma porcentagem de cada pancada. O topo pede <b>Essência</b>, que só cai de guardião.'},
+   texto:'Baús dão ouro e materiais. Na forja do acampamento você troca os dois por <b>armas, armaduras e poções</b>, em quatro degraus até o lendário. Arma aumenta o golpe; armadura corta uma porcentagem de cada pancada. O topo pede <b>Essência</b>, que cai de guardião — e, de vez em quando, de uma busca longa do seu bicho.'},
   {icone:'🎒', titulo:'Traços e reserva',
    texto:'Cada peça tem um <b>traço próprio</b> além do número: um elmo que ignora a Nevasca, um escudo que devolve o golpe aparado, uma espada que facilita a fuga. Ao forjar um degrau novo, a peça antiga vai para a <b>reserva</b> — e na mochila você troca entre as duas. No acampamento a troca é livre; dentro da masmorra, uma por andar. Nem sempre o degrau mais alto é a peça certa para o clima que você pegou.'},
   {icone:'✨', titulo:'Relíquias: o que fica',
@@ -4926,7 +5271,7 @@ $('#novoAvancar').onclick = () => {
 };
 /* Sobe junto com o arquivo: se a home mostra outra data, o aparelho ainda
    está servindo a versão velha do cache. */
-const VERSAO = 'v22 · 18/08 · andares variados';
+const VERSAO = 'v23 · 18/08 · acampamento e bicho';
 $('#lbVersao').textContent = VERSAO;
 $('#btnStart').onclick = () => {
   /* Na primeira vez o jogo começa e pronto: escolher classe e distribuir
