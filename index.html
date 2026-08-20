@@ -378,9 +378,10 @@
     .aba-pag.on{display:grid;animation:sobeAba .2s ease-out}
     @keyframes sobeAba{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
     @media(prefers-reduced-motion:reduce){.aba-pag.on{animation:none}}
-    .slot-traco{grid-column:1/-1;font-size:11px;color:#c8a6e0;line-height:1.4;margin-top:5px;
+    .slot-runa{grid-column:1/-1;font-size:11px;color:#c8a6e0;line-height:1.4;margin-top:5px;
       background:rgba(200,166,224,.08);border-radius:8px;padding:6px 8px}
-    .slot-traco b{color:#dcc0f0}
+    .slot-runa b{color:#dcc0f0}
+    .slot-runa.vazio{color:var(--muted);opacity:.8}
     .reserva{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:9px;
       margin-top:7px;padding-top:7px;border-top:1px dashed #2b2119;font-size:11.5px;color:var(--muted)}
     .reserva-nome b{color:#e9d9be;font-size:12.5px}
@@ -576,6 +577,8 @@
     @keyframes chama{0%,100%{transform:scaleY(1) scaleX(1)}35%{transform:scaleY(1.22) scaleX(.86)}70%{transform:scaleY(.92) scaleX(1.1)}}
     .cena .brasa{position:absolute;right:24%;bottom:12%;width:30px;height:7px;border-radius:50%;
       background:radial-gradient(ellipse,rgba(232,121,31,.55),transparent 70%)}
+    .cena-marca{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+      font-size:clamp(38px,11vw,56px);line-height:1;filter:drop-shadow(0 6px 16px rgba(0,0,0,.6))}
     .cena .luz{position:absolute;right:14%;bottom:2%;width:44%;height:80%;
       background:radial-gradient(ellipse at 50% 100%,rgba(255,180,90,.20),transparent 68%)}
     .cena-hora{position:absolute;left:10px;top:8px;font-size:10.5px;color:#cbb69a;
@@ -611,6 +614,29 @@
     .fpocao-txt{display:grid;gap:1px;min-width:0}
     .fpocao-txt b{font-size:12.5px;color:#f6e2bb}
     .fpocao-txt small{font-size:11px;color:var(--muted)}
+    .fgrade.runas{grid-template-columns:1fr}
+    .fruna{background:#141018;border:1px solid #33263a;border-radius:12px;padding:9px 10px;
+      display:grid;grid-template-columns:28px 1fr auto;gap:1px 10px;align-items:center;text-align:left;
+      color:#e8dcc2;font:inherit;cursor:pointer;touch-action:manipulation}
+    .fruna.pode{border-color:#6b4f8c;background:#181322}
+    .fruna.longe{opacity:.5}
+    .fruna.gravada{border-color:var(--gold);background:#1d1710;opacity:1}
+    .fruna:active{transform:scale(.985)}
+    .fruna-ico{font-size:20px;line-height:1;grid-row:1/3;text-align:center}
+    .fruna-nome{font-size:12.5px;color:#dcc0f0}
+    .fruna-desc{grid-column:2/-1;font-size:11px;line-height:1.35;color:var(--muted)}
+    .fruna-sel{font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);
+      white-space:nowrap;text-align:right}
+    .fruna.pode .fruna-sel{color:#c8a6e0}
+    .fruna.gravada .fruna-sel{color:var(--gold)}
+    .det-alvos{display:grid;gap:7px;margin-top:10px}
+    .det-alvo{background:#1a1420;border:1px solid #3b2c46;border-radius:11px;padding:10px 12px;
+      display:grid;grid-template-columns:1fr auto;gap:2px 8px;align-items:center;text-align:left;
+      color:#e8dcc2;font:inherit;cursor:pointer;touch-action:manipulation}
+    .det-alvo:disabled{opacity:.45;cursor:default}
+    .det-alvo b{font-size:12.5px}
+    .det-alvo small{grid-column:1/-1;font-size:11px;color:var(--muted);line-height:1.35}
+    .det-alvo em{font-style:normal;font-size:11px;color:#c8a6e0}
     .flotes{display:flex;gap:5px}
     .flote{background:#241c14;border:1px solid #4a3a2b;border-radius:9px;padding:8px 11px;
       color:#f3d190;font:700 12.5px system-ui,sans-serif;cursor:pointer;min-width:44px}
@@ -619,9 +645,9 @@
     .det-linha{display:flex;justify-content:space-between;gap:10px;align-items:baseline;
       padding:7px 0;border-bottom:1px dashed #2b2119;font-size:12.5px;color:var(--muted)}
     .det-linha b{color:#f3d190;font-size:14px}
-    .det-traco{background:rgba(200,166,224,.08);border-radius:10px;padding:9px 11px;margin-top:9px;display:grid;gap:2px}
-    .det-traco b{font-size:12.5px;color:#dcc0f0}
-    .det-traco small{font-size:11.5px;color:#c8a6e0;line-height:1.4}
+    .det-runa{background:rgba(200,166,224,.08);border-radius:10px;padding:9px 11px;margin-top:9px;display:grid;gap:2px}
+    .det-runa b{font-size:12.5px;color:#dcc0f0}
+    .det-runa small{font-size:11.5px;color:#c8a6e0;line-height:1.4}
     .det-custos{display:grid;gap:5px;margin-top:11px}
     .det-custo{font-size:12px;padding:6px 9px;border-radius:9px;background:#141010;border:1px solid #2f251d}
     .det-custo.ok{color:#9fc9a5}
@@ -642,6 +668,24 @@
       border-radius:12px;padding:10px;display:grid;gap:2px;justify-items:center;text-align:center}
     .res-grande b{font:700 26px Georgia,serif;color:#f3d190;line-height:1;font-variant-numeric:tabular-nums}
     .res-grande small{font-size:11px;color:var(--muted)}
+    .lugares{display:grid;gap:8px}
+    .lugar{display:grid;grid-template-columns:44px 1fr auto;gap:11px;align-items:center;
+      background:linear-gradient(150deg,var(--l1,#241a12),var(--l2,#161110) 70%);
+      border:1px solid #4a3a2b;border-radius:14px;padding:13px 13px;color:var(--text);
+      text-align:left;cursor:pointer;position:relative}
+    .lugar:active{transform:scale(.99)}
+    .lugar-ico{font-size:26px;text-align:center;line-height:1}
+    .lugar-txt{display:grid;gap:2px;min-width:0}
+    .lugar-txt b{font:700 15px Georgia,serif;color:#f6deb0}
+    .lugar-txt small{font-size:11.5px;color:var(--muted);line-height:1.35}
+    .lugar-selo{min-width:24px;height:24px;border-radius:999px;background:#2a2019;border:1px solid #4a3a2b;
+      display:grid;place-items:center;font:700 12px system-ui,sans-serif;color:#f3d190;padding:0 6px}
+    .lugar-selo.alerta{background:#5f3a2a;border-color:#a5622e;color:#ffd9a8}
+    /* Cada entrada chega deslizando: é o que faz a escolha mais importante
+       do jogo ter um momento em vez de aparecer pronta. */
+    .offer.chega{animation:chegaOferta .34s cubic-bezier(.22,.9,.3,1) both}
+    @keyframes chegaOferta{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+    @media(prefers-reduced-motion:reduce){.offer.chega{animation:none}}
     .pet-card,.pet-vazio{background:linear-gradient(160deg,#1c1610,#151110 70%);
       border:1px solid #4a3a2b;border-radius:13px;padding:10px 11px;display:grid;gap:8px;width:100%;
       color:var(--text);text-align:left}
@@ -1276,12 +1320,12 @@ function confirmar(msg){
    a Demônio não era difícil. A curva agora é exponencial e o guardião tem
    o seu próprio multiplicador de vida, para durar uma briga de verdade. */
 const NIVEIS = [
-  {id:'comum',    nome:'Comum',    icone:'⚪', cor:'#9fb0a4', andares:3,  lados:[5,6],   forca:1.0,  chefeVida:1.2, premio:1.0, frags:1, chance:.35, regioes:['campo']},
-  {id:'incomum',  nome:'Incomum',  icone:'🟢', cor:'#7fc98a', andares:4,  lados:[5,6,7], forca:1.5,  chefeVida:1.25,premio:1.5, frags:1, chance:.5,  regioes:['campo','deserto']},
-  {id:'rara',     nome:'Rara',     icone:'🔵', cor:'#79b8e2', andares:5,  lados:[6,7],   forca:2.1,  chefeVida:1.3, premio:2.2, frags:1, chance:.7,  regioes:['deserto','gelo']},
-  {id:'epica',    nome:'Épica',    icone:'🟣', cor:'#b78de2', andares:6,  lados:[6,7,8], forca:3.0,  chefeVida:1.35,premio:3.0, frags:2, chance:.9,  regioes:['gelo','masmorra']},
-  {id:'lendaria', nome:'Lendária', icone:'🟠', cor:'#e8a24d', andares:8,  lados:[7,8],   forca:4.1,  chefeVida:1.45, premio:4.2, frags:3, chance:1,   regioes:['masmorra','covil']},
-  {id:'demonio',  nome:'Demônio',  icone:'🔴', cor:'#e3564a', andares:10, lados:[7,8],  forca:5.35, chefeVida:1.65, premio:6.0, frags:5, chance:1,   regioes:['covil'], final:true}
+  {id:'comum',    nome:'Comum',    icone:'⚪', cor:'#9fb0a4', andares:3,  lados:[5,6],   forca:1.0,  chefeVida:1.2, premio:1.0, frags:2, regioes:['campo']},
+  {id:'incomum',  nome:'Incomum',  icone:'🟢', cor:'#7fc98a', andares:4,  lados:[5,6,7], forca:1.5,  chefeVida:1.25,premio:1.5, frags:3,  regioes:['campo','deserto']},
+  {id:'rara',     nome:'Rara',     icone:'🔵', cor:'#79b8e2', andares:5,  lados:[6,7],   forca:2.1,  chefeVida:1.3, premio:2.2, frags:4,  regioes:['deserto','gelo']},
+  {id:'epica',    nome:'Épica',    icone:'🟣', cor:'#b78de2', andares:6,  lados:[6,7,8], forca:3.0,  chefeVida:1.35,premio:3.0, frags:5,  regioes:['gelo','masmorra']},
+  {id:'lendaria', nome:'Lendária', icone:'🟠', cor:'#e8a24d', andares:8,  lados:[7,8],   forca:4.1,  chefeVida:1.45, premio:4.2, frags:7,   regioes:['masmorra','covil']},
+  {id:'demonio',  nome:'Demônio',  icone:'🔴', cor:'#e3564a', andares:10, lados:[7,8],  forca:5.35, chefeVida:1.65, premio:6.0, frags:10,   regioes:['covil'], final:true}
 ];
 
 /* Afixos: o mesmo bestiário de 51 criaturas rende brigas diferentes quando
@@ -1636,25 +1680,25 @@ function materiaisDaRegiao(regiao){
    Essência, que só cai de guardião. Ouro parado não compra o topo. */
 const RECEITAS = [
   // --- arma ---
-  {id:'espada',    nome:'Espada de Ferro',    icone:'🗡️', slot:'arma',  valor:3,  ouro:25,   mats:{ferro:2}, traco:'leve'},
-  {id:'machado',   nome:'Machado de Aço',     icone:'🪓', slot:'arma',  valor:6,  ouro:180,  mats:{ferro:6,couro:2}, traco:'brutal'},
-  {id:'lamina',    nome:'Lâmina Rúnica',      icone:'⚔️', slot:'arma',  valor:10, ouro:900,  mats:{ferro:10,cristal:6}, traco:'runica'},
-  {id:'ceifa',     nome:'Ceifadora Lendária', icone:'🌟', slot:'arma',  valor:15, ouro:3200, mats:{ferro:16,cristal:12,essencia:3}, traco:'sedenta'},
+  {id:'espada',    nome:'Espada de Ferro',    icone:'🗡️', slot:'arma',  valor:3,  ouro:25,   mats:{ferro:2}},
+  {id:'machado',   nome:'Machado de Aço',     icone:'🪓', slot:'arma',  valor:6,  ouro:180,  mats:{ferro:6,couro:2}},
+  {id:'lamina',    nome:'Lâmina Rúnica',      icone:'⚔️', slot:'arma',  valor:10, ouro:900,  mats:{ferro:10,cristal:6}},
+  {id:'ceifa',     nome:'Ceifadora Lendária', icone:'🌟', slot:'arma',  valor:15, ouro:3200, mats:{ferro:16,cristal:12,essencia:3}},
   // --- elmo ---
-  {id:'elmocouro', nome:'Elmo de Couro',      icone:'🪖', slot:'elmo',  valor:1,  ouro:18,   mats:{couro:2}, traco:'vidente'},
-  {id:'elmoferro', nome:'Elmo de Ferro',      icone:'⛑️', slot:'elmo',  valor:2,  ouro:140,  mats:{ferro:5,couro:2}, traco:'termico'},
-  {id:'elmoruna',  nome:'Elmo Rúnico',        icone:'👑', slot:'elmo',  valor:4,  ouro:700,  mats:{ferro:8,cristal:5}, traco:'lucido'},
-  {id:'elmodrag',  nome:'Elmo do Dragonete',  icone:'🐲', slot:'elmo',  valor:6,  ouro:2600, mats:{ferro:12,cristal:9,essencia:2}, traco:'draconico'},
+  {id:'elmocouro', nome:'Elmo de Couro',      icone:'🪖', slot:'elmo',  valor:1,  ouro:18,   mats:{couro:2}},
+  {id:'elmoferro', nome:'Elmo de Ferro',      icone:'⛑️', slot:'elmo',  valor:2,  ouro:140,  mats:{ferro:5,couro:2}},
+  {id:'elmoruna',  nome:'Elmo Rúnico',        icone:'👑', slot:'elmo',  valor:4,  ouro:700,  mats:{ferro:8,cristal:5}},
+  {id:'elmodrag',  nome:'Elmo do Dragonete',  icone:'🐲', slot:'elmo',  valor:6,  ouro:2600, mats:{ferro:12,cristal:9,essencia:2}},
   // --- peito ---
-  {id:'peitocouro',nome:'Peitoral de Couro',  icone:'🦺', slot:'peito', valor:2,  ouro:24,   mats:{couro:3}, traco:'bolso'},
-  {id:'peitoferro',nome:'Peitoral de Aço',    icone:'🛡️', slot:'peito', valor:4,  ouro:200,  mats:{ferro:7,couro:3}, traco:'espinhos'},
-  {id:'peitoruna', nome:'Peitoral Rúnico',    icone:'✨', slot:'peito', valor:6,  ouro:950,  mats:{ferro:11,cristal:6}, traco:'casca'},
-  {id:'peitodrag', nome:'Couraça Lendária',   icone:'🌠', slot:'peito', valor:9,  ouro:3400, mats:{ferro:18,cristal:11,essencia:3}, traco:'couraca'},
+  {id:'peitocouro',nome:'Peitoral de Couro',  icone:'🦺', slot:'peito', valor:2,  ouro:24,   mats:{couro:3}},
+  {id:'peitoferro',nome:'Peitoral de Aço',    icone:'🛡️', slot:'peito', valor:4,  ouro:200,  mats:{ferro:7,couro:3}},
+  {id:'peitoruna', nome:'Peitoral Rúnico',    icone:'✨', slot:'peito', valor:6,  ouro:950,  mats:{ferro:11,cristal:6}},
+  {id:'peitodrag', nome:'Couraça Lendária',   icone:'🌠', slot:'peito', valor:9,  ouro:3400, mats:{ferro:18,cristal:11,essencia:3}},
   // --- escudo ---
-  {id:'escudomad', nome:'Escudo de Madeira',  icone:'🪵', slot:'escudo',valor:1,  ouro:20,   mats:{couro:2}, traco:'improviso'},
-  {id:'escudo',    nome:'Escudo de Ferro',    icone:'🔰', slot:'escudo',valor:3,  ouro:170,  mats:{ferro:6,cristal:1}, traco:'aparador'},
-  {id:'escudoruna',nome:'Escudo Rúnico',      icone:'💠', slot:'escudo',valor:5,  ouro:800,  mats:{ferro:9,cristal:6}, traco:'refletor'},
-  {id:'escudoaeg', nome:'Égide Lendária',     icone:'🌞', slot:'escudo',valor:7,  ouro:3000, mats:{ferro:14,cristal:10,essencia:2}, traco:'inabalavel'},
+  {id:'escudomad', nome:'Escudo de Madeira',  icone:'🪵', slot:'escudo',valor:1,  ouro:20,   mats:{couro:2}},
+  {id:'escudo',    nome:'Escudo de Ferro',    icone:'🔰', slot:'escudo',valor:3,  ouro:170,  mats:{ferro:6,cristal:1}},
+  {id:'escudoruna',nome:'Escudo Rúnico',      icone:'💠', slot:'escudo',valor:5,  ouro:800,  mats:{ferro:9,cristal:6}},
+  {id:'escudoaeg', nome:'Égide Lendária',     icone:'🌞', slot:'escudo',valor:7,  ouro:3000, mats:{ferro:14,cristal:10,essencia:2}},
   // --- poções: sobem de qualidade em vez de dar vida máxima de graça ---
   {id:'pocao',     nome:'Poção de Cura',      icone:'🧪', slot:'pocao', valor:1,  ouro:20,   mats:{erva:1}},
   {id:'pocaoforte',nome:'Poção Forte',        icone:'🍷', slot:'qualidade', valor:1, ouro:320,  mats:{erva:6,cristal:2}},
@@ -1694,32 +1738,50 @@ function trocarReserva(slot){
    que já existem. Um elmo de couro de 1 de defesa é a peça certa numa
    Névoa; o de ferro é a peça certa numa Nevasca. É isso que dá razão à
    reserva. */
-const TRACOS = {
-  // arma
-  leve:      {nome:'Leve',        icone:'🪶', desc:'escapar da masmorra fica bem mais fácil'},
-  brutal:    {nome:'Brutal',      icone:'💥', desc:'seus críticos batem 25% mais forte'},
-  runica:    {nome:'Rúnica',      icone:'🔯', desc:'ignora a couraça das criaturas Blindadas'},
-  sedenta:   {nome:'Sedenta',     icone:'🩸', desc:'+10 de vida por abate, mas só abaixo de um terço da vida'},
-  // elmo
-  vidente:   {nome:'Vidente',     icone:'👁️', desc:'a Névoa não apaga o mapa que você já revelou'},
-  termico:   {nome:'Térmico',     icone:'🔥', desc:'o clima não te tira vida ao descer'},
-  lucido:    {nome:'Lúcido',      icone:'🧠', desc:'o veneno cobra metade'},
-  draconico: {nome:'Dracônico',   icone:'🐉', desc:'−2 de dano em todo golpe que passar pela armadura'},
-  // peitoral
-  bolso:     {nome:'Bolso Duplo', icone:'👝', desc:'+1 poção ao entrar em cada masmorra'},
-  espinhos:  {nome:'Espinhado',   icone:'🌵', desc:'devolve 12% do dano que você leva'},
-  casca:     {nome:'Segunda Casca',icone:'🥚',desc:'anula o primeiro golpe de cada combate'},
-  couraca:   {nome:'Couraça',     icone:'🛡️', desc:'golpes pesados batem 25% menos'},
-  // escudo
-  improviso: {nome:'Improvisado', icone:'🪵', desc:'aparar também cura 4 de vida'},
-  aparador:  {nome:'Aparador',    icone:'🔰', desc:'aparar corta o golpe em um quarto, não um terço'},
-  refletor:  {nome:'Refletor',    icone:'💠', desc:'aparar devolve 30% do golpe à criatura'},
-  inabalavel:{nome:'Inabalável',  icone:'🌞', desc:'imune a veneno e a espinhos'}
+/* Runas: o efeito virou peça à parte. Antes, escolher um efeito custava
+   defesa — trocar a Couraça Lendária pelo Peitoral de Couro só para ter o
+   Bolso Duplo é uma decisão que ninguém deveria ter de tomar. Agora a peça
+   dá só o número, a runa dá só o efeito, e o ferreiro une as duas.
+   Arma tem um encaixe; armadura tem três (elmo, peito, escudo). */
+const CUSTO_RUNA = {
+  1: {ouro:90,   mats:{cristal:2}},
+  2: {ouro:350,  mats:{cristal:5, couro:2}},
+  3: {ouro:1100, mats:{cristal:9, ferro:6}},
+  4: {ouro:2600, mats:{cristal:14, essencia:2}}
 };
+const RUNAS = {
+  // ---- arma ----
+  leve:      {nome:'Leve',        icone:'🪶', fam:'arma', grau:1, desc:'escapar da masmorra fica bem mais fácil'},
+  febre:     {nome:'Febre',       icone:'🌡️', fam:'arma', grau:1, desc:'+15% de dano em criatura já ferida'},
+  brutal:    {nome:'Brutal',      icone:'💥', fam:'arma', grau:2, desc:'seus críticos batem 25% mais forte'},
+  troco:     {nome:'Troco',       icone:'⚡', fam:'arma', grau:2, desc:'seu primeiro golpe do combate bate o dobro'},
+  sanguessuga:{nome:'Sanguessuga',icone:'🩹', fam:'arma', grau:2, desc:'cada crítico devolve 6 de vida'},
+  runica:    {nome:'Rúnica',      icone:'🔯', fam:'arma', grau:3, desc:'ignora a couraça das criaturas Blindadas'},
+  algoz:     {nome:'Algoz',       icone:'👑', fam:'arma', grau:3, desc:'+25% de dano contra guardiões'},
+  sedenta:   {nome:'Sedenta',     icone:'🩸', fam:'arma', grau:4, desc:'+10 de vida por abate abaixo de 1/3'},
+  // ---- armadura ----
+  improviso: {nome:'Improviso',   icone:'🪵', fam:'armadura', grau:1, desc:'aparar também cura 4 de vida'},
+  bolso:     {nome:'Bolso Duplo', icone:'👝', fam:'armadura', grau:1, desc:'+1 poção ao entrar em cada masmorra'},
+  raiz:      {nome:'Raiz',        icone:'🌱', fam:'armadura', grau:1, desc:'a fonte cura 50% a mais'},
+  vidente:   {nome:'Vidente',     icone:'👁️', fam:'armadura', grau:2, desc:'a Névoa não apaga o mapa já revelado'},
+  termico:   {nome:'Térmico',     icone:'🔥', fam:'armadura', grau:2, desc:'o clima não te tira vida ao descer'},
+  espinhos:  {nome:'Espinhado',   icone:'🌵', fam:'armadura', grau:2, desc:'devolve 12% do dano que você leva'},
+  aparador:  {nome:'Aparador',    icone:'🔰', fam:'armadura', grau:2, desc:'aparar corta o golpe em um quarto'},
+  cofre:     {nome:'Cofre',       icone:'💰', fam:'armadura', grau:2, desc:'+20% de ouro por abate'},
+  lucido:    {nome:'Lúcido',      icone:'🧠', fam:'armadura', grau:3, desc:'o veneno cobra metade'},
+  casca:     {nome:'Segunda Casca',icone:'🥚',fam:'armadura', grau:3, desc:'anula o primeiro golpe de cada combate'},
+  refletor:  {nome:'Refletor',    icone:'💠', fam:'armadura', grau:3, desc:'aparar devolve 30% do golpe à criatura'},
+  sortudo:   {nome:'Sortudo',     icone:'🍀', fam:'armadura', grau:3, desc:'a sala ❓ repete a rolagem ruim'},
+  draconico: {nome:'Dracônico',   icone:'🐉', fam:'armadura', grau:4, desc:'−2 de dano em todo golpe recebido'},
+  couraca:   {nome:'Couraça',     icone:'🛡️', fam:'armadura', grau:4, desc:'golpes pesados batem 25% menos'},
+  inabalavel:{nome:'Inabalável',  icone:'🌞', fam:'armadura', grau:4, desc:'imune a veneno e a espinhos'}
+};
+const custoRuna = id => CUSTO_RUNA[RUNAS[id].grau];
+const ESPACOS_DA_FAMILIA = {arma:['arma'], armadura:['elmo','peito','escudo']};
 const ESPACOS = ['arma','elmo','peito','escudo'];
-/* Lê do que está equipado, nunca da receita: a reserva não conta. */
-const temTraco = id => !!(G && G.equip) && ESPACOS.some(k => G.equip[k] && G.equip[k].traco === id);
-const tracoDe = e => (e && e.traco) ? TRACOS[e.traco] : null;
+/* Lê do que está equipado, nunca da reserva: runa guardada não vale nada. */
+const temRuna = id => !!(G && G.equip) && ESPACOS.some(k => G.equip[k] && G.equip[k].runa === id);
+const runaDe = e => (e && e.runa && RUNAS[e.runa]) ? RUNAS[e.runa] : null;
 
 /* Relíquias: o único progresso que sobrevive à morte. Cada uma sobe até
    10/10, e é essa coleção que torna o Dragonete de Ferro derrotável. */
@@ -1866,7 +1928,7 @@ const FAIXAS_SORTE = [
 function faixasFuga(){
   if(temB('leve')) return [{min:1, max:20, ok:true, texto:'Escapou!', cor:'bom', legenda:'com Passo Leve você sempre escapa'}];
   let alvo = G.classe === 'ladino' ? 5 : (G.classe === 'cacador' ? 8 : 11);
-  if(temTraco('leve')) alvo = Math.max(2, alvo - 4);
+  if(temRuna('leve')) alvo = Math.max(2, alvo - 4);
   return [
     {min:1, max:alvo-1,  ok:false, texto:'Não deu!', cor:'ruim', legenda:'ele te alcança'},
     {min:alvo, max:20,   ok:true,  texto:'Escapou!', cor:'bom',  legenda:'você foge em segurança'}
@@ -1916,9 +1978,8 @@ function progredirMissao(evento, quanto=1){
   est.feito = Math.min(m.alvo, est.feito + quanto);
   if(est.feito >= m.alvo && !est.pago){
     est.pago = true;
-    G.ouro += 150;
-    anotar(`${m.icone} <b>Missão do dia cumprida:</b> ${m.desc}. +150 de ouro e uma relíquia.`, 'gold');
-    ganharReliquia();
+    G.ouro += 400;
+    anotar(`${m.icone} <b>Missão do dia cumprida:</b> ${m.desc}. +400 de ouro.`, 'gold');
   }
   salvarMeta();
 }
@@ -2282,7 +2343,7 @@ function novaAventura(nome, classeId, pontos){
     equip: {arma:null, elmo:null, peito:null, escudo:null},
     reserva: {arma:null, elmo:null, peito:null, escudo:null}, trocasNoAndar: 0,
     mats: {ferro:0, couro:0, cristal:0, erva:0, essencia:0}, pocaoNivel: 0,
-    defendendo: false, masmorra: null, ofertas: [],
+    defendendo: false, masmorra: null, ofertas: [], lugar: 'acampamento', revelarOfertas: 0,
     bencaos: [], ofertaBencaos: [], vidaBencao: 0, peleUsada: false, fugasUsadas: 0, abatesNoAndar: 0,
     recarga: 0, semGuarda: false, usaveis: {},
     grid: [], pos: 0, inimigo: null, log: [], msg: '', modo: 'hub'
@@ -2295,6 +2356,7 @@ function novaAventura(nome, classeId, pontos){
   G.pocoes += pocoesDoFrasco(nivelRel('frasco'));
 
   sortearOfertas();
+  G.revelarOfertas = 0;   // as três voltam a se apresentar uma a uma
   anotar(`${c.icone} ${G.nome}, ${c.nome}, chega ao acampamento. Escolha uma masmorra.`, 'gold');
   const guardadas = RELIQUIAS.filter(r => nivelRel(r.id) > 0);
   if(guardadas.length){
@@ -2333,15 +2395,21 @@ function carregarJogo(){
       G.equip = G.equip || {arma:null, elmo:null, peito:null, escudo:null};
       G.reserva = G.reserva || {arma:null, elmo:null, peito:null, escudo:null};
       for(const k of ESPACOS) if(!(k in G.reserva)) G.reserva[k] = null;
-      /* Saves de antes dos traços guardam a peça sem ele — a receita sabe. */
+      /* Saves de antes das runas guardam o traço colado na peça. O traço
+         vira a runa correspondente, de graça — quem já jogava não perde o
+         efeito que estava usando. */
       for(const k of ESPACOS) for(const e of [G.equip[k], G.reserva[k]]){
-        if(e && !e.traco){ const r = receita(e.id); if(r && r.traco) e.traco = r.traco; }
+        if(e && !e.runa && e.traco && RUNAS[e.traco]) e.runa = e.traco;
+        if(e) delete e.traco;
       }
       /* Saves de antes das bênçãos não têm estes campos. */
       G.bencaos = Array.isArray(G.bencaos) ? G.bencaos : [];
       G.ofertaBencaos = Array.isArray(G.ofertaBencaos) ? G.ofertaBencaos : [];
       G.vidaBencao = G.vidaBencao || 0;
       G.usaveis = G.usaveis || {};
+      /* Saves de antes do mapa não sabem onde o herói está. */
+      if(!G.lugar || (!LUGAR[G.lugar] && G.lugar !== 'mapa')) G.lugar = 'acampamento';
+      if(typeof G.revelarOfertas !== 'number') G.revelarOfertas = (G.ofertas||[]).length;
       render();
       return;
     }
@@ -2402,7 +2470,7 @@ function entrarNaMasmorra(idx){
   G.trocasNoAndar = 0;
   G.fotoMasmorra = fotoDoEstado();
   G.fotoAndar = fotoDoEstado();
-  if(temTraco('bolso')) G.pocoes++;
+  if(temRuna('bolso')) G.pocoes++;
   const doPet = Math.ceil(bonusPet('pocao')/2);
   if(doPet){
     G.pocoes += doPet;
@@ -2460,7 +2528,7 @@ async function escaparDaMasmorra(){
     const n = nivelPorId(G.masmorra.nivel);
     mostrarResumoMasmorra('o que deu para trazer na fuga');
     G.fotoMasmorra = null; G.fotoAndar = null;
-    G.masmorra = null; G.andar = 0; G.modo = 'hub';
+    G.masmorra = null; G.andar = 0; G.modo = 'hub'; G.lugar = 'acampamento';
     G.sequencia = 0;
     const tinha = G.bencaos.length;
     G.bencaos = [];
@@ -2468,6 +2536,7 @@ async function escaparDaMasmorra(){
     G.vidaBencao = 0;
     G.fugasUsadas = 0;
     sortearOfertas();
+    G.revelarOfertas = 0;   // as três voltam a se apresentar uma a uma
     anotar(`🚪 Você sai da masmorra <b>${n.nome}</b> pelos fundos, com o ouro e os materiais no bolso — mas sem o prêmio de ter limpado.`, 'gold');
     if(tinha) anotar(`✨ As ${tinha} bênçãos se dissipam no caminho de volta.`, '');
   }else{
@@ -2501,6 +2570,7 @@ function voltarAoAcampamento(motivo){
   G.masmorra = null;
   G.andar = 0;
   G.modo = 'hub';
+  G.lugar = 'acampamento';
   G.sequencia = 0;
   if(G.ouro > 0) guia('acampamento');
   /* As bênçãos morrem com a masmorra — é o que faz cada descida ser uma
@@ -2514,6 +2584,7 @@ function voltarAoAcampamento(motivo){
   G.vida = G.vidaMax;
   if(tinha) anotar(`✨ As ${tinha} bênçãos da masmorra se dissipam no caminho de volta.`, '');
   sortearOfertas();
+  G.revelarOfertas = 0;   // as três voltam a se apresentar uma a uma
   anotar(`🏕️ ${motivo} Você volta ao acampamento com <b>${premio} de ouro</b> e descansa até recuperar toda a vida.`, 'gold');
 }
 
@@ -2597,7 +2668,7 @@ function gerarAndar(){
 function revelar(){
   const {x,y} = xy(G.pos);
   /* Névoa: o que você já viu volta a sumir assim que sai de perto. */
-  if(climaAtual()?.nevoa && !temTraco('vidente')) G.grid.forEach(c => { if(!c.limpo && c.tipo !== 'inicio') c.visto = false; });
+  if(climaAtual()?.nevoa && !temRuna('vidente')) G.grid.forEach(c => { if(!c.limpo && c.tipo !== 'inicio') c.visto = false; });
   [[0,0],[1,0],[-1,0],[0,1],[0,-1]].forEach(([dx,dy]) => {
     const nx = x+dx, ny = y+dy;
     if(nx>=0 && nx<N && ny>=0 && ny<N) G.grid[iAt(nx,ny)].visto = true;
@@ -2925,6 +2996,7 @@ function chamarInimigo(id, afixoDado){
   G.guardaCarregada = false;
   G.veneno = 0;
   G.cascaUsada = false;
+  G.trocoUsado = false;
   G.modo = 'combate';
   G.inimigo.intencao = proximaIntencao(G.inimigo);
   G.recarga = 0;
@@ -2976,7 +3048,6 @@ async function entrarNaSala(sala){
         extra += ` e ${USAVEL[uid].icone} ${USAVEL[uid].nome}`;
       }
       anotar(`💰 Baú: <b>${ouro} de ouro</b>, ${MATERIAIS[mat].icone} ${dobro} ${MATERIAIS[mat].nome}${extra}.${dobro>1?' <b>(Saqueador)</b>':''}`, 'gold');
-      if(Math.random() < .08) ganharReliquia();
       break;
     }
     case 'material': {
@@ -2996,13 +3067,19 @@ async function entrarNaSala(sala){
     case 'misterio': {
       sala.limpo = true;
       render();
-      const {valor} = await rolarDado({titulo:'❓ O que será que tem aqui?', faixas:FAIXAS_MISTERIO});
+      let {valor} = await rolarDado({titulo:'❓ O que será que tem aqui?', faixas:FAIXAS_MISTERIO});
+      /* O segundo dado acontece à vista: mexer no valor depois de rolado
+         faria a tela dizer "Emboscada!" e o diário dizer que não houve. */
+      if(valor < 4 && temRuna('sortudo')){
+        anotar('🍀 <b>Sortudo</b> não deixa: o dado gira de novo.', 'good');
+        ({valor} = await rolarDado({titulo:'🍀 Sortudo — mais uma chance', faixas:FAIXAS_MISTERIO}));
+      }
       await resolverMisterio(valor, reg);
       break;
     }
     case 'fonte': {
       sala.limpo = true;
-      const cura = Math.ceil(G.vidaMax * (climaAtual()?.fonteDobra ? .8 : .4));
+      const cura = Math.ceil(G.vidaMax * (climaAtual()?.fonteDobra ? .8 : .4) * (temRuna('raiz') ? 1.5 : 1));
       curar(cura);
       anotar(`⛲ Você descansa e se recupera: <b>+${cura} de vida</b>.${climaAtual()?.fonteDobra?' <b>(Fartura)</b>':''}`, 'good');
       break;
@@ -3056,7 +3133,7 @@ function descer(){
   G.peleUsada = false;
   G.abatesNoAndar = 0;
   G.trocasNoAndar = 0;
-  const gelo = temTraco('termico') ? 0 : doClima('dano');
+  const gelo = temRuna('termico') ? 0 : doClima('dano');
   if(gelo){
     anotar(`${climaAtual().icone} A ${climaAtual().nome} cobra o seu preço: <b>−${gelo} de vida</b>.`, 'bad');
     machucar(gelo, true);
@@ -3147,13 +3224,13 @@ function reducaoDefesa(){
 function machucar(bruto, ignoraArmadura=false){
   let dano = ignoraArmadura ? bruto : Math.max(1, Math.round(bruto * (1 - reducaoDefesa())));
   /* Dracônico: dois pontos a menos em tudo que atravessar a armadura. */
-  if(!ignoraArmadura && temTraco('draconico')) dano = Math.max(1, dano - 2);
+  if(!ignoraArmadura && temRuna('draconico')) dano = Math.max(1, dano - 2);
   G.vida = Math.max(0, G.vida - dano);
   if(dano > 0) som('dano');
   if(G.vida > 0 && G.vida < G.vidaMax*.45 && G.pocoes > 0) guia('ferido');
   const aparado = !ignoraArmadura && bruto - dano > 0 ? `−${bruto - dano} aparado` : '';
   flutuarDano('.life-bar', '−' + dano, 'nele', aparado);
-  const espelho = (temRumo('escama-espelho') ? .12 : 0) + (temTraco('espinhos') ? .12 : 0);
+  const espelho = (temRumo('escama-espelho') ? .12 : 0) + (temRuna('espinhos') ? .12 : 0);
   if(espelho && G.inimigo && G.modo === 'combate'){
     const volta = Math.max(1, Math.round(dano*espelho));
     G.inimigo.vida -= volta;
@@ -3235,8 +3312,8 @@ function sangrarInimigo(){
 /* Veneno cobra no fim do seu turno e vai sumindo sozinho. */
 function sofrerVeneno(){
   if(!G.veneno || G.modo !== 'combate') return;
-  const queima = temTraco('lucido') ? Math.max(1, Math.ceil(G.veneno/2)) : G.veneno;
-  anotar(`🧪 O veneno queima: <b>−${queima} de vida</b>.${temTraco('lucido')?' <i>(Lúcido)</i>':''}`, 'bad');
+  const queima = temRuna('lucido') ? Math.max(1, Math.ceil(G.veneno/2)) : G.veneno;
+  anotar(`🧪 O veneno queima: <b>−${queima} de vida</b>.${temRuna('lucido')?' <i>(Lúcido)</i>':''}`, 'bad');
   machucar(queima, true);
   G.veneno = Math.max(0, G.veneno - 1);
 }
@@ -3321,9 +3398,15 @@ async function darUmGolpe(titulo){
   /* Carniceiro: quem já está sangrando cai mais fácil. */
   const ferida = inim.vida <= inim.vidaMax/2;
   if(dano > 0 && ferida && temB('carniceiro')) dano = Math.round(dano*1.5);
-  if(dano > 0 && faixa.mult >= 5 && temTraco('brutal')) dano = Math.round(dano*1.25);
+  if(dano > 0 && ferida && temRuna('febre')) dano = Math.round(dano*1.15);
+  if(dano > 0 && faixa.mult >= 5 && temRuna('brutal')) dano = Math.round(dano*1.25);
+  if(dano > 0 && inim.chefe && temRuna('algoz')) dano = Math.round(dano*1.25);
+  /* Troco: o primeiro golpe seu de cada combate vale dobrado — recompensa
+     quem entra batendo em vez de trocar farpas por dez turnos. */
+  if(dano > 0 && temRuna('troco') && !G.trocoUsado){ G.trocoUsado = true; dano *= 2; }
+  if(dano > 0 && faixa.mult >= 5 && temRuna('sanguessuga') && G.vida < G.vidaMax) curar(6);
   const af = afixoDoInimigo();
-  if(dano > 0 && af && af.corte && !temTraco('runica')) dano = Math.max(1, Math.round(dano*(1-af.corte)));
+  if(dano > 0 && af && af.corte && !temRuna('runica')) dano = Math.max(1, Math.round(dano*(1-af.corte)));
   const gd = guardiaoDoInimigo();
   let notaChefe = '';
   /* Javali: golpe fraco quase não o arranha; é preciso acertar forte. */
@@ -3367,7 +3450,7 @@ async function darUmGolpe(titulo){
                   : (faixa.mult >= 5 ? 'CRÍTICO'
                   : (faixa.mult >= 3 ? 'brutal' : (faixa.mult >= 2 ? 'forte' : (carne ? 'carniceiro' : ''))));
     flutuarDano('#foeIcon', '−' + dano, tipo, legenda);
-    if(af && af.espinho && inim.vida > 0 && !temTraco('inabalavel')){
+    if(af && af.espinho && inim.vida > 0 && !temRuna('inabalavel')){
       const volta = Math.max(1, Math.round(dano*af.espinho));
       anotar(`🌵 Os espinhos do ${inim.nome} te ferem de volta: <b>−${volta}</b>.`, 'bad');
       machucar(volta, true);
@@ -3455,7 +3538,7 @@ function contraAtaque(){
   const pesado = intencao === 'pesado';
   if(pesado){
     bruto = Math.round(bruto*2.6);
-    if(temTraco('couraca')) bruto = Math.max(1, Math.round(bruto*.75));
+    if(temRuna('couraca')) bruto = Math.max(1, Math.round(bruto*.75));
     /* Atento: o golpe pesado nunca te acha de guarda baixa. */
     if(temB('atento') && !G.defendendo){
       G.defendendo = true;
@@ -3471,7 +3554,7 @@ function contraAtaque(){
     return;
   }
   /* Segunda Casca: o primeiro golpe de cada combate não te alcança. */
-  if(temTraco('casca') && !G.cascaUsada){
+  if(temRuna('casca') && !G.cascaUsada){
     G.cascaUsada = true;
     G.defendendo = false;
     anotar(`🥚 <b>Segunda Casca:</b> o primeiro golpe do ${inim.nome} racha a casca e não te alcança.`, 'good');
@@ -3483,20 +3566,20 @@ function contraAtaque(){
   if(G.defendendo){
     let divisor = 3;
     if(temB('muralha'))       divisor += 2;
-    if(temTraco('aparador'))  divisor += 1;
+    if(temRuna('aparador'))  divisor += 1;
     const cru = bruto;
     bruto = Math.ceil(bruto/divisor);
     G.defendendo = false;
     /* Defender carrega o próximo golpe. Sem isso o turno gasto na guarda
        custava mais dano do que evitava, e ninguém defendia nunca. */
     G.guardaCarregada = true;
-    const remedio = somaB('curaGuarda') + (temTraco('improviso') ? 4 : 0);
+    const remedio = somaB('curaGuarda') + (temRuna('improviso') ? 4 : 0);
     if(remedio) curar(remedio);
     som('aparar');
     const dano = machucar(bruto);
     anotar(`🛡️ Você apara ${pesado?'o golpe pesado':'o golpe'} do ${inim.nome}: <b>−${dano} de vida</b> só. O próximo golpe seu sai reforçado.`, 'good');
     /* Refletor: parte do golpe aparado volta na cara de quem bateu. */
-    if(temTraco('refletor') && G.modo === 'combate'){
+    if(temRuna('refletor') && G.modo === 'combate'){
       const eco = Math.max(1, Math.round(cru*.3));
       inim.vida -= eco;
       anotar(`💠 <b>Refletor:</b> o escudo devolve <b>${eco}</b> de dano.`, 'good');
@@ -3522,7 +3605,7 @@ function contraAtaque(){
     anotar(`${inim.icone} O ${inim.nome} te acerta: <b>−${dano} de vida</b>.${grito}`, 'bad');
   }
   const af2 = afixoDoInimigo();
-  if(intencao === 'veneno' && G.modo === 'combate' && !G.defendendo && !temB('antidoto') && !temTraco('inabalavel')){
+  if(intencao === 'veneno' && G.modo === 'combate' && !G.defendendo && !temB('antidoto') && !temRuna('inabalavel')){
     G.veneno = (G.veneno || 0) + (af2?.veneno || 3);
     anotar(`🧪 O veneno do ${inim.nome} te pega.`, 'bad');
   }
@@ -3539,7 +3622,12 @@ function contraAtaque(){
 }
 
 function vencer(){
+  /* Dá para chegar aqui duas vezes pelo mesmo abate: o espinho da criatura
+     chama machucar(), machucar() devolve o dano espelhado, e esse troco
+     pode derrubá-la antes de o próprio golpe ser contabilizado. Sem esta
+     guarda o prêmio era pago em dobro — e a segunda passada quebrava. */
   const inim = G.inimigo;
+  if(!inim) return;
   META.abatesTotais = (META.abatesTotais || 0) + 1;
   salvarMeta();
   /* A sequência é o que torna caçar melhor que desviar: cada abate seguido
@@ -3547,7 +3635,7 @@ function vencer(){
   G.sequencia = (G.sequencia || 0) + 1;
   const bonus = bonusDeSequencia();
   const ouroBase = Math.round(inim.pts * .8) + entre([3,8]) + G.andar*2 + (inim.chefe ? 45 : 0);
-  const ouroMult = 1 + bonus + somaB('ouroPct') + doClima('ouroPct') + bonusPet('ouro')*.08
+  const ouroMult = 1 + bonus + somaB('ouroPct') + doClima('ouroPct') + bonusPet('ouro')*.08 + (temRuna('cofre') ? .2 : 0)
                  + (temRumo('bolsa-faro') ? .25 : 0) + (temB('pacto') ? 1 : 0);
   const ouro = Math.round(ouroBase * ouroMult);
   const pts = Math.round(inim.pts * (1 + bonus));
@@ -3570,7 +3658,7 @@ function vencer(){
 
   /* Não é sustento: cura 4 por abate somava mais vida numa masmorra longa
      do que o herói inteiro tinha. Só socorre quem já está no fio. */
-  if(temTraco('sedenta') && G.vida < Math.ceil(G.vidaMax/3)){
+  if(temRuna('sedenta') && G.vida < Math.ceil(G.vidaMax/3)){
     curar(10);
     anotar('🩸 A Ceifadora bebe do golpe: <b>+10 de vida</b>.', 'good');
   }
@@ -3595,11 +3683,14 @@ function vencer(){
     G.mats[m] = (G.mats[m]||0) + 1;
     anotar(`${MATERIAIS[m].icone} Ele deixou cair 1 ${MATERIAIS[m].nome}.`, 'gold');
   }
+  /* Relíquia só vem de duas portas: derrubar um guardião, ou tirar 20 numa
+     sala ❓. Antes ela pingava de baú (8%), de criatura comum (8%) e da
+     missão do dia — o progresso permanente virava chuva, e o que chove
+     todo dia não é conquista. */
   if(inim.chefe){
     const n = nivelAtual();
-    if(Math.random() < n.chance) for(let k=0;k<n.frags;k++) ganharReliquia();
-    else anotar('✨ Desta vez o chefe não guardava nenhuma relíquia.', '');
-  }else if(Math.random() < .08) ganharReliquia();
+    for(let k=0;k<n.frags;k++) ganharReliquia();
+  }
 
   if(inim.final){ vitoria(); return; }
   G.modo = 'mapa';
@@ -3749,9 +3840,12 @@ function desenharForja(){
         <span class="fpeca-selo">${temMateriais(proximaQual)?'dá para forjar':'falta material'}</span>
       </button>` : '<p class="grupo-topo-fim">✔ suas poções estão no melhor grau</p>'}
     </section>
-    ${grupos}`;
+    ${grupos}
+    ${grupoRunas('arma', 'Runas de arma', 'um encaixe: a sua arma')}
+    ${grupoRunas('armadura', 'Runas de armadura', 'três encaixes: elmo, peitoral e escudo')}`;
 
   $$('[data-peca]').forEach(b => b.onclick = () => abrirDetalhePeca(b.dataset.peca));
+  $$('[data-runa]').forEach(b => b.onclick = () => abrirDetalheRuna(b.dataset.runa));
   $$('[data-lote]').forEach(b => b.onclick = () => {
     const n = +b.dataset.lote;
     let feitas = 0;
@@ -3760,6 +3854,101 @@ function desenharForja(){
     salvar(); desenharForja(); render();
   });
   ligarArte($('#forgeOv'));
+}
+
+/* As runas na forja, separadas por família. Quem já está gravada aparece
+   com selo dourado: o jogador vê a coleção inteira e o que já é dele. */
+function grupoRunas(fam, titulo, sub){
+  const espacos = ESPACOS_DA_FAMILIA[fam];
+  const gravadas = espacos.map(k => G.equip[k] && G.equip[k].runa).filter(Boolean);
+  const livres = espacos.filter(k => G.equip[k] && !G.equip[k].runa).length;
+  const vazio = espacos.every(k => !G.equip[k]);
+  const ids = Object.keys(RUNAS).filter(id => RUNAS[id].fam === fam)
+    .sort((a,b) => RUNAS[a].grau - RUNAS[b].grau);
+  const cartao = id => {
+    const r = RUNAS[id], c = custoRuna(id);
+    const gravada = gravadas.includes(id);
+    const pode = !gravada && !vazio && temCusto(c);
+    const selo = gravada ? 'gravada' : vazio ? 'nada equipado' : temCusto(c) ? linhaCustoRuna(id) : 'falta material';
+    return `<button class="fruna ${gravada?'gravada':pode?'pode':'longe'}" data-runa="${id}">
+      <span class="fruna-ico">${r.icone}</span>
+      <b class="fruna-nome">${r.nome}</b>
+      <span class="fruna-sel">${selo}</span>
+      <small class="fruna-desc">${r.desc}</small>
+    </button>`;
+  };
+  return `<section class="fgrupo">
+    <h4>${titulo} <small class="fade">${sub}</small></h4>
+    <p class="grupo-traco">${gravadas.length ? '<b>' + gravadas.map(id => RUNAS[id].icone + ' ' + RUNAS[id].nome).join(', ') + '</b> gravada' + (gravadas.length>1?'s':'') : 'nenhuma gravada ainda'}${livres ? ` · ${livres} encaixe${livres>1?'s':''} livre${livres>1?'s':''}` : ''}</p>
+    <div class="fgrade runas">${ids.map(cartao).join('')}</div>
+  </section>`;
+}
+const temCusto = c => G.ouro >= c.ouro && Object.entries(c.mats).every(([k,q]) => (G.mats[k]||0) >= q);
+const linhaCustoRuna = id => {
+  const c = custoRuna(id);
+  return [`${ico('ouro')} ${c.ouro}`].concat(Object.entries(c.mats).map(([k,q]) => `${icoMat(k)} ${q}`)).join('  ');
+};
+
+/* O detalhe da runa é onde o ferreiro une as duas coisas: você lê o efeito
+   e escolhe em qual peça ele vai. Gravar por cima derrete a runa antiga —
+   está escrito no próprio botão, para ninguém perder uma sem saber. */
+function abrirDetalheRuna(id){
+  const r = RUNAS[id], c = custoRuna(id);
+  if(!r) return;
+  const espacos = ESPACOS_DA_FAMILIA[r.fam];
+  const jaGravada = espacos.some(k => G.equip[k] && G.equip[k].runa === id);
+  const custo = Object.entries(c.mats).map(([k,q]) => {
+    const tem = G.mats[k] || 0;
+    return `<div class="det-custo ${tem>=q?'ok':'falta'}">${icoMat(k)} <b>${tem}</b>/${q} ${MATERIAIS[k].nome}</div>`;
+  }).join('');
+  const alvos = espacos.map(k => {
+    const e = G.equip[k];
+    const antiga = e && e.runa ? RUNAS[e.runa] : null;
+    const mesma = e && e.runa === id;
+    const nota = !e ? 'nada equipado neste espaço'
+               : mesma ? 'já está gravada aqui'
+               : antiga ? `substitui ${antiga.icone} ${antiga.nome} — ela se perde`
+               : 'encaixe livre';
+    return `<button class="det-alvo" data-gravar="${k}" ${(!e || mesma || !temCusto(c)) ? 'disabled' : ''}>
+      <b>${e ? escapeHtml(e.nome) : NOMES_SLOT[k]}</b>
+      <em>${e ? 'gravar' : '—'}</em>
+      <small>${nota}</small>
+    </button>`;
+  }).join('');
+
+  $('#detTitulo').innerHTML = `${r.icone} ${r.nome}`;
+  $('#detCorpo').innerHTML = `
+    <div class="det-runa"><b>${r.icone} Grau ${r.grau}</b><small>${r.desc}</small></div>
+    <div class="det-custos">
+      <div class="det-custo ${G.ouro>=c.ouro?'ok':'falta'}">${ico('ouro')} <b>${G.ouro}</b>/${c.ouro} de ouro</div>
+      ${custo}
+    </div>
+    <div class="det-alvos">${alvos}</div>`;
+  const btn = $('#detForjar');
+  btn.style.display = 'none';
+  $$('[data-gravar]').forEach(b => b.onclick = () => gravarRuna(id, b.dataset.gravar));
+  $('#detOv').classList.add('on');
+  if(!jaGravada) guia('runa');
+}
+
+function gravarRuna(id, slot){
+  const r = RUNAS[id], c = custoRuna(id), e = G.equip[slot];
+  if(!r || !e || e.runa === id || !temCusto(c)) return;
+  G.ouro -= c.ouro;
+  Object.entries(c.mats).forEach(([k,q]) => G.mats[k] -= q);
+  const antiga = e.runa ? RUNAS[e.runa] : null;
+  e.runa = id;
+  META.runasGravadas = META.runasGravadas || {};
+  META.runasGravadas[id] = true;
+  salvarMeta();
+  anotar(`🔯 O ferreiro grava <b>${r.nome}</b> em ${escapeHtml(e.nome)}: ${r.desc}.`
+       + (antiga ? ` <i>${antiga.nome} virou pó.</i>` : ''), 'gold');
+  pontuar(15);
+  som('bigorna');
+  vibrar([12,30,12]);
+  marcarOuro(); checarConquistas();
+  $('#detOv').classList.remove('on');
+  salvar(); desenharForja(); render();
 }
 
 /* Quantas cabem no que você tem — é o que decide se o ×5 e o ×10 ficam
@@ -3778,7 +3967,6 @@ function linhaCusto(r){
 function abrirDetalhePeca(id){
   const r = receita(id);
   if(!r) return;
-  const t = TRACOS[r.traco];
   const tenho = jaTenho(r);
   const equipado = G.equip[r.slot] && G.equip[r.slot].id === r.id;
   const pode = !tenho && temMateriais(r);
@@ -3798,12 +3986,14 @@ function abrirDetalhePeca(id){
       <b>${qualidade ? FORCA_POCAO[r.valor] : '+'+r.valor}</b></div>
     ${!qualidade && atual ? `<div class="det-linha"><span>Você usa hoje</span>
       <b>${escapeHtml(atual.nome)} (+${atual.valor})</b></div>` : ''}
-    ${t ? `<div class="det-traco"><b>${t.icone} ${t.nome}</b><small>${t.desc}</small></div>` : ''}
+    ${!qualidade && r.slot !== 'pocao' ? `<div class="det-runa"><b>🔯 Encaixe de runa livre</b>
+      <small>a peça dá o número; o efeito vem da runa que o ferreiro gravar nela</small></div>` : ''}
     <div class="det-custos">
       <div class="det-custo ${G.ouro>=preco?'ok':'falta'}">${ico('ouro')} <b>${G.ouro}</b>/${preco} de ouro</div>
       ${custo}
     </div>`;
   const btn = $('#detForjar');
+  btn.style.display = '';
   btn.disabled = tenho || jaTemQual || !temMateriais(r);
   btn.textContent = equipado ? 'Já está equipada'
                   : tenho ? 'Já está na reserva'
@@ -3844,7 +4034,7 @@ function forjar(id){
     G.pocaoNivel = r.valor;
     anotar(`⚒️ Suas poções viram <b>${r.nome}</b>: curam ${curaDaPocao()} agora.`, 'gold');
   }else{
-    const peca = {id:r.id, nome:r.nome, icone:r.icone, valor:r.valor, traco:r.traco};
+    const peca = {id:r.id, nome:r.nome, icone:r.icone, valor:r.valor, runa:null};
     /* Sobe de degrau: a peça antiga não some mais, vai para a reserva.
        Forjou uma peça menor de propósito (pelo traço dela)? Ela entra
        direto na reserva, sem trocar o que você está usando. */
@@ -3884,14 +4074,15 @@ function desenharMochila(){
      embaixo, e o botão entre os dois. É a tela inteira da decisão. */
   const slots = ESPACOS.map(k => {
     const e = G.equip[k], r = G.reserva ? G.reserva[k] : null;
-    const t = tracoDe(e), tr = tracoDe(r);
+    const t = runaDe(e), tr = runaDe(r);
     const unidade = k === 'arma' ? 'golpe' : 'defesa';
     return `
       <div class="slot ${e?'cheio':''}">
         <span class="slot-ico">${e ? arteItem(e.id, e.icone, 'item-art') : '—'}</span>
         <span class="slot-txt"><small>${NOMES_SLOT[k]}</small><b>${e ? escapeHtml(e.nome) : 'vazio'}</b></span>
         <span class="slot-val">${e ? '+'+e.valor+' '+unidade : ''}</span>
-        ${t ? `<span class="slot-traco">${t.icone} <b>${t.nome}</b> — ${t.desc}</span>` : ''}
+        ${t ? `<span class="slot-runa">${t.icone} <b>${t.nome}</b> — ${t.desc}</span>`
+            : e ? `<span class="slot-runa vazio">🔯 encaixe livre — grave uma runa na forja</span>` : ''}
         ${r ? `
           <span class="reserva">
             <span class="reserva-nome">🎒 reserva: <b>${escapeHtml(r.nome)}</b> (+${r.valor} ${unidade})
@@ -3943,7 +4134,7 @@ function desenharMochila(){
           <small>${parcelas('nenhuma ainda', [['base',G.defesaBase - relEscama],['🐲 relíquia',relEscama],['🛡️ armadura',armaduraV]])}</small>
         </div>
       </div>
-      <h4>Equipamento <small class="fade">cada peça tem um traço próprio</small></h4>
+      <h4>Equipamento <small class="fade">a peça dá o número, a runa dá o efeito</small></h4>
       <div class="slots">${slots}</div>
       <p class="troca-aviso">${avisoTroca}</p>
       <h4>Materiais <small class="fade">para forjar</small></h4>
@@ -4340,9 +4531,128 @@ function cartaoDoPet(){
   </div>`;
 }
 
+/* O cartão de uma entrada de masmorra, agora que ele mora na sua própria
+   tela e aparece um de cada vez. */
+function cartaoDeOferta(of, i, pronto){
+  const nv = nivelPorId(of.nivel);
+  const rg = REGIOES.find(r => r.id === of.regiao);
+  const cl = CLIMA[of.clima];
+  const aviso = nv.final
+    ? `<span class="offer-warn">Zera o jogo • suas relíquias estão em ${pronto}%</span>` : '';
+  const clima = (cl && cl.id !== 'calmaria')
+    ? `<span class="offer-clima">${cl.icone} <b>${cl.nome}</b> — ${cl.desc}</span>` : '';
+  return `
+    <button class="offer chega" data-entrar="${i}" style="--nc:${nv.cor}">
+      <span class="offer-top">
+        <b>${nv.icone} ${nv.nome}</b> <span class="reg">${rg.icone} ${rg.nome}</span>
+        <span class="offer-floors">${nv.andares} andares</span>
+      </span>
+      ${clima}
+      <span class="offer-bot">
+        <span>⚔️ inimigos ×${nv.forca.toFixed(1)}</span>
+        <span>${ico('ouro')} recompensa ×${nv.premio.toFixed(1)}</span>
+        <span>✨ ${nv.frags} relíquia${nv.frags>1?'s':''}</span>
+      </span>
+      <span class="offer-mats">${materiaisDaRegiao(of.regiao)}</span>
+      ${aviso}
+    </button>`;
+}
+
+/* Os botões do bicho, separados do render para o acampamento poder chamá-los
+   sem repetir o bloco inteiro. */
+function ligarBotoesDoPet(){
+  $$('[data-buscar]').forEach(b => b.onclick = () => {
+    if(mandarBuscar(b.dataset.buscar)){
+      const x = BUSCA[b.dataset.buscar];
+      anotar(`${x.icone} ${PET[pet().tipo].nome} sai para uma ${x.nome.toLowerCase()}. Volta em ${textoDeEspera(faltaDaBusca())}.`, '');
+    }
+    render();
+  });
+  $$('.hub [data-act]').forEach(b => {
+    const a = b.dataset.act;
+    if(a === 'adotar') b.onclick = () => abrirAdocao();
+    else if(a === 'alimentar') b.onclick = () => {
+      if(alimentarPet()) anotar(`🌿 ${PET[pet().tipo].nome} come e se aninha perto do fogo.`, 'good');
+      else anotar('🌿 Erva de menos para alimentar o bicho.', '');
+      render();
+    };
+    else if(a === 'recolher') b.onclick = () => {
+      const t = recolherBusca();
+      if(t){
+        const partes = Object.entries(t.mats).map(([k,q]) => `${icoMat(k)} ${q} ${MATERIAIS[k].nome}`);
+        if(t.ouro) partes.push(`${ico('ouro')} ${t.ouro} de ouro`);
+        if(t.usavel) partes.push(`${USAVEL[t.usavel].icone} ${USAVEL[t.usavel].nome}`);
+        anotar(`${PET[pet().tipo].icone} <b>${PET[pet().tipo].nome} voltou!</b> Trouxe ${partes.join(', ')}.`
+             + (t.essencia ? ' <b>E uma Essência!</b>' : ''), 'gold');
+      }
+      render();
+    };
+  });
+}
+
+/* ---------- os lugares ----------
+   O acampamento acumulava cena, bicho, três masmorras e quatro botões numa
+   tela só. Agora cada coisa tem o seu lugar, e o mapa é o que liga tudo.
+   G.lugar diz onde o herói está quando não está numa masmorra. */
+const LUGARES = [
+  {id:'acampamento', nome:'Acampamento', desc:'sua fogueira e seu bicho', icone:'⛺',
+   c1:'#2a1f16', c2:'#1a1310'},
+  {id:'forjador',    nome:'Forjador',    desc:'forja armas, armaduras e runas',  icone:'⚒️',
+   c1:'#2e1c14', c2:'#1a100c'},
+  {id:'masmorras',   nome:'Masmorras',   desc:'três entradas esperando',      icone:'🕳️',
+   c1:'#181f2a', c2:'#0f1218'},
+  {id:'santuario',   nome:'Santuário',   desc:'o que sobrevive à sua morte',  icone:'✨',
+   c1:'#241a2e', c2:'#151019'}
+];
+const LUGAR = Object.fromEntries(LUGARES.map(l => [l.id, l]));
+/* 'mapa' é um lugar de verdade para o render, mas não fica na lista de
+   destinos (você não viaja para o mapa a partir do mapa). */
+const lugarAtual = () => (G && G.lugar && (LUGAR[G.lugar] || G.lugar === 'mapa')) ? G.lugar : 'acampamento';
+function irPara(id){
+  if(!LUGAR[id] && id !== 'mapa') return;
+  G.lugar = id;
+  /* Chegar nas masmorras revela as três uma a uma. Depois da primeira vez
+     a espera some: o que é bonito na estreia vira obstáculo na trigésima
+     jornada, e esta é a decisão mais repetida do jogo. */
+  if(id === 'masmorras'){
+    META.viuMasmorras = (META.viuMasmorras || 0) + 1;
+    G.revelarOfertas = META.viuMasmorras <= 3 ? 0 : G.ofertas.length;
+    salvarMeta();
+  }
+  /* Fora da chamada de som: com a comparação dentro dela, a auditoria lê
+     'mapa' como se fosse um efeito sonoro que não existe. */
+  const efeito = id === 'mapa' ? 'abrir' : 'passo';
+  som(efeito);
+  salvar(); render();
+  if(id === 'masmorras' && G.revelarOfertas < G.ofertas.length) revelarOfertasAosPoucos();
+}
+function revelarOfertasAosPoucos(){
+  clearInterval(revelarOfertasAosPoucos._t);
+  revelarOfertasAosPoucos._t = setInterval(() => {
+    if(!G || G.lugar !== 'masmorras' || G.revelarOfertas >= G.ofertas.length){
+      clearInterval(revelarOfertasAosPoucos._t);
+      return;
+    }
+    G.revelarOfertas++;
+    som('parou');
+    render();
+  }, 620);
+}
+/* Toque em qualquer lugar da lista de masmorras adianta a revelação —
+   ninguém deve ficar esperando o jogo terminar de se apresentar. */
+function adiantarRevelacao(){
+  if(!G || G.lugar !== 'masmorras') return false;
+  if(G.revelarOfertas >= G.ofertas.length) return false;
+  clearInterval(revelarOfertasAosPoucos._t);
+  G.revelarOfertas = G.ofertas.length;
+  render();
+  return true;
+}
+
 /* A cena: céu pela hora real do aparelho, estrelas só à noite. Não muda
    nada de mecânica — existe para o acampamento ser um lugar. */
-function cenaDoAcampamento(){
+function cenaDoAcampamento(lugarId){
+  const l = LUGAR[lugarId || 'acampamento'];
   const h = new Date().getHours();
   const faixa = h < 6  ? {nome:'madrugada', c1:'#0d1424', c2:'#1a1a2e', morro:'#151020', estrelas:14}
               : h < 11 ? {nome:'manhã',     c1:'#3d4a63', c2:'#7a5c3e', morro:'#241a13', estrelas:0}
@@ -4353,10 +4663,15 @@ function cenaDoAcampamento(){
     const x = 4 + Math.random()*92, y = 6 + Math.random()*38;
     return `<i class="estrela" style="left:${x.toFixed(1)}%;top:${y.toFixed(1)}%;--o:${(.35+Math.random()*.5).toFixed(2)};--t:${(2.5+Math.random()*3).toFixed(1)}s"></i>`;
   }).join('');
-  return `<div class="cena" style="--ceu1:${faixa.c1};--ceu2:${faixa.c2};--morro:${faixa.morro}" aria-hidden="true">
+  /* Cada lugar tinge o céu com a própria cor, mas a hora do dia continua
+     mandando no clima — assim o mapa inteiro amanhece e anoitece junto. */
+  const c1 = l && l.id !== 'acampamento' ? l.c1 : faixa.c1;
+  const c2 = l && l.id !== 'acampamento' ? l.c2 : faixa.c2;
+  const soNoAcampamento = !l || l.id === 'acampamento';
+  return `<div class="cena" style="--ceu1:${c1};--ceu2:${c2};--morro:${faixa.morro}" aria-hidden="true">
     ${estrelas}<span class="morro"></span><span class="luz"></span>
-    <span class="barraca"></span><span class="brasa"></span><span class="fogo"></span>
-    <span class="cena-hora">${faixa.nome}</span>
+    ${soNoAcampamento ? '<span class="barraca"></span><span class="brasa"></span><span class="fogo"></span>' : `<span class="cena-marca">${l.icone}</span>`}
+    <span class="cena-hora">${soNoAcampamento ? faixa.nome : l.nome}</span>
   </div>`;
 }
 
@@ -4621,7 +4936,8 @@ const DICAS = {
   escada:   'A escada abriu. Descer rende mais, mas lá embaixo é pior.',
   bencao:   'Uma bênção. Vale até você voltar ao acampamento.',
   acampamento: 'Voltou vivo com ouro. Na forja ele vira equipamento.',
-  reserva:  'A peça antiga foi para a reserva. Troque na mochila quando quiser.'
+  reserva:  'A peça antiga foi para a reserva. Troque na mochila quando quiser.',
+  runa:     'A peça dá o número, a runa dá o efeito.'
 };
 let dicaAtiva = null;
 function guia(id){
@@ -4658,8 +4974,9 @@ const FAIXAS_MISTERIO = [
 ];
 async function resolverMisterio(valor, reg){
   if(valor === 20){
-    ganharReliquia();
-    anotar('❓ <b>Uma relíquia esquecida!</b> Dessas que ficam com você para sempre.', 'gold');
+    const quantas = Math.max(1, Math.round(nivelAtual().frags/2));
+    for(let k=0;k<quantas;k++) ganharReliquia();
+    anotar(`❓ <b>Relíquia esquecida${quantas>1?'s':''}!</b> Dessas que ficam com você para sempre.`, 'gold');
     return;
   }
   if(valor >= 17){
@@ -4881,72 +5198,99 @@ function render(){
     acts.innerHTML = `<button class="act wide" data-act="nada" disabled>Escolha uma das três para seguir<small>elas somem quando você volta ao acampamento</small></button>`;
   }else if(G.modo === 'hub'){
     const pronto = Math.round(poderReliquias()*100);
-    mid.innerHTML = `
-      <div class="hub">
-        ${cenaDoAcampamento()}
-        ${cartaoDoPet()}
-        <p class="hub-title">🏕️ Acampamento</p>
-        <p class="hub-sub">Escolha uma entrada. As três só mudam quando você voltar de uma masmorra.</p>
-        <div class="offers">
-          ${G.ofertas.map((of,i) => {
-            const nv = nivelPorId(of.nivel);
-            const rg = REGIOES.find(r => r.id === of.regiao);
-            const aviso = nv.final
-              ? `<span class="offer-warn">Zera o jogo • suas relíquias estão em ${pronto}%</span>`
-              : '';
-            const cl = CLIMA[of.clima];
-            const clima = (cl && cl.id !== 'calmaria')
-              ? `<span class="offer-clima">${cl.icone} <b>${cl.nome}</b> — ${cl.desc}</span>` : '';
-            return `
-              <button class="offer" data-entrar="${i}" style="--nc:${nv.cor}">
-                <span class="offer-top">
-                  <b>${nv.icone} ${nv.nome}</b> <span class="reg">${rg.icone} ${rg.nome}</span>
-                  <span class="offer-floors">${nv.andares} andares</span>
-                </span>
-                ${clima}
-                <span class="offer-bot">
-                  <span>⚔️ inimigos ×${nv.forca.toFixed(1)}</span>
-                  <span>🪙 recompensa ×${nv.premio.toFixed(1)}</span>
-                  <span>✨ ${nv.frags} relíquia${nv.frags>1?'s':''}</span>
-                </span>
-                <span class="offer-mats">${materiaisDaRegiao(of.regiao)}</span>
-                ${aviso}
-              </button>`;
-          }).join('')}
-        </div>
-      </div>`;
-    $$('[data-entrar]').forEach(b => b.onclick = () => entrarNaMasmorra(+b.dataset.entrar));
-    $$('[data-buscar]').forEach(b => b.onclick = () => {
-      if(mandarBuscar(b.dataset.buscar)){
-        const x = BUSCA[b.dataset.buscar];
-        anotar(`${x.icone} ${PET[pet().tipo].nome} sai para uma ${x.nome.toLowerCase()}. Volta em ${textoDeEspera(faltaDaBusca())}.`, '');
+    const lugar = lugarAtual();
+
+    /* Cada lugar desenha só o que é dele. O acampamento não tem mais a
+       lista de masmorras: ele é a fogueira e o bicho, e o resto do mundo
+       fica atrás do mapa. */
+    if(lugar === 'mapa'){
+      mid.innerHTML = `
+        <div class="hub">
+          <p class="hub-title">🗺️ Para onde?</p>
+          <div class="lugares">
+            ${LUGARES.map(l => `
+              <button class="lugar" data-lugar="${l.id}" style="--l1:${l.c1};--l2:${l.c2}">
+                <span class="lugar-ico">${l.icone}</span>
+                <span class="lugar-txt"><b>${l.nome}</b><small>${l.desc}</small></span>
+                ${l.id === 'masmorras' ? `<span class="lugar-selo">${G.ofertas.length}</span>` : ''}
+                ${l.id === 'acampamento' && pet() && buscaPronta() ? '<span class="lugar-selo alerta">!</span>' : ''}
+              </button>`).join('')}
+          </div>
+        </div>`;
+      $$('[data-lugar]').forEach(b => b.onclick = () => irPara(b.dataset.lugar));
+      acts.innerHTML = `
+        <button class="act wide" data-act="voltacamp"><span class="act-t">⛺ Voltar ao acampamento</span></button>`;
+
+    }else if(lugar === 'masmorras'){
+      const mostrar = Math.min(G.revelarOfertas || 0, G.ofertas.length);
+      mid.innerHTML = `
+        <div class="hub">
+          ${cenaDoAcampamento('masmorras')}
+          <p class="hub-title">🕳️ Três entradas</p>
+          <p class="hub-sub">${mostrar < G.ofertas.length
+            ? 'olhando o que tem por aí…'
+            : 'só mudam quando você voltar de uma masmorra.'}</p>
+          <div class="offers" id="ofertasLista">
+            ${G.ofertas.slice(0, mostrar).map((of,i) => cartaoDeOferta(of, i, pronto)).join('')}
+          </div>
+        </div>`;
+      $$('[data-entrar]').forEach(b => b.onclick = () => entrarNaMasmorra(+b.dataset.entrar));
+      /* Um toque em qualquer lugar pula a apresentação — mas instalado no
+         próximo tique, não agora: o clique que trouxe você até aqui ainda
+         está subindo pela árvore e passaria por #playMid, pulando a
+         apresentação no mesmo toque que a pediu. */
+      $('#playMid').onclick = null;
+      if(mostrar < G.ofertas.length){
+        clearTimeout(render._pular);
+        render._pular = setTimeout(() => {
+          const alvo = $('#playMid');
+          if(alvo && G && G.lugar === 'masmorras') alvo.onclick = () => adiantarRevelacao();
+        }, 0);
       }
-      render();
-    });
-    $$('.hub [data-act]').forEach(b => b.onclick = () => {
-      const a = b.dataset.act;
-      if(a === 'adotar') abrirAdocao();
-      else if(a === 'alimentar'){
-        if(alimentarPet()) anotar(`🌿 ${PET[pet().tipo].nome} come e se aninha perto do fogo.`, 'good');
-        else anotar('🌿 Erva de menos para alimentar o bicho.', '');
-        render();
-      }else if(a === 'recolher'){
-        const t = recolherBusca();
-        if(t){
-          const partes = Object.entries(t.mats).map(([k,q]) => `${icoMat(k)} ${q} ${MATERIAIS[k].nome}`);
-          if(t.ouro) partes.push(`${ico('ouro')} ${t.ouro} de ouro`);
-          if(t.usavel) partes.push(`${USAVEL[t.usavel].icone} ${USAVEL[t.usavel].nome}`);
-          anotar(`${PET[pet().tipo].icone} <b>${PET[pet().tipo].nome} voltou!</b> Trouxe ${partes.join(', ')}.`
-               + (t.essencia ? ' <b>E uma Essência!</b>' : ''), 'gold');
-        }
-        render();
-      }
-    });
-    acts.innerHTML = `
-      <button class="act main" data-act="forja"><span class="act-t">${ico('forja','g')} Forja</span><small>gaste ouro e materiais</small></button>
-      <button class="act" data-act="reliquias"><span class="act-t">${ico('reliquia','g')} Relíquias</span><small>${RELIQUIAS.filter(r=>nivelRel(r.id)>0).length}/${RELIQUIAS.length} encontradas</small></button>
-      <button class="act" data-act="mochila"><span class="act-t">${ico('mochila','g')} Mochila</span><small>equipamento e materiais</small></button>
-      <button class="act" data-act="conquistas"><span class="act-t">${ico('conquista','g')} Conquistas</span><small>${Object.keys(META.conquistas||{}).length}/${CONQUISTAS.length} desbloqueadas</small></button>`;
+      acts.innerHTML = `
+        <button class="act wide" data-act="mapa"><span class="act-t">🗺️ Mapa</span></button>`;
+
+    }else if(lugar === 'forjador'){
+      mid.innerHTML = `
+        <div class="hub">
+          ${cenaDoAcampamento('forjador')}
+          <p class="hub-title">⚒️ Forjador</p>
+          <p class="hub-sub">Ouro e material viram equipamento.</p>
+          <div class="chips">${Object.entries(MATERIAIS).map(([k,m]) =>
+            `<span class="chip">${arteItem('mat-'+k, m.icone, 'mat-art', m.svg)} ${m.nome} <b>${G.mats[k]||0}</b></span>`
+          ).join('')}</div>
+        </div>`;
+      acts.innerHTML = `
+        <button class="act main wide" data-act="forja"><span class="act-t">${ico('forja','g')} Abrir a bancada</span><small>${G.ouro} de ouro no bolso</small></button>
+        <button class="act wide" data-act="mapa"><span class="act-t">🗺️ Mapa</span></button>`;
+
+    }else if(lugar === 'santuario'){
+      mid.innerHTML = `
+        <div class="hub">
+          ${cenaDoAcampamento('santuario')}
+          <p class="hub-title">✨ Santuário</p>
+          <p class="hub-sub">O que fica com você quando o herói cai.</p>
+          <div class="relics">${tirinhaReliquias(true)}</div>
+        </div>`;
+      acts.innerHTML = `
+        <button class="act" data-act="reliquias"><span class="act-t">${ico('reliquia','g')} Ver tudo</span><small>${RELIQUIAS.filter(r=>nivelRel(r.id)>0).length}/${RELIQUIAS.length} encontradas</small></button>
+        <button class="act" data-act="conquistas"><span class="act-t">${ico('conquista','g')} Conquistas</span><small>${Object.keys(META.conquistas||{}).length}/${CONQUISTAS.length}</small></button>
+        <button class="act wide" data-act="mapa"><span class="act-t">🗺️ Mapa</span></button>`;
+
+    }else{
+      /* Acampamento: a fogueira e o bicho, com espaço para respirar. */
+      mid.innerHTML = `
+        <div class="hub">
+          ${cenaDoAcampamento('acampamento')}
+          ${cartaoDoPet()}
+        </div>`;
+      ligarBotoesDoPet();
+      acts.innerHTML = `
+        <button class="act main wide" data-act="mapa"><span class="act-t">🗺️ Mapa</span><small>masmorras, forjador e santuário</small></button>
+        <button class="act" data-act="mochila"><span class="act-t">${ico('mochila','g')} Mochila</span><small>equipamento e materiais</small></button>
+        <button class="act" data-act="bestiario"><span class="act-t">${ico('bestiario','g')} Bestiário</span><small>${Object.keys(META.bestiario).length}/${BESTIARIO.length} criaturas</small></button>`;
+    }
+
   }else if(G.modo === 'vitoria'){
     mid.innerHTML = `
       <div class="over-panel">
@@ -5083,6 +5427,8 @@ function render(){
     else if(a === 'mochila') abrirMochila();
     else if(a === 'bestiario') abrirBestiario();
     else if(a === 'conquistas') abrirConquistas();
+    else if(a === 'mapa') irPara('mapa');
+    else if(a === 'voltacamp') irPara('acampamento');
     else if(a === 'compartilhar') compartilharJornada();
     else if(a === 'adotar') abrirAdocao();
     else if(a === 'alimentar'){
@@ -5490,7 +5836,7 @@ $('#novoAvancar').onclick = () => {
 };
 /* Sobe junto com o arquivo: se a home mostra outra data, o aparelho ainda
    está servindo a versão velha do cache. */
-const VERSAO = 'v25 · 18/08 · detalhe por cima';
+const VERSAO = 'v26 · 20/08 · armas e runas';
 $('#lbVersao').textContent = VERSAO;
 $('#btnStart').onclick = () => {
   /* Na primeira vez o jogo começa e pronto: escolher classe e distribuir
@@ -5507,6 +5853,7 @@ function comecarDeCara(){
   /* Uma Comum de campo, em Calmaria: a primeira masmorra da vida de alguém
      não é hora de sortear Nevasca nem de oferecer três dificuldades. */
   G.ofertas = [{nivel:'comum', regiao:'campo', clima:'calmaria'}];
+  G.revelarOfertas = 1;
   abrirJogo();
   entrarNaMasmorra(0);
   salvar(); render();
