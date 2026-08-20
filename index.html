@@ -922,6 +922,21 @@
       display:grid;place-items:center;
       background:radial-gradient(circle at 50% 38%,#2c231b,#191412 78%);border:1px solid #35291f;
     }
+    /* A gravura é SVG, não imagem: escala sozinha e não pisca. A hachura
+       some no miúdo porque a essa altura ela vira mancha — o contorno é o
+       que carrega o bicho a 32px. */
+    .gravura{display:block}
+    .beast-art.gravura .hachura{display:none}
+    .beast-art.gravura .contorno path{stroke-width:3.4}
+    /* Chapa pela metade: só o contorno, riscado e apagado. Quem gravava
+       não voltou para terminar, e é isso que se vê. */
+    .gravura.incompleta > *:not(.contorno){display:none}
+    .gravura.incompleta .contorno path{stroke-dasharray:4 6;opacity:.42;fill:none}
+    .beast-assin{grid-column:2/-1;font-size:10.5px;line-height:1.35;color:#8f8272;font-style:italic;
+      margin-top:1px}
+    .best-verso{display:block;margin-top:5px;font-size:11.5px;line-height:1.4;color:var(--muted);
+      font-style:italic;font-weight:400}
+    .beast-assin em{font-style:normal;color:#bda995}
     .beast-art{
       width:32px;height:32px;object-fit:contain;display:block;
       filter:drop-shadow(0 0 2px rgba(0,0,0,.85)) drop-shadow(0 0 5px rgba(241,204,123,.28));
@@ -1698,6 +1713,266 @@ const BESTIARIO = [
    Cada criatura procura por img/<id>.png. Se o arquivo não existir (jogo
    rodando como arquivo único, ou arte ainda não desenhada), cai no emoji
    automaticamente. Assim dá para ir acrescentando imagens aos poucos. */
+/* ---------- Gravuras do Campo Aberto ----------
+   Regra do estilo: tinta cor de osso, um só acento âmbar (o olho), hachura
+   que descreve luz em vez de preencher espaço, e toda silhueta fechada
+   preenchida com a massa escura, para tapar o que está atrás dela. */
+const OSSO='#d6c3a0', AMBAR='#e8a23a', MASSA='#171310', BREU='#0e0b09';
+const gT = (d, extra='') => `<path d="${d}" fill="${MASSA}" stroke="${OSSO}" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" ${extra}/>`;
+const gL = d => `<path d="${d}" fill="none" stroke="${OSSO}" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>`;
+const gH = d => `<path d="${d}"/>`;
+const gHach = (...ds) => `<g class="hachura" fill="none" stroke="${OSSO}" stroke-width="1.15" stroke-linecap="round">${ds.join('')}</g>`;
+const gOlho = (cx, cy, r=4.6) =>
+  `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${AMBAR}" stroke="${OSSO}" stroke-width="1.5"/>
+   <circle cx="${cx+.5}" cy="${cy+.4}" r="${r*.42}" fill="${BREU}"/>`;
+const gOlhoFenda = (d, dp) =>
+  `<path d="${d}" fill="${AMBAR}" stroke="${OSSO}" stroke-width="1.6" stroke-linejoin="round"/>
+   <path d="${dp}" fill="${BREU}"/>`;
+
+const GRAVURA = {
+
+lobo:{nome:'Lobo Faminto', svg:`
+<g class="contorno">
+  ${gT("M74 26 L82 6 L95 30 L82 39 Z")}
+  ${gT("M80 54 L95 62 L86 70 L104 78 L93 86 L110 96 L98 102 L108 116 L92 105 L84 116 L70 104 L62 116 L48 103 L40 116 L28 102 L24 90 L36 88 L28 78 L42 76 L36 68 L50 70 Z")}
+  ${gT("M55 30 L51 5 L72 24 Z")}
+  ${gT("M10 62 L18 54 L36 48 L46 44 L54 30 L72 28 L84 42 L80 60 L64 74 L40 72 L20 68 Z")}
+</g>
+<g class="hachura" fill="none" stroke="${OSSO}" stroke-width="1.15" stroke-linecap="round">
+  <path d="M22 52 24 58M26 50 28 56M30 49 32 55M35 47 37 53M40 46 42 52"/>
+  <path d="M57 32 60 38M63 31 66 37M69 31 71 37"/>
+  <path d="M64 44 70 48M66 52 73 56M68 60 73 63"/>
+  <path d="M58 14 62 22M63 17 66 24M80 14 82 22M85 17 86 25"/>
+  <path d="M56 78 50 92M64 78 62 94M72 80 74 95M80 84 84 97M88 90 94 100"/>
+  <path d="M44 82 38 96M52 88 48 104M60 90 58 106M70 92 71 108M80 96 82 110"/>
+</g>
+<path d="M10 62 L18 54 L24 61 L16 66 Z" fill="${OSSO}"/>
+<path d="M10 64 L24 69 L42 71 L62 73" fill="none" stroke="${OSSO}" stroke-width="1.9" stroke-linecap="round"/>
+<g fill="${OSSO}"><path d="M20 67 L22 78 L26 68 Z"/><path d="M30 69 L33 81 L37 70 Z"/></g>
+<path d="M46 40 L57 35 L61 40 L51 45 Z" fill="${AMBAR}" stroke="${OSSO}" stroke-width="1.6" stroke-linejoin="round"/>
+<path d="M51 38 L57 37 L56 42 L52 42 Z" fill="${BREU}"/>`},
+
+rato:{nome:'Rato Gigante', svg:`
+${gL("M88 84C104 82 112 62 104 48 99 39 91 36 85 40")}
+<g class="contorno">
+  ${gT("M64 33C68 26 77 26 80 33 84 40 79 46 72 46 65 46 60 40 64 33 Z")}
+  ${gT("M34 96 L29 108 L36 111 L44 100 Z")}
+  ${gT("M72 98 L72 110 L82 112 L86 99 Z")}
+  ${gT("M5 68 L14 58 L26 51 L42 44C58 36 78 40 89 52 100 65 96 86 80 95 66 103 46 102 34 94 25 88 20 79 18 72 L10 71 Z")}
+  ${gT("M48 38C53 30 63 30 67 38 71 46 66 53 58 53 50 53 44 46 48 38 Z")}
+</g>
+<g class="hachura" fill="none" stroke="${OSSO}" stroke-width="1.15" stroke-linecap="round">
+  <path d="M52 36 54 43M60 35 62 42M69 32 71 38M76 32 77 38"/>
+  <path d="M28 52 30 58M36 50 38 56"/>
+  <path d="M52 48 53 56M62 48 62 56M72 51 71 59M82 57 79 64M89 66 85 72"/>
+  <path d="M32 66 30 76M42 70 41 80M52 72 52 83M62 73 63 84M72 74 74 84M82 76 85 84"/>
+  <path d="M24 60 20 66"/>
+  <path d="M92 80 99 76M101 68 105 62"/>
+</g>
+<path d="M12 74 L16 83 L21 74 Z" fill="${OSSO}"/><path d="M21 74 L26 83 L30 74 Z" fill="${OSSO}"/>
+<path d="M5 68 L14 58 L18 65 L11 73 Z" fill="${OSSO}"/>
+<g stroke="${OSSO}" stroke-width="1.15" stroke-linecap="round" opacity=".9">
+  <path d="M8 61 -2 53"/><path d="M4 68 -6 68"/><path d="M8 75 0 83"/></g>
+<path d="M6 70 L16 75 L28 77" fill="none" stroke="${OSSO}" stroke-width="1.7" stroke-linecap="round"/>
+<circle cx="30" cy="59" r="4.6" fill="${AMBAR}" stroke="${OSSO}" stroke-width="1.5"/>
+<circle cx="30.6" cy="59.4" r="2" fill="${BREU}"/>`},
+
+
+javali:{nome:'Javali Ancião', svg:`
+<g class="contorno">
+  ${gL("M48 40 L54 24 L62 38 L70 20 L78 36 L88 24 L94 42")}
+  ${gT("M84 34 L96 20 L100 40 Z")}
+  ${gT("M8 68 L14 56 L28 48 L46 44 L58 32 L78 32 L92 46 L88 68 L72 82 L40 82 L16 76 Z")}
+</g>
+${gHach(
+  gH("M24 56 26 63M32 53 34 60M40 50 42 57M48 47 50 54"),
+  gH("M56 44 58 51M64 42 66 49M74 44 75 51"),
+  gH("M70 52 78 55M72 60 80 63M70 68 76 70"),
+  gH("M56 30 58 38M72 26 74 34M88 30 89 38")
+)}
+<path d="M8 68 L14 56 L22 62 L14 74 Z" fill="${OSSO}"/>
+<path d="M9 70 L26 76 L48 78 L70 79" fill="none" stroke="${OSSO}" stroke-width="1.8" stroke-linecap="round"/>
+<g fill="${OSSO}" stroke="${OSSO}" stroke-width="1.4" stroke-linejoin="round">
+  <path d="M20 72C10 64 6 48 12 38 12 50 16 62 25 68 Z"/>
+  <path d="M40 78C32 72 28 60 32 50 32 60 36 70 45 74 Z"/>
+</g>
+${gOlho(52, 52)}`},
+
+urso:{nome:'Urso Pardo', svg:`
+<g class="contorno">
+  ${gT("M54 18C58 8 72 8 76 18 80 28 74 36 66 36 58 36 50 28 54 18 Z")}
+  ${gT("M88 20C92 11 104 11 108 20 112 29 106 37 98 37 90 37 84 29 88 20 Z")}
+  ${gT("M10 66 L16 52 L32 42 L52 36 L62 24 L88 22 L104 40 L100 68 L84 84 L46 86 L20 76 Z")}
+</g>
+${gHach(
+  gH("M26 52 28 60M34 48 36 56M42 45 44 53M52 42 53 50"),
+  gH("M60 20 62 28M70 18 72 26M94 20 96 28M102 22 103 30"),
+  gH("M84 52 94 55M86 62 96 64M82 72 90 73"),
+  gH("M66 34 68 42M78 30 80 38M90 34 91 42")
+)}
+<path d="M10 66 L16 52 L26 58 L18 72 Z" fill="${OSSO}"/>
+<path d="M11 70C22 78 40 82 58 80 52 88 26 86 14 78 10 75 10 72 11 70 Z" fill="${MASSA}" stroke="${OSSO}" stroke-width="2"/>
+<g fill="${OSSO}"><path d="M20 76 L23 87 L28 77 Z"/><path d="M34 79 L38 90 L42 79 Z"/></g>
+${gOlho(46, 50)}`},
+
+goblin:{nome:'Goblin Batedor', svg:`
+<g class="contorno">
+  ${gT("M28 52 L2 40 L26 34 Z")}
+  ${gT("M84 48 L114 32 L90 30 Z")}
+  ${gT("M28 62 L30 42 L44 28 L64 24 L82 30 L90 46 L86 68 L70 84 L46 84 L30 74 Z")}
+</g>
+${gHach(
+  gH("M40 36 42 44M50 31 52 39M62 29 63 37M74 32 74 40"),
+  gH("M78 48 86 51M78 58 86 60M74 68 82 69"),
+  gH("M14 38 20 42M96 36 102 38")
+)}
+<path d="M46 44C42 52 40 60 44 64 48 68 54 66 56 60 58 52 54 44 46 44 Z" fill="${MASSA}" stroke="${OSSO}" stroke-width="2.2" stroke-linejoin="round"/>
+<path d="M38 70C48 76 62 78 74 74 70 82 48 82 40 76 37 74 37 71 38 70 Z" fill="${MASSA}" stroke="${OSSO}" stroke-width="2.2"/>
+<g fill="${OSSO}"><path d="M42 72 L44 79 L48 73 Z"/><path d="M52 74 L54 81 L58 74 Z"/><path d="M62 74 L64 80 L68 73 Z"/></g>
+${gOlhoFenda("M34 46 L48 42 L50 50 L36 53 Z", "M39 45 L46 44 L46 49 L40 50 Z")}
+${gOlhoFenda("M64 42 L78 44 L76 52 L63 50 Z", "M67 45 L74 46 L73 50 L68 49 Z")}`},
+
+corvo:{nome:'Corvo Ladrão', svg:`
+<g class="contorno">
+  ${gT("M76 82 L110 100 L84 102 Z")}
+  ${gT("M42 40C60 32 82 42 88 62 94 82 82 100 62 102 42 104 28 90 28 70 28 56 34 46 42 40 Z")}
+  ${gT("M44 54C60 50 76 60 80 76 72 90 54 92 44 82 36 74 38 60 44 54 Z")}
+  ${gT("M40 42C34 30 20 28 14 34 8 40 10 52 20 57 30 62 42 55 40 42 Z")}
+</g>
+${gHach(
+  gH("M50 60 60 64M52 70 64 73M56 80 66 82"),
+  gH("M34 46 38 52M26 40 30 46"),
+  gH("M84 88 94 94M80 96 90 100")
+)}
+<path d="M14 40 L-4 47 L14 54 Z" fill="${MASSA}" stroke="${OSSO}" stroke-width="2.4" stroke-linejoin="round"/>
+<path d="M-2 47 L14 47" fill="none" stroke="${OSSO}" stroke-width="1.4"/>
+${gL("M50 100 L48 114M68 100 L70 114")}
+${gOlho(26, 42, 4.2)}`},
+
+cobra:{nome:'Cobra do Mato', svg:`
+<g class="contorno">
+  <path d="M60 78C36 78 18 86 18 98 18 110 38 116 62 114 84 112 96 104 94 94 92 86 80 82 66 82 50 82 40 88 42 96 44 103 56 106 68 104" fill="none" stroke="${OSSO}" stroke-width="21" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M60 78C36 78 18 86 18 98 18 110 38 116 62 114 84 112 96 104 94 94 92 86 80 82 66 82 50 82 40 88 42 96 44 103 56 106 68 104" fill="none" stroke="${MASSA}" stroke-width="15.5" stroke-linecap="round" stroke-linejoin="round"/>
+  ${gT("M54 82C44 70 42 54 48 42 L66 46C70 58 66 72 62 82 Z")}
+  ${gT("M8 44 L24 32 L44 34 L52 46 L44 58 L22 58 Z")}
+</g>
+${gHach(
+  gH("M30 88 34 96M46 82 48 90M64 82 64 90M82 88 80 96"),
+  gH("M52 96 54 104M66 94 66 102M80 96 78 104"),
+  gH("M52 52 60 54M52 62 60 65M54 70 60 72")
+)}
+<path d="M8 46 L-8 42 L-2 48 L-8 54 L8 50" fill="none" stroke="${OSSO}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<g fill="${OSSO}"><path d="M16 54 L18 63 L22 55 Z"/><path d="M30 55 L33 64 L36 55 Z"/></g>
+<path d="M9 50 L24 54 L42 55" fill="none" stroke="${OSSO}" stroke-width="1.7" stroke-linecap="round"/>
+${gOlhoFenda("M22 40 L36 37 L37 45 L23 47 Z", "M27 39 L33 39 L33 44 L28 44 Z")}`},
+
+sapo:{nome:'Sapo Venenoso', svg:`
+<g class="contorno">
+  ${gT("M14 94C10 72 26 54 60 54 94 54 110 72 106 94 104 110 88 116 60 116 32 116 16 110 14 94 Z")}
+  ${gT("M22 50C22 38 32 30 42 30 52 30 60 38 60 50 60 58 54 62 42 62 30 62 22 58 22 50 Z")}
+  ${gT("M60 50C60 38 70 30 80 30 90 30 98 38 98 50 98 58 90 62 78 62 66 62 60 58 60 50 Z")}
+  ${gT("M6 96 L-2 110 L14 114 L24 102 Z")}
+  ${gT("M114 96 L122 110 L106 114 L96 102 Z")}
+</g>
+${gHach(
+  gH("M28 76 36 74M26 88 36 86M32 100 42 98M46 106 56 104M64 106 74 104M78 100 88 98M84 88 94 86M84 76 92 74"),
+  gH("M28 42 32 48M38 38 40 45M74 38 76 45M84 42 86 48")
+)}
+<path d="M16 78C32 90 60 96 88 92 100 90 106 86 106 84 106 92 96 100 80 104 56 110 26 104 16 90 13 86 13 80 16 78 Z" fill="${MASSA}" stroke="${OSSO}" stroke-width="2.2" stroke-linejoin="round"/>
+${gOlho(40, 46, 6)}
+${gOlho(80, 46, 6)}`},
+
+aranhamato:{nome:'Aranha do Mato', svg:`
+${gL("M46 60 L20 34 L4 42M46 60 L14 56 L0 66M46 60 L16 76 L4 92M46 60 L26 92 L18 110")}
+${gL("M74 60 L100 34 L116 42M74 60 L106 56 L120 66M74 60 L104 76 L116 92M74 60 L94 92 L102 110")}
+<g class="contorno">
+  ${gT("M60 66C82 66 96 80 96 96 96 110 80 118 60 118 40 118 24 110 24 96 24 80 38 66 60 66 Z")}
+  ${gT("M60 34C74 34 84 44 84 56 84 68 74 76 60 76 46 76 36 68 36 56 36 44 46 34 60 34 Z")}
+</g>
+${gHach(
+  gH("M40 84 52 82M36 96 50 94M40 108 54 106M66 106 80 108M70 94 84 96M68 82 80 84"),
+  gH("M60 80 60 116"),
+  gH("M44 42 48 48M72 42 76 48")
+)}
+<g fill="${OSSO}">
+  <path d="M46 60 L52 64 L46 68 L42 64 Z"/><path d="M74 60 L78 64 L74 68 L68 64 Z"/>
+</g>
+${gOlho(50, 46, 4.4)}
+${gOlho(70, 46, 4.4)}`},
+
+abelha:{nome:'Abelha Rainha', svg:`
+${gT("M42 34C52 14 74 8 84 20 92 30 78 40 60 40 50 40 42 38 42 34 Z")}
+${gT("M62 34C76 16 98 14 104 26 110 38 92 44 74 42 64 41 60 38 62 34 Z")}
+<g class="contorno">
+  ${gT("M30 62C30 46 46 36 66 36 86 36 102 46 102 62 102 78 86 90 66 90 46 90 30 78 30 62 Z")}
+  ${gT("M28 62C28 48 38 40 48 40 58 40 66 48 66 62 66 76 58 84 48 84 38 84 28 76 28 62 Z")}
+</g>
+${gHach(
+  gH("M70 42 68 84M82 40 82 86M94 46 96 80"),
+  gH("M36 50 42 54M34 62 42 62M36 74 42 70")
+)}
+${gL("M40 40 L30 22M52 38 L52 18")}
+<g fill="${OSSO}"><circle cx="29" cy="20" r="3.4"/><circle cx="52" cy="16" r="3.4"/></g>
+<path d="M102 62 L122 66 L102 74 Z" fill="${OSSO}"/>
+${gOlho(40, 58, 5.4)}`},
+
+morcegoc:{nome:'Morcego do Campo', svg:`
+<g class="contorno">
+  ${gT("M52 62 L4 22 L14 46 L2 48 L18 66 L6 74 L44 84 Z")}
+  ${gT("M68 62 L116 22 L106 46 L118 48 L102 66 L114 74 L76 84 Z")}
+  ${gT("M48 34 L44 12 L58 28 Z")}
+  ${gT("M72 34 L76 12 L62 28 Z")}
+  ${gT("M60 30C72 30 80 40 80 54 80 70 72 84 60 84 48 84 40 70 40 54 40 40 48 30 60 30 Z")}
+</g>
+${gHach(
+  gH("M52 62 14 46M52 62 18 66M52 62 44 84"),
+  gH("M68 62 106 46M68 62 102 66M68 62 76 84"),
+  gH("M50 60 52 72M60 62 60 76M70 60 68 72"),
+  gH("M50 18 52 28M70 18 68 28")
+)}
+<path d="M48 48C54 54 66 54 72 48 70 58 50 58 48 48 Z" fill="${MASSA}" stroke="${OSSO}" stroke-width="2"/>
+<g fill="${OSSO}"><path d="M52 50 L54 58 L57 51 Z"/><path d="M63 51 L66 58 L68 50 Z"/></g>
+${gOlho(52, 40, 4)}
+${gOlho(68, 40, 4)}`}
+};
+
+/* Quem gravou cada chapa. As criaturas que já estavam no bestiário antes
+   desta versão não têm autor conhecido, então recebem um dos que vieram
+   antes — nomes fixos por criatura, para a chapa não trocar de assinatura
+   a cada abertura. Claudio, o Cartógrafo, é quem desenhou o mapa. */
+const ANCESTRAIS = [
+  'Aldo, o Primeiro', 'Claudio, o Cartógrafo', 'Vesper de Ferro', 'Bruna Mão-Torta',
+  'Otim, o Surdo', 'Nadja da Fenda', 'Ives Pé-de-Chumbo', 'Serena, a Muda',
+  'Baltasar do Sino', 'Trude de Areia', 'Oto, o Último'
+];
+function ancestralDe(id){
+  /* Soma dos caracteres: mesma criatura, mesmo nome, sempre. */
+  let n = 0;
+  for(let i=0;i<id.length;i++) n += id.charCodeAt(i);
+  return ANCESTRAIS[n % ANCESTRAIS.length];
+}
+const PROFUNDIDADE = {campo:[1,4], deserto:[2,5], gelo:[3,6], masmorra:[4,8], covil:[6,10]};
+function andarDoAncestral(id, regiao){
+  const [a, b] = PROFUNDIDADE[regiao] || [1,4];
+  let n = 0;
+  for(let i=0;i<id.length;i++) n += id.charCodeAt(i) * (i+1);
+  return a + (n % (b - a + 1));
+}
+/* A legenda da chapa: quem gravou, e se voltou. */
+function assinaturaDe(b){
+  /* A explicação longa fica no topo da tela, uma vez. Repetida em 51
+     linhas ela vira parede de texto. */
+  if(!(META.bestiario||{})[b.id]) return 'chapa inacabada';
+  const reg = (META.gravuras || {})[b.id];
+  const por = (reg && reg.por) || ancestralDe(b.id);
+  const andar = reg && reg.por
+    ? (META.tumulos || {})[reg.por]
+    : andarDoAncestral(b.id, b.regiao);
+  return andar
+    ? `gravado por <em>${escapeHtml(por)}</em>, que não voltou do ${andar}º andar`
+    : `gravado por <em>${escapeHtml(por)}</em>`;
+}
+
 const PASTA_ARTE = 'img/';
 
 /* Antes a tela desenhava a <img> na esperança e trocava pelo emoji se ela
@@ -1731,12 +2006,19 @@ function precarregarArte(regiaoId){
   BESTIARIO.filter(b => !regiaoId || b.regiao === regiaoId || b.final)
     .forEach(b => sondarArte(b.id, `${PASTA_ARTE}${b.id}.png`));
 }
-function arte(b, cls){
-  if(ARTE[b.id] !== 'ok'){
-    sondarArte(b.id, `${PASTA_ARTE}${b.id}.png`);
-    return `<span class="${cls}">${b.icone}</span>`;
-  }
-  return `<img class="${cls} arte" src="${PASTA_ARTE}${b.id}.png" alt="${escapeHtml(b.nome)}" data-emoji="${b.icone}">`;
+/* Três degraus, nesta ordem: a arte que você pintou ganha de tudo; sem
+   ela entra a gravura em vetor; sem gravura, o emoji. Assim o jogo nunca
+   fica sem retrato e cada PNG que você sobe substitui uma gravura. */
+function arte(b, cls, incompleta){
+  if(ARTE[b.id] === 'ok')
+    return `<img class="${cls} arte" src="${PASTA_ARTE}${b.id}.png" alt="${escapeHtml(b.nome)}" data-emoji="${b.icone}">`;
+  sondarArte(b.id, `${PASTA_ARTE}${b.id}.png`);
+  if(GRAVURA[b.id]) return gravuraDe(b, cls, incompleta);
+  return `<span class="${cls}">${b.icone}</span>`;
+}
+function gravuraDe(b, cls, incompleta){
+  return `<svg class="${cls} gravura${incompleta ? ' incompleta' : ''}" viewBox="0 0 120 120"
+    role="img" aria-label="${escapeHtml(b.nome)}${incompleta ? ', gravura incompleta' : ''}">${GRAVURA[b.id].svg}</svg>`;
 }
 function arteItem(id, emoji, cls, svgNome){
   const chave = 'item:' + id;
@@ -2252,6 +2534,8 @@ function carregarMeta(){
     if(m && typeof m === 'object'){
       META = Object.assign(META, m);
       META.bestiario = META.bestiario || {};
+      META.gravuras = META.gravuras || {};
+      META.tumulos = META.tumulos || {};
       META.reliquias = META.reliquias || {};
       META.rumos = META.rumos || {};
     }
@@ -2259,7 +2543,15 @@ function carregarMeta(){
 }
 function salvarMeta(){ store.set(MKEY, JSON.stringify(META)); }
 function registrarBicho(id){
+  const primeira = !META.bestiario[id];
   META.bestiario[id] = (META.bestiario[id] || 0) + 1;
+  /* Quem encontra primeiro é quem assina a chapa. Se esse herói cair
+     depois, a legenda passa a dizer em que andar ele parou — é assim que
+     as suas mortes entram no livro. */
+  if(primeira && G && G.nome){
+    META.gravuras = META.gravuras || {};
+    META.gravuras[id] = {por: G.nome};
+  }
   salvarMeta();
 }
 function marcarOuro(){ META.maiorOuro = Math.max(META.maiorOuro||0, G.ouro); }
@@ -3398,6 +3690,10 @@ function cair(){
   G.modo = 'fim';
   G.inimigo = null;
   META.mortes++;
+  /* O andar em que este herói parou. Toda chapa que ele assinou passa a
+     dizer isso — o bestiário vira o registro de quem tentou. */
+  META.tumulos = META.tumulos || {};
+  META.tumulos[G.nome] = G.andar;
   salvarMeta();
   anotar(`☠️ ${G.nome} cai no andar ${G.andar} de ${G.masmorra ? G.masmorra.andares : '?'} com ${G.pontos} pontos.`, 'bad');
   som('morte');
@@ -4357,14 +4653,19 @@ function abrirReliquias(){
 /* ---------- bestiário ---------- */
 function abrirBestiario(){
   const vistos = Object.keys(META.bestiario).length;
-  $('#bestCount').textContent = `${vistos} de ${BESTIARIO.length} criaturas`;
+  $('#bestCount').innerHTML = `${vistos} de ${BESTIARIO.length} criaturas`
+    + `<small class="best-verso">As chapas riscadas ninguém viveu para terminar de gravar.`
+    + ` Derrube a criatura e a linha que falta é riscada.</small>`;
   $('#bestList').innerHTML = REGIOES.map(reg => {
     const linhas = BESTIARIO.filter(b => b.regiao === reg.id).map(b => {
       const n = META.bestiario[b.id] || 0;
+      /* A criatura que você nunca encontrou não some da página: aparece
+         como chapa inacabada, porque alguém começou a gravá-la. */
       if(!n) return `
         <div class="beast oculto">
-          <span class="beast-ico">❔</span>
-          <span class="beast-txt"><b>???</b><small>ainda não enfrentado</small></span>
+          <span class="beast-ico">${GRAVURA[b.id] ? arte(b,'beast-art',true) : '❔'}</span>
+          <span class="beast-txt"><b>???</b><small>ainda não enfrentada</small></span>
+          <span class="beast-assin">${assinaturaDe(b)}</span>
         </div>`;
       return `
         <div class="beast">
@@ -4374,6 +4675,7 @@ function abrirBestiario(){
             <small>Vida ${b.vida} • Golpe ${b.golpe} • ${b.pts} pontos</small>
           </span>
           <span class="beast-n">×${n}</span>
+          <span class="beast-assin">${assinaturaDe(b)}</span>
         </div>`;
     }).join('');
     return `<h4>${reg.icone} ${reg.nome}</h4><div class="beasts">${linhas}</div>`;
@@ -6243,7 +6545,7 @@ $('#novoAvancar').onclick = () => {
 };
 /* Sobe junto com o arquivo: se a home mostra outra data, o aparelho ainda
    está servindo a versão velha do cache. */
-const VERSAO = 'v28 · 20/08 · bicho, arte e relíquias';
+const VERSAO = 'v29 · 20/08 · gravuras do Campo Aberto';
 $('#lbVersao').textContent = VERSAO;
 $('#btnStart').onclick = () => {
   /* Na primeira vez o jogo começa e pronto: escolher classe e distribuir
