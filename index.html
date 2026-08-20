@@ -219,6 +219,13 @@
     .clarao{position:fixed;inset:0;z-index:65;pointer-events:none;background:rgba(255,214,140,.30);animation:clara .3s ease-out forwards}
     @keyframes clara{to{opacity:0}}
     /* Barra de vida no vermelho quando o herói está por um fio */
+    /* O fôlego fica ao lado da vida do inimigo porque é lido no mesmo
+       instante: quanto ele ainda aguenta, quanto eu ainda aguento. */
+    /* Aço avermelhado: o roxo é a cor do poder de classe e as duas
+       coisas não podem parecer a mesma. */
+    .act.estocada{border-color:#8a4f43;background:linear-gradient(180deg,#241614,#1a1110)}
+    .act.estocada .act-t{color:#f0b8a8}
+    .aviso-aberto{color:#e08a7a;font-weight:600}
     .life-fill.critica{animation:pulsaVida 1.1s ease-in-out infinite}
     /* Um brilho verde varrendo a barra a cada ponto que entra: sem isso o
        número sobe sozinho e ninguém percebe que está sendo curado. */
@@ -3165,6 +3172,25 @@ function faixasGolpe(){
 }
 
 /* O dado do herói passa pelas bênçãos; o das outras rolagens não. */
+/* ---------- fôlego ----------
+   O turno não custava nada, então atacar todo turno era sempre certo e o
+   aviso de intenção do inimigo entregava a única decisão que sobrava
+   (bateu pesado? defende). O fôlego devolve a decisão para o jogador: o
+   golpe tem preço, a estocada tem preço alto, e parar para respirar é o
+   que paga a conta. O ritmo da briga passa a ser escolha sua, não leitura
+   do telégrafo. */
+/* A estocada é uma aposta, e ela se resolve no mesmo turno.
+   Antes daqui eu tentei um recurso de fôlego, gasto por golpe e recobrado
+   ao caminhar. Medi: não virava decisão nenhuma. Numa briga de dois
+   turnos não dá tempo de faltar nada, e caminhar repunha mais rápido do
+   que brigar gastava — "só estocada" ficava dominante. Recurso escasso
+   precisa de briga longa, e briga longa é mais toque na tela.
+   O que funciona numa briga curta é risco imediato: você rola dois dados
+   e fica com o melhor, mas se ainda assim errar, o troco vem dobrado.
+   Aí o aviso de intenção do inimigo deixa de dar a resposta e passa a
+   dizer só o PREÇO de arriscar — que é outra coisa. */
+const CASTIGO_ESTOCADA = 2;
+
 function dadoDoHeroi(){
   let v = d20();
   if(temB('viciado')) v = Math.max(v, d20());
@@ -4441,6 +4467,7 @@ function chamarInimigo(id, afixoDado){
   G.veneno = 0;
   G.cascaUsada = false;
   G.trocoUsado = false;
+  G.aberto = false;
   G.modo = 'combate';
   G.inimigo.intencao = proximaIntencao(G.inimigo);
   G.recarga = 0;
@@ -4666,6 +4693,11 @@ function reducaoDefesa(){
   return d / (d + 24);
 }
 function machucar(bruto, ignoraArmadura=false){
+  /* Aberto: a estocada errada custa este turno em dobro, e só este. */
+  if(G.aberto){
+    G.aberto = false;
+    bruto = Math.round(bruto * CASTIGO_ESTOCADA);
+  }
   let dano = ignoraArmadura ? bruto : Math.max(1, Math.round(bruto * (1 - reducaoDefesa())));
   /* Dracônico: dois pontos a menos em tudo que atravessar a armadura. */
   if(!ignoraArmadura && temRuna('draconico')) dano = Math.max(1, dano - 2);
@@ -4711,11 +4743,24 @@ function cair(){
 }
 
 /* ---------- combate ---------- */
-async function atacar(){
+async function atacar(modo){
   if(G.modo !== 'combate' || ocupado) return;
+  const estocada = modo === 'estocada';
   if(await passouCongelado()) return;
   ocupado = true;
-  const acertou = await darUmGolpe(`Seu golpe no ${G.inimigo.nome}`);
+  G.vantagem = estocada;
+  if(estocada) anotar('🗡️ <b>Estocada.</b> Você se joga no golpe — e fica aberto.', '');
+  const acertou = await darUmGolpe(estocada ? `Estocada no ${G.inimigo.nome}` : `Seu golpe no ${G.inimigo.nome}`);
+  G.vantagem = false;
+  /* A aposta não é "não errar": com dois dados, errar feio exige tirar 1
+     duas vezes — 0,25%, risco que não existe. A aposta é ACERTAR FORTE.
+     Sair abaixo disso já conta como estocada furada, e aí o corpo que
+     você entregou cobra o preço. Com vantagem dá certo em ~80% das
+     vezes, o que faz do 1 em 5 uma decisão de verdade. */
+  if(estocada && acertou !== null && faixaDe(acertou, faixasGolpe()).mult < 2){
+    G.aberto = true;
+    anotar('💢 A estocada saiu fraca e te deixou <b>aberto</b>: o troco vem dobrado.', 'bad');
+  }
   if(!G.inimigo){ ocupado = false; salvar(); render(); mostrarGanhoDeReliquia(); return; }
 
   /* Golpe Duplo: o 20 rende um segundo golpe de graça, antes do troco. */
@@ -4831,7 +4876,9 @@ async function passouCongelado(){
 /* Devolve o valor do dado, ou null se a criatura caiu no golpe. */
 async function darUmGolpe(titulo){
   const inim = G.inimigo;
-  const mira = G.poderAtivo === 'cacador'
+  /* Vantagem e desvantagem são o corpo da escolha: a estocada rola dois e
+     fica com o melhor, o golpe cansado rola dois e fica com o pior. */
+  const mira = (G.poderAtivo === 'cacador' || G.vantagem)
     ? () => Math.max(dadoDoHeroi(), dadoDoHeroi())
     : dadoDoHeroi;
   const {valor, faixa} = await rolarDado({titulo, faixas:faixasGolpe(), rolar:mira,
@@ -7054,6 +7101,7 @@ function render(){
         <p class="foe-name">${conhecida(inim.id)
           ? (inim.chefe?'👑 ':'') + escapeHtml(inim.nome)
           : (inim.chefe?'👑 ':'') + '<span class="foe-incognito">algo na escuridão</span>'}</p>
+        ${G.aberto ? '<p class="foe-afixo aviso-aberto">💢 Você está aberto — o próximo golpe vem dobrado</p>' : ''}
         ${inim.afixo ? `<p class="foe-afixo">${AFIXO[inim.afixo].icone} ${AFIXO[inim.afixo].desc}</p>` : ''}
         ${GUARDIOES[inim.id] ? `<p class="foe-regra">${GUARDIOES[inim.id].icone} <b>${GUARDIOES[inim.id].nome}</b> — ${GUARDIOES[inim.id].desc}</p>` : ''}
         <div class="foe-life">
@@ -7081,10 +7129,14 @@ function render(){
       <button class="act ${pedeGuarda?'':'main'}" data-act="atacar"><span class="act-t">${ico('golpe','g')} Atacar</span>${
         G.guardaCarregada ? '<small>guarda reforçada: +60% de dano</small>'
         : inim.guardando ? '<small>ele apara boa parte agora</small>'
-        : (veterano ? '' : '<small>gira o dado</small>')}</button>
+        : (veterano ? '' : '<small>um dado, sem risco</small>')}</button>
+      <button class="act ${pedeGuarda?'':'estocada'}" data-act="estocada"><span class="act-t">🗡️ Estocada</span><small>${
+        pedeGuarda ? 'arriscado agora — ele já está preparado'
+                   : (veterano ? 'dois dados · sair fraco te abre'
+                               : 'dois dados, fica o melhor · sair fraco te deixa aberto')}</small></button>
       <button class="act ${pedeGuarda?'main urgente':''}" data-act="defender"><span class="act-t">${ico('defesa','g')} Defender</span>${
         pedeGuarda ? `<small>${INTENCOES[inim.intencao].resposta}</small>`
-        : (veterano ? '' : '<small>leva um terço do dano e reforça seu golpe</small>')
+        : (veterano ? '' : '<small>um terço do dano e reforça seu golpe</small>')
       }</button>
       <button class="act ${poderPronto()?'poder':''}" data-act="poder" ${poderPronto()?'':'disabled'}><span class="act-t">${
         poderDaClasse().icone} ${poderDaClasse().nome}</span><small>${
@@ -7142,6 +7194,7 @@ function render(){
   $$('#pActs [data-act]').forEach(b => b.onclick = () => {
     const a = b.dataset.act;
     if(a === 'atacar') atacar();
+    else if(a === 'estocada') atacar('estocada');
     else if(a === 'defender') defender();
     else if(a === 'poder') usarPoder();
     else if(a === 'itens') abrirItens();
@@ -7566,7 +7619,7 @@ $('#novoAvancar').onclick = () => {
 };
 /* Sobe junto com o arquivo: se a home mostra outra data, o aparelho ainda
    está servindo a versão velha do cache. */
-const VERSAO = 'v32 · 20/08 · criar o herói sempre';
+const VERSAO = 'v33 · 20/08 · a estocada';
 $('#lbVersao').textContent = VERSAO;
 /* Criar o herói é a primeira coisa que se faz, sempre. Durante um tempo a
    estreia pulava esta tela e o jogo começava com um nome sorteado — a
