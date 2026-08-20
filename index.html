@@ -147,7 +147,12 @@
       .chip{padding:4px 8px}
     }
     .chip b{color:#f3d190;font-variant-numeric:tabular-nums}
-    .play-mid{flex:1;min-height:0;display:grid;place-items:center;overflow:hidden}
+    /* A linha precisa ser definida (1fr) e não automática: com linha
+       automática, um filho que pede height:100% cai na altura natural
+       dele e estoura a área — foi o que o mapa em pergaminho fez numa
+       tela baixa. Quem continua centralizado não sente diferença. */
+    .play-mid{flex:1;min-height:0;display:grid;grid-template-rows:minmax(0,1fr);
+      place-items:center;overflow:hidden}
     .play-mid.rolavel{place-items:start center;overflow-y:auto;overscroll-behavior:contain;padding:2px}
     /* Antes o tabuleiro inteiro era espremido na largura disponível: num
        8×8 a casa ficava com 40px, menor que a ponta do dedo. Agora a casa
@@ -668,6 +673,69 @@
       border-radius:12px;padding:10px;display:grid;gap:2px;justify-items:center;text-align:center}
     .res-grande b{font:700 26px Georgia,serif;color:#f3d190;line-height:1;font-variant-numeric:tabular-nums}
     .res-grande small{font-size:11px;color:var(--muted)}
+    /* ---- o mapa em pergaminho ----
+       Cor de tinta e cor de folha ficam em variáveis porque quase todo
+       traço do desenho usa uma das duas. */
+    /* O pai é um grid com place-items:center, então o mapa precisa pedir
+       para esticar — senão a folha fica do tamanho do desenho e sobra
+       tela preta embaixo. */
+    /* .hub também é regra de uma classe e vem depois na folha; por isso a
+       caixa do mapa se apresenta como .hub.mapaCaixa, para ganhar dela. */
+    .hub.mapaCaixa{--tinta:#5c4326;--tinta2:#3f2d17;--folha:#dcc79d;
+      display:block;height:100%;max-width:600px;
+      align-self:stretch;justify-self:stretch;padding:2px 0 4px}
+    .mapaCaixa .mapaMundo{width:100%;height:100%;display:block;touch-action:manipulation;
+      filter:drop-shadow(0 8px 18px rgba(0,0,0,.55))}
+    .mapaMundo .folha{fill:var(--folha)}
+    .mapaMundo .mancha{opacity:.55}
+    .mapaMundo .tinta path{fill:none;stroke:var(--tinta);stroke-width:2.4;
+      stroke-linejoin:round;stroke-linecap:round}
+    .mapaMundo .tinta .fina{stroke-width:1.4;opacity:.65}
+    .mapaMundo .tinta circle{fill:none;stroke:var(--tinta);stroke-width:1.4}
+    .mapaMundo .serra path{opacity:.75}
+    .mapaMundo .mato path{fill:#7d9464;stroke:var(--tinta2);stroke-width:1.6;stroke-linejoin:round}
+    .mapaMundo .mato circle{fill:#8aa06d;stroke:var(--tinta2);stroke-width:1.6}
+    .mapaMundo .mato .tronco{fill:none;stroke:#5b432a;stroke-width:2.4}
+    .mapaMundo .trilha path{fill:none;stroke:#9c7f52;stroke-width:5.5;stroke-linecap:round;
+      stroke-dasharray:1 12;opacity:.85}
+    /* pedra, lona, ferro: o desenho é de tinta, a cor só preenche por baixo */
+    .mapaMundo .tinta path.pedra{fill:#b9ac96}
+    .mapaMundo .tinta path.lona{fill:#e8e0cd}
+    .mapaMundo .tinta path.rocha{fill:#a89c88}
+    .mapaMundo .tinta path.menir{fill:#a89c88}
+    .mapaMundo .tinta path.ferro{fill:#6f6a63}
+    .mapaMundo .tinta path.barril{fill:#a67c4c}
+    .mapaMundo .tinta path.vao{fill:#2b3446}
+    .mapaMundo .tinta path.boca{fill:#c9631f}
+    .mapaMundo .tinta path.porta{fill:#a08a63}
+    .mapaMundo .tinta path.brasas{stroke:#ffd48a;stroke-width:3;opacity:.85}
+    .mapaMundo .tinta path.portal{fill:#1d2b45}
+    .mapaMundo .tinta path.cabo{stroke:#8a6134;stroke-width:5}
+    .mapaMundo .tinta path.chao{stroke-dasharray:5 7}
+    .mapaMundo .ruina{opacity:.72}
+    .mapaMundo .fumaca path{fill:none;stroke:#8d8477;stroke-width:4;stroke-linecap:round;opacity:.7}
+    .mapaMundo .fogo .lenha{fill:none;stroke:#7a5530;stroke-width:5;stroke-linecap:round}
+    .mapaMundo .fogo .chama{fill:#f0a034;stroke:#c96a1c;stroke-width:1.6}
+    .mapaMundo .fogo .brasa{fill:url(#luzFogo)}
+    .mapaMundo .brilho circle{fill:url(#luzPortal)}
+    .mapaMundo .brilho .estrela{fill:#eaf6ff;stroke:none}
+    .mapaMundo .tarja rect{fill:#f0e2c1;stroke:var(--tinta);stroke-width:1.6;opacity:.92}
+    .mapaMundo .tarja text{fill:var(--tinta2);font:700 15px Georgia,serif;text-anchor:middle}
+    .mapaMundo .selo circle{fill:#f0e2c1;stroke:var(--tinta);stroke-width:2}
+    .mapaMundo .selo text{fill:var(--tinta2);font:700 15px Georgia,serif;text-anchor:middle}
+    .mapaMundo .selo.alerta circle{fill:#e0a24a;stroke:#8a5320}
+    .mapaMundo .rumo{fill:var(--tinta);font:600 11px Georgia,serif;text-anchor:middle;opacity:.8}
+    .mapaMundo .toque{fill:transparent;cursor:pointer}
+    .mapaMundo .halo{fill:#fff3cf;opacity:0}
+    .mapaMundo .lug:active .halo,.mapaMundo .lug:focus-visible .halo{opacity:.5}
+    .mapaMundo .lug:focus-visible{outline:none}
+    .mapaMundo .lug:focus-visible .tarja rect{stroke-width:3}
+    @media (prefers-reduced-motion:no-preference){
+      .mapaMundo .brilho circle{animation:pulsar 3.4s ease-in-out infinite}
+      .mapaMundo .fogo .chama{transform-origin:230px 224px;animation:tremular 1.9s ease-in-out infinite}
+    }
+    @keyframes pulsar{50%{opacity:.6;transform:scale(1.08);transform-origin:490px 722px}}
+    @keyframes tremular{50%{transform:scaleY(1.12) scaleX(.94)}}
     .lugares{display:grid;gap:8px}
     .lugar{display:grid;grid-template-columns:44px 1fr auto;gap:11px;align-items:center;
       background:linear-gradient(150deg,var(--l1,#241a12),var(--l2,#161110) 70%);
@@ -4651,6 +4719,214 @@ function adiantarRevelacao(){
 
 /* A cena: céu pela hora real do aparelho, estrelas só à noite. Não muda
    nada de mecânica — existe para o acampamento ser um lugar. */
+/* ---------- o mapa do mundo ----------
+   Desenhado no lugar de uma lista de botões: pergaminho, tinta marrom e
+   os quatro lugares ilustrados, ligados por trilhas. Tudo em SVG dentro
+   do próprio arquivo — sem imagem externa, então funciona igual no site
+   e no arquivo solto. O viewBox é fixo e a tela só escala: assim as
+   trilhas nunca desencontram dos lugares. */
+const MAPA_W = 620, MAPA_H = 1000;
+
+/* Montanhas de tinta: um par de riscos por pico, como num mapa antigo. */
+function serra(x, y, picos, esc){
+  let d = '';
+  for(let i=0;i<picos;i++){
+    const px = x + i*34*esc, h = (26 + (i%3)*11) * esc, w = 22*esc;
+    d += `<path d="M${px-w} ${y} L${px} ${y-h} L${px+w} ${y}" />
+          <path class="fina" d="M${px} ${y-h} L${px-w*.45} ${y}" />
+          <path class="fina" d="M${px+w*.35} ${y-h*.42} L${px+w*.1} ${y-h*.62}" />`;
+  }
+  return `<g class="tinta serra">${d}</g>`;
+}
+
+/* Mata: coníferas e copas redondas, o suficiente para ler como floresta. */
+function mata(pontos){
+  return `<g class="mato">` + pontos.map(([x,y,s,tipo]) => tipo === 'copa'
+    ? `<circle cx="${x}" cy="${y-7*s}" r="${11*s}"/><circle cx="${x-8*s}" cy="${y-2*s}" r="${8*s}"/>
+       <circle cx="${x+8*s}" cy="${y-3*s}" r="${8.5*s}"/><path class="tronco" d="M${x} ${y+7*s} L${x} ${y-2*s}"/>`
+    : `<path d="M${x} ${y-30*s} L${x+11*s} ${y-10*s} L${x+6*s} ${y-10*s} L${x+14*s} ${y+4*s}
+                L${x-14*s} ${y+4*s} L${x-6*s} ${y-10*s} L${x-11*s} ${y-10*s} Z"/>
+       <path class="tronco" d="M${x} ${y+4*s} L${x} ${y+10*s}"/>`).join('') + `</g>`;
+}
+
+/* Rosa dos ventos, o carimbo que faz a folha virar mapa. */
+function rosa(x, y, r){
+  return `<g class="tinta rosa" transform="translate(${x} ${y})">
+    <circle class="fina" r="${r*.55}"/><circle class="fina" r="${r*.34}"/>
+    <path d="M0 ${-r} L${r*.17} ${-r*.2} L0 0 L${-r*.17} ${-r*.2} Z"/>
+    <path d="M0 ${r} L${r*.17} ${r*.2} L0 0 L${-r*.17} ${r*.2} Z"/>
+    <path d="M${-r} 0 L${-r*.2} ${r*.17} L0 0 L${-r*.2} ${-r*.17} Z"/>
+    <path d="M${r} 0 L${r*.2} ${r*.17} L0 0 L${r*.2} ${-r*.17} Z"/>
+    <text class="rumo" x="0" y="${-r-5}">N</text><text class="rumo" x="0" y="${r+13}">S</text>
+    <text class="rumo" x="${-r-9}" y="4">O</text><text class="rumo" x="${r+9}" y="4">L</text>
+  </g>`;
+}
+
+/* Um lugar do mapa: o desenho, o nome numa tarjeta e a área de toque.
+   O retângulo transparente vem por último de propósito — ele é o alvo do
+   dedo, e desenho fino não se acerta num celular. */
+function lugarNoMapa(id, x, y, largura, altura, desenho, selo){
+  const l = LUGAR[id];
+  const meia = largura/2;
+  return `<g class="lug" data-lugar="${id}" role="button" tabindex="0" aria-label="${l.nome}">
+    <ellipse class="halo" cx="${x}" cy="${y}" rx="${meia*.95}" ry="${altura*.6}"/>
+    ${desenho}
+    <g class="tarja" transform="translate(${x} ${y + altura*.5 + 16})">
+      <rect x="${-meia*.86}" y="-13" width="${meia*1.72}" height="24" rx="7"/>
+      <text y="4">${l.nome}</text>
+    </g>
+    ${selo ? `<g class="selo ${selo.alerta?'alerta':''}" transform="translate(${x + meia*.72} ${y - altura*.42})">
+      <circle r="14"/><text y="5">${selo.texto}</text></g>` : ''}
+    <rect class="toque" x="${x-meia}" y="${y-altura/2}" width="${largura}" height="${altura + 30}"/>
+  </g>`;
+}
+
+function mapaDoMundo(){
+  const petChamando = pet() && buscaPronta();
+
+  /* --- acampamento: barraca de lona e fogueira acesa --- */
+  const acampamento = `
+    ${mata([[62,205,1.1],[96,180,.85],[128,196,1,'copa'],[236,178,1.05],[262,206,.9],[46,242,.9,'copa'],[268,150,.8]])}
+    <g class="tinta">
+      <path class="lona" d="M120 232 L162 150 L204 232 Z"/>
+      <path d="M120 232 L162 150 L204 232 Z"/>
+      <path class="porta" d="M158 232 L172 182 L186 232 Z"/>
+      <path class="fina" d="M158 232 L172 182 L186 232"/>
+      <path class="fina" d="M162 150 L134 232 M162 150 L190 232"/>
+    </g>
+    <g class="fogo">
+      <path class="lenha" d="M214 236 L246 226 M216 228 L246 238"/>
+      <path class="chama" d="M230 224 C222 212 236 208 230 194 C244 202 244 218 230 224 Z"/>
+      <circle class="brasa" cx="230" cy="230" r="5"/>
+    </g>`;
+
+  /* --- forjador: fornalha de pedra fumegando, bigorna e martelo --- */
+  const forjador = `
+    <g class="tinta">
+      <path class="pedra" d="M424 400 L424 306 L500 306 L500 400 Z"/>
+      <path d="M424 400 L424 306 L500 306 L500 400 Z"/>
+      <path class="fina" d="M424 330 H500 M424 356 H500 M450 306 V330 M470 330 V356 M446 356 V400"/>
+      <path class="pedra" d="M452 306 L452 282 L474 282 L474 306 Z"/>
+      <path d="M452 306 L452 282 L474 282 L474 306 Z"/>
+      <path class="boca" d="M440 400 L440 358 Q462 336 484 358 L484 400 Z"/>
+      <path d="M440 400 L440 358 Q462 336 484 358 L484 400"/>
+      <path class="fina brasas" d="M446 392 H478 M450 384 H474"/>
+    </g>
+    <g class="fumaca">
+      <path d="M463 278 C452 266 476 258 464 244 C452 230 478 224 470 210"/>
+    </g>
+    <g class="tinta">
+      <path class="ferro" d="M368 402 L372 394 L380 391 L380 380 L374 377 L374 371 L402 371
+                              L419 378 L402 385 L402 391 L410 394 L414 402 Z"/>
+      <path d="M368 402 L372 394 L380 391 L380 380 L374 377 L374 371 L402 371
+               L419 378 L402 385 L402 391 L410 394 L414 402 Z"/>
+      <path class="fina" d="M362 402 H418"/>
+      <path class="cabo" d="M424 396 L448 387"/>
+      <path class="ferro" d="M444 393 L456 388 L452 378 L440 383 Z"/>
+      <path d="M444 393 L456 388 L452 378 L440 383 Z"/>
+      <path class="barril" d="M340 400 L342 372 L364 372 L366 400 Z"/>
+      <path d="M340 400 L342 372 L364 372 L366 400 Z"/>
+      <path class="fina" d="M341 381 H365 M341 391 H366"/>
+    </g>`;
+
+  /* --- masmorras: o maciço de pedra com três bocas --- */
+  const bocas = [[112,660],[164,652],[214,662]].map(([bx,by],i) => {
+    const w = 21 - i*1.5, h = 34 - i*2;
+    return `<path class="vao" d="M${bx-w} ${by} L${bx-w} ${by-h*.5} Q${bx} ${by-h*1.25} ${bx+w} ${by-h*.5} L${bx+w} ${by} Z"/>
+            <path class="fina" d="M${bx-w} ${by} L${bx-w} ${by-h*.5} Q${bx} ${by-h*1.25} ${bx+w} ${by-h*.5} L${bx+w} ${by}"/>`;
+  }).join('');
+  const masmorras = `
+    <g class="tinta">
+      <path class="rocha" d="M56 668 L92 578 L120 620 L156 552 L192 618 L226 574 L262 668 Z"/>
+      <path d="M56 668 L92 578 L120 620 L156 552 L192 618 L226 574 L262 668 Z"/>
+      <path class="fina" d="M92 578 L106 620 M156 552 L142 604 M226 574 L214 616
+                            M74 640 L96 610 M240 640 L222 612 M120 620 L134 646"/>
+      ${bocas}
+      <path class="fina chao" d="M62 668 H258"/>
+    </g>`;
+
+  /* --- santuário: o arco de pedra com a estrela dentro --- */
+  const santuario = `
+    <g class="tinta">
+      <path class="pedra" d="M428 776 L434 766 L546 766 L552 776 Z"/>
+      <path d="M428 776 L434 766 L546 766 L552 776 Z"/>
+      <path class="menir" d="M416 766 L418 722 L432 720 L430 766 Z"/>
+      <path class="menir" d="M548 766 L550 718 L564 720 L562 766 Z"/>
+      <path d="M416 766 L418 722 L432 720 L430 766 Z M548 766 L550 718 L564 720 L562 766 Z"/>
+      <path class="portal" d="M456 766 L456 706 Q490 668 524 706 L524 766 Z"/>
+      <path d="M456 766 L456 706 Q490 668 524 706 L524 766 Z"/>
+    </g>
+    <g class="brilho">
+      <circle cx="490" cy="722" r="26"/>
+      <path class="estrela" d="M490 704 L495 718 L509 722 L495 726 L490 741 L485 726 L471 722 L485 718 Z"/>
+    </g>`;
+
+  /* --- ruína: só cenário, para o canto direito não ficar vazio --- */
+  const ruina = `<g class="tinta ruina">
+    <path class="pedra" d="M508 618 L508 578 L520 578 L520 618 Z M534 618 L534 566 L546 566 L546 618 Z
+                           M560 618 L560 588 L572 588 L572 618 Z"/>
+    <path d="M508 618 L508 578 L520 578 L520 618 Z M534 618 L534 566 L546 566 L546 618 Z
+             M560 618 L560 588 L572 588 L572 618 Z"/>
+    <path d="M500 566 L556 552 L556 562 L500 576 Z"/>
+    <path class="fina" d="M496 620 H584"/>
+  </g>`;
+
+  return `<svg class="mapaMundo" viewBox="0 0 ${MAPA_W} ${MAPA_H}" preserveAspectRatio="xMidYMid meet"
+      role="group" aria-label="Mapa do mundo">
+    <defs>
+      <filter id="mnc" x="-10%" y="-10%" width="120%" height="120%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.012 0.02" numOctaves="4" seed="9" result="r"/>
+        <feColorMatrix in="r" type="matrix"
+          values="0 0 0 0 .38  0 0 0 0 .29  0 0 0 0 .16  0 0 0 .5 0"/>
+      </filter>
+      <radialGradient id="vinheta" cx="50%" cy="46%" r="72%">
+        <stop offset="55%" stop-color="#000" stop-opacity="0"/>
+        <stop offset="100%" stop-color="#4a3418" stop-opacity=".5"/>
+      </radialGradient>
+      <radialGradient id="luzPortal" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#bfe6ff" stop-opacity=".95"/>
+        <stop offset="60%" stop-color="#6fa8d8" stop-opacity=".45"/>
+        <stop offset="100%" stop-color="#6fa8d8" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="luzFogo" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#ffcf7a" stop-opacity=".85"/>
+        <stop offset="100%" stop-color="#e08a2a" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+
+    <path class="folha" d="M14 26 Q9 12 26 11 L214 6 L400 13 L594 8 Q609 14 606 32 L611 300 L604 520
+      L610 742 L605 966 Q608 984 590 987 L392 993 L206 988 L28 992 Q11 990 13 972 L8 744 L15 512
+      L9 288 Z"/>
+    <path class="mancha" d="M14 26 Q9 12 26 11 L214 6 L400 13 L594 8 Q609 14 606 32 L611 300 L604 520
+      L610 742 L605 966 Q608 984 590 987 L392 993 L206 988 L28 992 Q11 990 13 972 L8 744 L15 512
+      L9 288 Z" filter="url(#mnc)"/>
+    <rect class="vinheta" x="8" y="6" width="604" height="988" rx="20" fill="url(#vinheta)"/>
+
+    ${serra(330, 150, 4, 1)}
+    ${serra(60, 470, 3, .82)}
+    ${serra(300, 500, 2, .7)}
+    ${serra(96, 902, 3, .9)}
+    ${serra(392, 918, 4, .8)}
+
+    <g class="trilha">
+      <path d="M238 244 C276 276 300 300 322 322 C352 350 384 356 418 360"/>
+      <path d="M322 322 C300 380 268 420 248 470 C230 516 214 556 196 586"/>
+      <path d="M232 664 C288 692 350 712 430 730"/>
+      <path d="M418 386 C430 460 428 540 452 660"/>
+    </g>
+
+    ${ruina}
+    ${lugarNoMapa('acampamento', 162, 196, 230, 130, acampamento,
+       petChamando ? {texto:'!', alerta:true} : null)}
+    ${lugarNoMapa('forjador', 452, 348, 220, 140, forjador, null)}
+    ${lugarNoMapa('masmorras', 158, 612, 230, 130, masmorras, {texto:String(G.ofertas.length)})}
+    ${lugarNoMapa('santuario', 490, 726, 190, 120, santuario, null)}
+
+    ${rosa(542, 96, 30)}
+    ${rosa(72, 806, 24)}
+  </svg>`;
+}
+
 function cenaDoAcampamento(lugarId){
   const l = LUGAR[lugarId || 'acampamento'];
   const h = new Date().getHours();
@@ -5205,19 +5481,15 @@ function render(){
        fica atrás do mapa. */
     if(lugar === 'mapa'){
       mid.innerHTML = `
-        <div class="hub">
-          <p class="hub-title">🗺️ Para onde?</p>
-          <div class="lugares">
-            ${LUGARES.map(l => `
-              <button class="lugar" data-lugar="${l.id}" style="--l1:${l.c1};--l2:${l.c2}">
-                <span class="lugar-ico">${l.icone}</span>
-                <span class="lugar-txt"><b>${l.nome}</b><small>${l.desc}</small></span>
-                ${l.id === 'masmorras' ? `<span class="lugar-selo">${G.ofertas.length}</span>` : ''}
-                ${l.id === 'acampamento' && pet() && buscaPronta() ? '<span class="lugar-selo alerta">!</span>' : ''}
-              </button>`).join('')}
-          </div>
+        <div class="hub mapaCaixa">
+          ${mapaDoMundo()}
         </div>`;
-      $$('[data-lugar]').forEach(b => b.onclick = () => irPara(b.dataset.lugar));
+      /* Teclado também abre o lugar: o <g> não é botão de verdade, então
+         Enter e espaço precisam ser ligados na mão. */
+      $$('[data-lugar]').forEach(b => {
+        b.onclick = () => irPara(b.dataset.lugar);
+        b.onkeydown = e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); irPara(b.dataset.lugar); } };
+      });
       acts.innerHTML = `
         <button class="act wide" data-act="voltacamp"><span class="act-t">⛺ Voltar ao acampamento</span></button>`;
 
@@ -5836,7 +6108,7 @@ $('#novoAvancar').onclick = () => {
 };
 /* Sobe junto com o arquivo: se a home mostra outra data, o aparelho ainda
    está servindo a versão velha do cache. */
-const VERSAO = 'v26 · 20/08 · armas e runas';
+const VERSAO = 'v27 · 20/08 · mapa em pergaminho';
 $('#lbVersao').textContent = VERSAO;
 $('#btnStart').onclick = () => {
   /* Na primeira vez o jogo começa e pronto: escolher classe e distribuir
