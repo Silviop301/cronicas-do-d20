@@ -1994,7 +1994,761 @@ ${gHach(
 <path d="M48 48C54 54 66 54 72 48 70 58 50 58 48 48 Z" fill="${MASSA}" stroke="${OSSO}" stroke-width="2"/>
 <g fill="${OSSO}"><path d="M52 50 L54 58 L57 51 Z"/><path d="M63 51 L66 58 L68 50 Z"/></g>
 ${gOlho(52, 40, 4)}
-${gOlho(68, 40, 4)}`}
+${gOlho(68, 40, 4)}`},
+
+/* ---- Deserto de Sal ---- */
+lagarto:{nome:'Lagarto de Sal', svg:`
+${gL("M96 76C110 78 118 68 116 56 114 46 106 40 98 44")}
+<g class="contorno">
+  ${gT("M40 54 L48 40 L56 54 L66 38 L74 54 L84 40 L90 58 Z")}
+  ${gT("M4 72 L14 60 L34 52 L58 50C78 50 94 58 98 70 102 84 92 94 72 94 L36 92C22 90 16 86 12 82 L2 78 Z")}
+  ${gT("M30 90 L24 106 L34 106 L42 92 Z")}
+  ${gT("M72 92 L70 106 L80 106 L84 92 Z")}
+</g>
+${gHach(
+  gH("M42 62 44 72M54 60 56 70M66 60 68 70M78 62 79 72"),
+  gH("M40 80 42 88M54 80 54 88M68 80 68 88M82 80 81 88"),
+  gH("M16 66 20 72M104 82 110 80M112 62 118 58")
+)}
+<path d="M4 74 L-8 70 L-2 76 L-8 82 L6 79" fill="none" stroke="${OSSO}" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M6 78 L26 82 L44 84" fill="none" stroke="${OSSO}" stroke-width="1.6" stroke-linecap="round"/>
+${gOlhoFenda("M18 64 L32 60 L33 68 L19 70 Z", "M23 63 L30 62 L30 68 L24 68 Z")}`},
+
+abutre:{nome:'Abutre Faminto', svg:`
+<g class="contorno">
+  ${gT("M74 96 L108 108 L84 112 Z")}
+  ${gT("M46 44C64 38 84 50 90 70 96 90 84 108 62 110 42 112 28 98 28 78 28 62 36 50 46 44 Z")}
+  ${gT("M50 62C66 58 80 68 84 84 76 98 58 100 48 90 40 82 42 68 50 62 Z")}
+  ${gT("M46 46C40 34 40 24 46 18")}
+  ${gT("M30 76C24 62 26 46 36 34")}
+</g>
+<path d="M40 30C34 22 36 12 46 10 56 8 64 14 62 24 60 32 50 36 42 34 Z"
+  fill="${MASSA}" stroke="${OSSO}" stroke-width="2.6" stroke-linejoin="round"/>
+${gHach(
+  gH("M56 68 68 72M58 78 72 82M60 88 72 90"),
+  gH("M36 60 44 58M34 74 42 72M38 88 46 86"),
+  gH("M48 18 52 26M56 16 58 24")
+)}
+<path d="M40 20 L18 24 L26 30 L16 36 L40 32 Z" fill="${MASSA}" stroke="${OSSO}" stroke-width="2.4" stroke-linejoin="round"/>
+<path d="M20 25 L36 23" fill="none" stroke="${OSSO}" stroke-width="1.3"/>
+${gL("M52 108 L50 118M70 108 L72 118")}
+${gOlho(50, 22, 4)}`},
+
+escorpiao:{nome:'Escorpião Dourado', svg:`
+${gL("M44 76 L20 68 L8 76M44 84 L18 84 L6 94M48 92 L24 100 L14 112M76 76 L100 68 L112 76M76 84 L102 84 L114 94M72 92 L96 100 L106 112")}
+<g class="contorno">
+  ${gT("M60 102C50 102 44 94 44 84 44 68 50 58 60 58 70 58 76 68 76 84 76 94 70 102 60 102 Z")}
+  ${gT("M48 60C40 60 34 54 34 48 34 42 40 38 48 38 56 38 62 42 62 48 62 54 56 60 48 60 Z")}
+  ${gT("M76 100C88 104 96 96 94 84 92 72 82 64 72 64")}
+  ${gT("M94 66 L106 56 L102 72 Z")}
+  ${gT("M40 44 L26 34 L14 36")}
+  ${gT("M56 40 L64 26 L76 22")}
+  ${gT("M22 40 L6 30 L2 42 L16 46 Z")}
+  ${gT("M76 26 L92 14 L98 26 L84 34 Z")}
+</g>
+${gHach(
+  gH("M50 66 70 66M48 76 72 76M48 86 72 86M50 96 70 96"),
+  gH("M40 46 56 46"),
+  gH("M80 72 88 76M86 82 94 84M88 92 96 92"),
+  gH("M8 36 16 42M84 22 92 26")
+)}
+${gOlho(52, 48, 3.6)}
+${gOlho(44, 48, 3.6)}`},
+
+besouro:{nome:'Besouro de Bronze', svg:`
+${gL("M42 68 L18 58 L8 66M42 80 L16 80 L6 92M46 92 L24 100 L16 112M78 68 L102 58 L112 66M78 80 L104 80 L114 92M74 92 L96 100 L104 112")}
+<g class="contorno">
+  ${gT("M60 108C44 108 36 94 36 74 36 54 46 42 60 42 74 42 84 54 84 74 84 94 76 108 60 108 Z")}
+  ${gT("M52 44C46 44 40 38 40 32 40 26 46 22 54 22 62 22 68 26 68 32 68 38 60 44 52 44 Z")}
+  ${gT("M54 24 L44 6 L58 16 Z")}
+</g>
+${gHach(
+  gH("M60 46 60 106"),
+  gH("M46 58 54 56M44 72 54 70M46 86 56 84M50 98 58 96"),
+  gH("M74 58 66 56M76 72 66 70M74 86 64 84M70 98 62 96"),
+  gH("M46 32 52 36M62 30 66 34")
+)}
+${gOlho(48, 32, 3.4)}
+${gOlho(60, 32, 3.4)}`},
+
+camelo:{nome:'Camelo Enfurecido', svg:`
+<path d="M92 110C86 86 78 66 66 50" fill="none" stroke="${OSSO}" stroke-width="21" stroke-linecap="round"/>
+<path d="M92 110C86 86 78 66 66 50" fill="none" stroke="${MASSA}" stroke-width="15.5" stroke-linecap="round"/>
+<g class="contorno">
+  ${gT("M66 118C64 94 76 80 96 78 114 80 120 96 118 118 Z")}
+  ${gT("M56 28 L52 12 L64 24 Z")}
+  ${gT("M68 32 L74 16 L78 34 Z")}
+  ${gT("M18 48 L24 34 L40 26 L58 28 L70 38 L70 52 L58 62 L36 64 L22 58 Z")}
+  ${gT("M18 48 L4 50 L2 60 L14 62 L22 58 Z")}
+</g>
+${gHach(
+  gH("M30 38 32 46M42 34 44 42M56 36 57 44"),
+  gH("M28 54 30 60M42 54 42 60M56 54 55 60"),
+  gH("M74 88 90 84M72 100 92 96M76 112 98 108M110 88 116 86M108 102 118 100")
+)}
+<path d="M4 56 L-6 54 L-2 60 L-8 64 L6 62" fill="none" stroke="${OSSO}" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M8 58 L26 60 L44 60" fill="none" stroke="${OSSO}" stroke-width="1.6" stroke-linecap="round"/>
+${gOlho(42, 42, 4.2)}`},
+
+bandido:{nome:'Bandido Mascarado', svg:`
+<g class="contorno">
+  ${gT("M20 118C18 98 30 84 50 78 L74 80C92 88 100 102 100 118 Z")}
+  ${gT("M36 82C28 68 28 46 38 34 48 22 70 22 80 34 90 46 88 68 80 82 Z")}
+  ${gT("M34 44C34 26 50 16 60 16 70 16 86 26 86 44 78 40 66 38 58 38 48 38 40 40 34 44 Z")}
+  ${gT("M34 54C46 50 72 50 86 54 86 64 82 70 76 72 62 76 52 74 42 70 36 67 34 60 34 54 Z")}
+</g>
+${gHach(
+  gH("M42 30 46 38M56 26 58 34M72 30 74 38"),
+  gH("M40 90 48 86M36 102 46 98M40 112 52 108M84 92 76 88M88 104 78 100M84 114 74 110"),
+  gH("M44 66 52 64M66 66 76 64")
+)}
+<path d="M38 82 L52 88 L66 86 L80 80" fill="none" stroke="${OSSO}" stroke-width="1.6" stroke-linecap="round"/>
+${gOlhoFenda("M40 56 L54 52 L55 61 L41 63 Z", "M45 55 L52 54 L52 60 L46 60 Z")}
+${gOlhoFenda("M80 56 L66 52 L65 61 L79 63 Z", "M75 55 L68 54 L68 60 L74 60 Z")}`},
+
+genio:{nome:'Gênio Menor', svg:`
+<path d="M56 84C44 92 46 104 56 106 66 108 72 100 64 96 56 92 58 84 68 84 80 84 84 94 76 102"
+  fill="none" stroke="${OSSO}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<g class="contorno">
+  ${gT("M40 88C34 74 40 62 54 58 L74 60C86 66 90 78 86 90 74 94 52 94 40 88 Z")}
+  ${gT("M52 62C42 62 34 52 34 40 34 26 44 16 60 16 76 16 86 26 86 40 86 52 78 62 66 62 Z")}
+  ${gT("M30 74 L44 68 L48 78 L34 84 Z")}
+  ${gT("M90 74 L76 68 L72 78 L86 84 Z")}
+</g>
+${gHach(
+  gH("M42 26 46 34M58 20 60 28M74 26 76 34"),
+  gH("M46 70 54 68M68 70 78 68"),
+  gH("M52 82 70 80")
+)}
+<path d="M48 62 L52 70 L56 62M60 62 L64 71 L68 62M72 62 L76 69 L80 62"
+  fill="none" stroke="${OSSO}" stroke-width="1.6" stroke-linejoin="round"/>
+${gOlhoFenda("M44 38 L58 34 L59 43 L45 45 Z", "M49 37 L56 36 L56 42 L50 42 Z")}
+${gOlhoFenda("M78 38 L64 34 L63 43 L77 45 Z", "M73 37 L66 36 L66 42 L72 42 Z")}`},
+
+mumia:{nome:'Múmia Ressecada', svg:`
+<g class="contorno">
+  ${gT("M22 118C20 98 32 84 52 78 L74 80C92 88 100 102 100 118 Z")}
+  ${gT("M36 82C26 66 26 42 38 30 50 18 72 18 82 30 92 42 90 66 80 82 Z")}
+</g>
+${gHach(
+  gH("M34 40 88 34M32 50 90 46M32 62 88 58M34 74 86 70"),
+  gH("M28 92 96 88M26 104 98 100M30 114 94 110")
+)}
+<path d="M30 46C44 40 76 40 90 46" fill="none" stroke="${OSSO}" stroke-width="1.8" stroke-linecap="round"/>
+<path d="M30 66C46 60 74 60 90 66" fill="none" stroke="${OSSO}" stroke-width="1.8" stroke-linecap="round"/>
+<path d="M84 84 L102 96 L96 110 L88 96 Z" fill="${MASSA}" stroke="${OSSO}" stroke-width="2.2" stroke-linejoin="round"/>
+<path d="M44 74C54 78 68 78 78 74 74 82 48 82 44 74 Z" fill="${BREU}" stroke="${OSSO}" stroke-width="1.8"/>
+${gOlhoFenda("M40 54 L54 51 L55 59 L41 61 Z", "M45 54 L52 53 L52 58 L46 58 Z")}
+${gOlhoFenda("M80 54 L66 51 L65 59 L79 61 Z", "M75 54 L68 53 L68 58 L74 58 Z")}`},
+
+verme:{nome:'Verme das Areias', svg:`
+${gL("M4 110C24 108 34 100 40 88M116 110C96 108 86 100 80 88")}
+<g class="contorno">
+  ${gT("M36 116C30 96 30 66 40 46 48 30 72 30 80 46 90 66 90 96 84 116 Z")}
+  ${gT("M60 74C44 74 32 62 32 48 32 32 44 22 60 22 76 22 88 32 88 48 88 62 76 74 60 74 Z")}
+  ${gT("M60 62C50 62 44 55 44 48 44 40 50 34 60 34 70 34 76 40 76 48 76 55 70 62 60 62 Z")}
+</g>
+${gHach(
+  gH("M34 84 86 82M34 98 86 96M38 110 82 108"),
+  gH("M40 60 46 66M74 62 80 66")
+)}
+<g fill="${OSSO}">
+  <path d="M60 22 L56 34 L64 34 Z"/><path d="M78 30 L68 38 L74 42 Z"/><path d="M88 48 L76 46 L78 54 Z"/>
+  <path d="M78 66 L70 58 L66 64 Z"/><path d="M60 74 L64 62 L56 62 Z"/><path d="M42 66 L52 58 L46 54 Z"/>
+  <path d="M32 48 L44 50 L42 42 Z"/><path d="M42 30 L52 38 L46 42 Z"/>
+</g>
+<circle cx="60" cy="48" r="7" fill="${AMBAR}" stroke="${OSSO}" stroke-width="1.6"/>
+<circle cx="60" cy="48" r="3" fill="${BREU}"/>`},
+
+bronze:{nome:'Colosso de Bronze', svg:`
+<g class="contorno">
+  ${gT("M12 118C10 96 26 82 48 76 L76 78C98 84 110 98 110 118 Z")}
+  ${gT("M34 80 L30 40 L60 24 L90 40 L86 80 Z")}
+  ${gT("M60 24 L52 8 L60 12 L68 8 Z")}
+  ${gT("M34 56 L30 40 L44 46 Z")}
+  ${gT("M86 56 L90 40 L76 46 Z")}
+</g>
+${gHach(
+  gH("M38 46 44 50M52 40 54 46M68 40 68 46M80 46 76 50"),
+  gH("M36 88 50 84M32 100 48 96M36 112 54 108M88 90 74 86M92 102 76 98M88 114 70 110"),
+  gH("M44 70 56 68M66 70 78 68")
+)}
+<path d="M40 78C50 84 72 84 82 78" fill="none" stroke="${OSSO}" stroke-width="1.8" stroke-linecap="round"/>
+<path d="M44 66 L78 66" fill="none" stroke="${OSSO}" stroke-width="1.6"/>
+${gOlhoFenda("M38 54 L54 50 L55 60 L39 62 Z", "M43 53 L52 52 L52 59 L44 59 Z")}
+${gOlhoFenda("M82 54 L66 50 L65 60 L81 62 Z", "M77 53 L68 52 L68 59 L76 59 Z")}`},
+
+/* ---- Campos de Gelo ---- */
+pinguim:{nome:'Pinguim Berserker', svg:`
+<g class="contorno">
+  ${gT("M22 92 L4 100 L20 104 Z")}
+  ${gT("M98 92 L116 100 L100 104 Z")}
+  ${gT("M60 112C40 112 28 96 28 74 28 50 42 32 60 32 78 32 92 50 92 74 92 96 80 112 60 112 Z")}
+  ${gT("M60 40C48 40 40 30 40 20 40 10 48 4 60 4 72 4 80 10 80 20 80 30 72 40 60 40 Z")}
+  ${gT("M60 54C70 54 78 66 78 82 78 96 70 106 60 106 50 106 42 96 42 82 42 66 50 54 60 54 Z")}
+</g>
+${gHach(
+  gH("M34 60 40 64M32 76 40 78M34 92 42 92M86 60 80 64M88 76 80 78M86 92 78 92"),
+  gH("M50 66 70 66M48 78 72 78M50 90 70 90"),
+  gH("M48 14 52 20M68 14 70 20")
+)}
+<path d="M40 22 L22 26 L34 32 L44 30 Z" fill="${MASSA}" stroke="${OSSO}" stroke-width="2.4" stroke-linejoin="round"/>
+${gL("M50 110 L46 120M70 110 L74 120")}
+${gOlho(52, 20, 4)}
+${gOlho(70, 20, 4)}`},
+
+foca:{nome:'Foca Colossal', svg:`
+<g class="contorno">
+  ${gT("M100 74 L118 60 L116 84 Z")}
+  ${gT("M32 96C16 92 8 78 12 64 16 48 34 38 60 38 86 38 104 50 106 68 108 88 92 100 66 100 Z")}
+  ${gT("M22 56C14 44 16 30 26 24 38 17 54 22 58 34 61 44 54 54 42 58 Z")}
+  ${gT("M46 92 L38 108 L52 106 L58 94 Z")}
+  ${gT("M78 92 L82 108 L94 104 L88 92 Z")}
+</g>
+${gHach(
+  gH("M38 66 40 76M52 62 52 74M66 62 66 74M80 64 79 76M92 70 90 80"),
+  gH("M44 84 46 92M60 82 60 92M76 84 75 92"),
+  gH("M32 30 36 38M46 28 48 36")
+)}
+<path d="M20 44 L6 46 L14 52 L4 56 L22 56" fill="none" stroke="${OSSO}" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M18 50C22 46 30 46 34 50" fill="none" stroke="${OSSO}" stroke-width="1.6" stroke-linecap="round"/>
+<g fill="${OSSO}"><path d="M24 54 L26 63 L30 55 Z"/><path d="M33 55 L36 64 L39 56 Z"/></g>
+${gOlho(38, 34, 4.2)}`},
+
+aranhagelo:{nome:'Aranha de Gelo', svg:`
+${gL("M46 58 L26 30 L12 22M46 62 L18 54 L2 58M48 74 L20 82 L6 96M52 84 L36 108 L28 120M74 58 L94 30 L108 22M74 62 L102 54 L118 58M72 74 L100 82 L114 96M68 84 L84 108 L92 120")}
+<g class="contorno">
+  ${gT("M60 68C78 68 92 82 92 96 92 110 78 118 60 118 42 118 28 110 28 96 28 82 42 68 60 68 Z")}
+  ${gT("M60 36C74 36 84 46 84 58 84 70 74 78 60 78 46 78 36 70 36 58 36 46 46 36 60 36 Z")}
+  ${gT("M60 36 L52 14 L60 24 L68 14 Z")}
+</g>
+${gHach(
+  gH("M60 82 60 116M46 86 52 96M74 86 68 96M40 100 52 104M80 100 68 104"),
+  gH("M46 46 50 52M72 46 68 52"),
+  gH("M16 26 22 34M104 26 98 34")
+)}
+<g fill="${OSSO}"><path d="M46 64 L52 68 L46 72 L42 68 Z"/><path d="M74 64 L78 68 L74 72 L68 68 Z"/></g>
+${gOlho(50, 50, 4)}
+${gOlho(70, 50, 4)}`},
+
+lobobranco:{nome:'Lobo Branco', svg:`
+<g class="contorno">
+  ${gT("M74 26 L82 6 L95 30 L82 39 Z")}
+  ${gT("M80 54 L95 62 L86 70 L104 78 L93 86 L110 96 L98 102 L108 116 L92 105 L84 116 L70 104 L62 116 L48 103 L40 116 L28 102 L24 90 L36 88 L28 78 L42 76 L36 68 L50 70 Z")}
+  ${gT("M55 30 L51 5 L72 24 Z")}
+  ${gT("M10 62 L18 54 L36 48 L46 44 L54 30 L72 28 L84 42 L80 60 L64 74 L40 72 L20 68 Z")}
+</g>
+${gHach(
+  gH("M22 52 24 58M26 50 28 56M30 49 32 55M35 47 37 53M40 46 42 52M45 45 46 51"),
+  gH("M57 32 60 38M63 31 66 37M69 31 71 37M75 34 77 40"),
+  gH("M64 44 70 48M66 52 73 56M68 60 73 63"),
+  gH("M58 14 62 22M63 17 66 24M80 14 82 22M85 17 86 25"),
+  gH("M56 78 50 92M64 78 62 94M72 80 74 95M80 84 84 97M88 90 94 100"),
+  gH("M44 82 38 96M52 88 48 104M60 90 58 106M70 92 71 108M80 96 82 110"),
+  gH("M32 60 34 66M38 58 40 64")
+)}
+<path d="M10 62 L18 54 L24 61 L16 66 Z" fill="${OSSO}"/>
+<path d="M10 64 L24 69 L42 71 L62 73" fill="none" stroke="${OSSO}" stroke-width="1.9" stroke-linecap="round"/>
+<g fill="${OSSO}"><path d="M20 67 L22 78 L26 68 Z"/><path d="M30 69 L33 81 L37 70 Z"/></g>
+<path d="M46 40 L57 35 L61 40 L51 45 Z" fill="#bfe6ff" stroke="${OSSO}" stroke-width="1.6" stroke-linejoin="round"/>
+<path d="M51 38 L57 37 L56 42 L52 42 Z" fill="${BREU}"/>`},
+
+ursoglacial:{nome:'Urso Glacial', svg:`
+<g class="contorno">
+  ${gT("M54 18C58 8 72 8 76 18 80 28 74 36 66 36 58 36 50 28 54 18 Z")}
+  ${gT("M88 20C92 11 104 11 108 20 112 29 106 37 98 37 90 37 84 29 88 20 Z")}
+  ${gT("M10 66 L16 52 L32 42 L52 36 L62 24 L88 22 L104 40 L100 68 L84 84 L46 86 L20 76 Z")}
+</g>
+${gHach(
+  gH("M26 52 28 60M34 48 36 56M42 45 44 53M52 42 53 50"),
+  gH("M60 20 62 28M70 18 72 26M94 20 96 28M102 22 103 30"),
+  gH("M66 34 68 42M78 30 80 38M90 34 91 42"),
+  gH("M84 52 94 55M86 62 96 64M82 72 90 73")
+)}
+<path d="M10 66 L16 52 L26 58 L18 72 Z" fill="${OSSO}"/>
+<path d="M11 70C22 78 40 82 58 80 52 88 26 86 14 78 10 75 10 72 11 70 Z" fill="${MASSA}" stroke="${OSSO}" stroke-width="2"/>
+<g fill="${OSSO}"><path d="M20 76 L23 87 L28 77 Z"/><path d="M34 79 L38 90 L42 79 Z"/></g>
+<circle cx="46" cy="50" r="4.6" fill="#bfe6ff" stroke="${OSSO}" stroke-width="1.5"/>
+<circle cx="46.5" cy="50.4" r="2" fill="${BREU}"/>`},
+
+coruja:{nome:'Coruja da Nevasca', svg:`
+<g class="contorno">
+  ${gT("M28 74 L6 60 L14 88 Z")}
+  ${gT("M92 74 L114 60 L106 88 Z")}
+  ${gT("M60 118C40 118 28 100 28 76 28 52 42 34 60 34 78 34 92 52 92 76 92 100 80 118 60 118 Z")}
+  ${gT("M60 46C42 46 30 34 30 22 30 10 42 2 60 2 78 2 90 10 90 22 90 34 78 46 60 46 Z")}
+  ${gT("M34 10 L30 22 L44 16 Z")}
+  ${gT("M86 10 L90 22 L76 16 Z")}
+</g>
+${gHach(
+  gH("M40 58 50 60M38 74 48 76M40 90 50 92M44 106 54 106"),
+  gH("M80 58 70 60M82 74 72 76M80 90 70 92M76 106 66 106"),
+  gH("M60 52 60 114")
+)}
+<path d="M60 26 L52 34 L60 38 L68 34 Z" fill="${MASSA}" stroke="${OSSO}" stroke-width="2.2" stroke-linejoin="round"/>
+${gL("M50 116 L46 122M70 116 L74 122")}
+<circle cx="45" cy="22" r="10" fill="none" stroke="${OSSO}" stroke-width="1.8"/>
+<circle cx="75" cy="22" r="10" fill="none" stroke="${OSSO}" stroke-width="1.8"/>
+${gOlho(45, 22, 5.4)}
+${gOlho(75, 22, 5.4)}`},
+
+alce:{nome:'Alce Ancião', svg:`
+<g class="contorno">
+  ${gT("M46 34 L34 12 L18 16 L26 4 L10 2 L22 22 L14 32 L34 28 Z")}
+  ${gT("M76 34 L88 12 L104 16 L96 4 L112 2 L100 22 L108 32 L88 28 Z")}
+  ${gT("M50 118C46 96 52 80 66 72 L88 76C102 86 106 102 104 118 Z")}
+  ${gT("M40 40 L48 30 L62 28 L78 32 L84 44 L82 62 L74 78 L54 78 L44 62 Z")}
+  ${gT("M44 62 L28 72 L30 86 L46 82 L54 78 Z")}
+</g>
+${gHach(
+  gH("M52 40 54 48M64 36 66 44M76 40 77 48"),
+  gH("M52 56 56 62M68 54 70 62"),
+  gH("M58 88 74 84M56 100 78 96M60 112 84 108M96 92 102 90M94 106 104 104"),
+  gH("M22 12 28 18M98 12 92 18")
+)}
+<path d="M32 74C38 70 46 70 50 74" fill="none" stroke="${OSSO}" stroke-width="1.6"/>
+<g fill="${OSSO}"><circle cx="34" cy="79" r="2.6"/><circle cx="42" cy="78" r="2.6"/></g>
+${gOlho(56, 46, 4.2)}
+${gOlho(74, 46, 4.2)}`},
+
+espectro:{nome:'Espectro do Poço', svg:`
+<path d="M46 96C36 106 40 118 52 116 62 114 62 104 54 102 46 100 48 92 58 92 70 92 74 102 66 110"
+  fill="none" stroke="${OSSO}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<g class="contorno">
+  ${gT("M32 96C26 78 32 60 48 52 L74 56C88 64 94 82 90 98 76 104 46 104 32 96 Z")}
+  ${gT("M60 62C46 62 36 50 36 34 36 18 46 8 60 8 74 8 84 18 84 34 84 50 74 62 60 62 Z")}
+  ${gT("M26 74 L42 66 L48 78 L30 86 Z")}
+  ${gT("M94 74 L78 66 L72 78 L90 86 Z")}
+</g>
+${gHach(
+  gH("M44 18 48 26M58 12 60 20M74 18 76 26"),
+  gH("M42 70 52 68M70 70 80 68"),
+  gH("M46 88 74 86")
+)}
+<path d="M60 46C66 46 68 52 66 58 64 64 60 68 56 68 52 68 50 62 52 54 54 48 56 46 60 46 Z" fill="${BREU}" stroke="${OSSO}" stroke-width="1.8"/>
+${gOlhoFenda("M42 34 L58 30 L59 40 L43 42 Z", "M47 33 L56 32 L56 39 L48 39 Z")}
+${gOlhoFenda("M78 34 L62 30 L61 40 L77 42 Z", "M73 33 L64 32 L64 39 L72 39 Z")}`},
+
+cristalino:{nome:'Golem Cristalino', svg:`
+<g class="contorno">
+  ${gT("M60 4 L44 30 L60 46 L76 30 Z")}
+  ${gT("M28 44 L14 68 L28 84 L40 62 Z")}
+  ${gT("M92 44 L106 68 L92 84 L80 62 Z")}
+  ${gT("M60 30 L34 58 L38 100 L60 118 L82 100 L86 58 Z")}
+</g>
+${gHach(
+  gH("M60 40 60 114"),
+  gH("M42 62 58 70M42 82 58 90M78 62 62 70M78 82 62 90"),
+  gH("M52 16 58 28M68 16 62 28"),
+  gH("M22 56 28 66M98 56 92 66")
+)}
+<path d="M34 58 L60 66 L86 58" fill="none" stroke="${OSSO}" stroke-width="1.8"/>
+<path d="M60 88C66 88 68 94 66 100 64 106 60 110 56 110 52 110 50 104 52 96 54 90 56 88 60 88 Z" fill="${BREU}" stroke="${OSSO}" stroke-width="1.8"/>
+${gOlhoFenda("M40 70 L56 66 L57 78 L41 80 Z", "M45 70 L54 69 L54 77 L46 77 Z")}
+${gOlhoFenda("M80 70 L64 66 L63 78 L79 80 Z", "M75 70 L66 69 L66 77 L74 77 Z")}`},
+
+gigante:{nome:'Gigante de Gelo', svg:`
+<g class="contorno">
+  ${gT("M40 34 L26 8 L44 24 Z")}
+  ${gT("M80 34 L94 8 L76 24 Z")}
+  ${gT("M6 118C4 96 20 80 44 74 L78 76C102 82 116 98 116 118 Z")}
+  ${gT("M32 78 L26 40 L46 20 L74 20 L94 40 L88 78 Z")}
+  ${gT("M0 92 L18 86 L26 102 L8 110 Z")}
+  ${gT("M120 92 L102 86 L94 102 L112 110 Z")}
+</g>
+${gHach(
+  gH("M36 30 42 38M56 24 58 32M76 28 78 36"),
+  gH("M34 60 46 56M74 60 86 56"),
+  gH("M28 92 46 88M24 104 48 100M28 116 54 112M92 94 74 90M96 106 72 102M92 118 68 114")
+)}
+<path d="M36 62 L84 62" fill="none" stroke="${OSSO}" stroke-width="1.6"/>
+<path d="M40 68C50 78 70 78 80 68 76 84 44 84 40 68 Z" fill="${BREU}" stroke="${OSSO}" stroke-width="2"/>
+<g fill="${OSSO}">
+  <path d="M46 72 L48 82 L53 73 Z"/><path d="M58 74 L60 84 L64 74 Z"/><path d="M69 73 L72 82 L75 72 Z"/>
+</g>
+${gOlhoFenda("M34 46 L54 42 L55 54 L35 56 Z", "M40 45 L52 44 L52 53 L41 53 Z")}
+${gOlhoFenda("M86 46 L66 42 L65 54 L85 56 Z", "M80 45 L68 44 L68 53 L79 53 Z")}`},
+
+/* ---- A Masmorra ---- */
+ratorei:{nome:'Rato-Rei', svg:`
+${gL("M88 84C104 82 112 62 104 48 99 39 91 36 85 40")}
+<g class="contorno">
+  ${gT("M64 33C68 26 77 26 80 33 84 40 79 46 72 46 65 46 60 40 64 33 Z")}
+  ${gT("M34 96 L29 108 L36 111 L44 100 Z")}
+  ${gT("M72 98 L72 110 L82 112 L86 99 Z")}
+  ${gT("M5 68 L14 58 L26 51 L42 44C58 36 78 40 89 52 100 65 96 86 80 95 66 103 46 102 34 94 25 88 20 79 18 72 L10 71 Z")}
+  ${gT("M48 38C53 30 63 30 67 38 71 46 66 53 58 53 50 53 44 46 48 38 Z")}
+  ${gT("M22 44 L18 28 L28 36 L34 22 L40 34 L48 24 L48 40 Z")}
+</g>
+${gHach(
+  gH("M52 36 54 43M60 35 62 42M69 32 71 38M76 32 77 38"),
+  gH("M52 48 53 56M62 48 62 56M72 51 71 59M82 57 79 64M89 66 85 72"),
+  gH("M32 66 30 76M42 70 41 80M52 72 52 83M62 73 63 84M72 74 74 84M82 76 85 84"),
+  gH("M92 80 99 76M101 68 105 62")
+)}
+<path d="M12 74 L16 83 L21 74 Z" fill="${OSSO}"/><path d="M21 74 L26 83 L30 74 Z" fill="${OSSO}"/>
+<path d="M5 68 L14 58 L18 65 L11 73 Z" fill="${OSSO}"/>
+<g stroke="${OSSO}" stroke-width="1.15" stroke-linecap="round" opacity=".9">
+  <path d="M8 61 -2 53"/><path d="M4 68 -6 68"/><path d="M8 75 0 83"/></g>
+<path d="M6 70 L16 75 L28 77" fill="none" stroke="${OSSO}" stroke-width="1.7" stroke-linecap="round"/>
+${gOlho(30, 59, 4.6)}`},
+
+aranhacripta:{nome:'Aranha da Cripta', svg:`
+${gL("M46 58 L22 32 L8 24M46 64 L16 56 L0 60M48 76 L18 84 L4 98M52 86 L34 110 L26 120M74 58 L98 32 L112 24M74 64 L104 56 L120 60M72 76 L102 84 L116 98M68 86 L86 110 L94 120")}
+<g class="contorno">
+  ${gT("M60 70C80 70 94 84 94 98 94 112 80 120 60 120 40 120 26 112 26 98 26 84 40 70 60 70 Z")}
+  ${gT("M60 34C76 34 86 44 86 58 86 72 76 80 60 80 44 80 34 72 34 58 34 44 44 34 60 34 Z")}
+</g>
+${gHach(
+  gH("M60 84 60 118M44 88 52 98M76 88 68 98M38 102 52 106M82 102 68 106"),
+  gH("M44 46 48 52M74 46 70 52")
+)}
+<path d="M46 84 L54 96 L60 86 L66 96 L74 84" fill="none" stroke="${OSSO}" stroke-width="1.6"/>
+<g fill="${OSSO}"><path d="M46 66 L52 70 L46 74 L42 70 Z"/><path d="M74 66 L78 70 L74 74 L68 70 Z"/></g>
+${gOlho(48, 50, 4)}
+${gOlho(72, 50, 4)}
+${gOlho(56, 42, 2.8)}
+${gOlho(66, 42, 2.8)}`},
+
+esqueleto:{nome:'Esqueleto', svg:`
+<g class="contorno">
+  ${gT("M30 118 L34 86 L48 78 L72 78 L86 86 L90 118 Z")}
+  ${gT("M60 82C42 82 30 68 30 48 30 28 42 14 60 14 78 14 90 28 90 48 90 68 78 82 60 82 Z")}
+</g>
+${gHach(
+  gH("M40 26 44 34M58 18 60 26M76 26 78 34"),
+  gH("M36 92 84 90M34 102 86 100M34 112 86 110")
+)}
+<path d="M60 54 L52 68 L68 68 Z" fill="${BREU}" stroke="${OSSO}" stroke-width="1.8" stroke-linejoin="round"/>
+<path d="M42 72 L78 72M46 72 L46 80M54 72 L54 80M66 72 L66 80M74 72 L74 80"
+  fill="none" stroke="${OSSO}" stroke-width="1.8" stroke-linecap="round"/>
+<path d="M60 84 L60 118M44 92 L76 92M42 104 L78 104" fill="none" stroke="${OSSO}" stroke-width="2"/>
+<circle cx="44" cy="46" r="10" fill="${BREU}" stroke="${OSSO}" stroke-width="2"/>
+<circle cx="76" cy="46" r="10" fill="${BREU}" stroke="${OSSO}" stroke-width="2"/>
+${gOlho(44, 46, 4.2)}
+${gOlho(76, 46, 4.2)}`},
+
+cadaver:{nome:'Cadáver Andante', svg:`
+<g class="contorno">
+  ${gT("M18 118C16 96 30 82 52 76 L76 78C96 86 104 100 104 118 Z")}
+  ${gT("M38 80C28 66 28 42 40 30 52 18 72 18 82 30 92 42 90 66 80 80 Z")}
+  ${gT("M88 84 L110 82 L104 96 L86 92 Z")}
+</g>
+${gHach(
+  gH("M42 32 46 40M58 26 60 34M74 30 76 38"),
+  gH("M34 92 46 88M30 104 44 100M34 114 50 110M88 94 76 90M92 106 78 102")
+)}
+<path d="M34 46C46 40 74 40 88 46" fill="none" stroke="${OSSO}" stroke-width="1.6" stroke-linecap="round"/>
+<path d="M42 68C52 76 70 76 80 68 76 82 46 82 42 68 Z" fill="${BREU}" stroke="${OSSO}" stroke-width="1.9"/>
+<g fill="${OSSO}"><path d="M48 72 L50 80 L54 73 Z"/><path d="M60 74 L62 82 L66 74 Z"/><path d="M70 72 L73 80 L76 71 Z"/></g>
+<path d="M52 84 L48 100 L56 96" fill="none" stroke="${OSSO}" stroke-width="1.6" stroke-linecap="round"/>
+${gOlho(46, 52, 4.4)}
+${gOlho(76, 52, 4.4)}`},
+
+sombra:{nome:'Sombra Errante', svg:`
+<g class="contorno">
+  ${gT("M26 118C18 96 22 66 38 48 L82 52C96 70 100 96 94 118 L84 108 L74 118 L62 106 L50 118 L38 106 Z")}
+  ${gT("M60 60C46 60 36 48 36 34 36 20 46 10 60 10 74 10 84 20 84 34 84 48 74 60 60 60 Z")}
+</g>
+${gHach(
+  gH("M42 20 46 28M58 14 60 22M74 20 76 28"),
+  gH("M34 70 44 68M32 86 44 84M36 100 48 98M86 70 76 68M88 86 76 84M84 100 72 98")
+)}
+<path d="M60 46C64 46 66 52 64 58 62 64 58 66 55 64 52 62 52 54 55 49 57 46 58 46 60 46 Z"
+  fill="${BREU}" stroke="${OSSO}" stroke-width="1.7"/>
+${gOlhoFenda("M40 34 L56 30 L57 40 L41 42 Z", "M45 33 L54 32 L54 39 L46 39 Z")}
+${gOlhoFenda("M80 34 L64 30 L63 40 L79 42 Z", "M75 33 L66 32 L66 39 L74 39 Z")}`},
+
+vampiro:{nome:'Vampiro Menor', svg:`
+<g class="contorno">
+  ${gT("M8 118C6 96 24 78 46 74 L74 76C98 82 114 98 112 118 Z")}
+  ${gT("M40 76 L26 94 L50 88 L60 78 L70 88 L94 94 L80 76 Z")}
+  ${gT("M40 78C30 64 32 40 42 28 52 16 70 16 80 28 90 40 90 64 80 78 Z")}
+  ${gT("M42 30C42 18 50 10 60 10 70 10 78 18 78 30 L68 24 L60 32 L52 24 Z")}
+</g>
+${gHach(
+  gH("M46 30 50 38M60 26 62 34M74 30 76 38"),
+  gH("M20 92 40 86M16 104 38 98M20 114 46 108M100 92 80 86M104 104 82 98M100 114 74 108")
+)}
+<path d="M44 62C54 68 68 68 78 62 74 74 48 74 44 62 Z" fill="${BREU}" stroke="${OSSO}" stroke-width="1.9"/>
+<g fill="${OSSO}"><path d="M50 66 L53 78 L57 67 Z"/><path d="M66 67 L69 78 L73 65 Z"/></g>
+${gOlhoFenda("M40 44 L56 40 L57 50 L41 52 Z", "M45 43 L54 42 L54 49 L46 49 Z")}
+${gOlhoFenda("M80 44 L64 40 L63 50 L79 52 Z", "M75 43 L66 42 L66 49 L74 49 Z")}`},
+
+golemtijolo:{nome:'Golem de Tijolo', svg:`
+<g class="contorno">
+  ${gT("M8 118 L12 84 L38 72 L82 72 L108 84 L112 118 Z")}
+  ${gT("M30 76 L28 32 L58 20 L92 32 L90 76 Z")}
+  ${gT("M0 96 L14 88 L26 104 L10 112 Z")}
+  ${gT("M120 96 L106 88 L94 104 L110 112 Z")}
+</g>
+${gHach(
+  gH("M30 44 90 40M30 58 90 56M30 70 90 68"),
+  gH("M46 32 46 44M70 30 70 42M40 46 40 58M60 44 60 56M80 44 80 56M50 58 50 70M72 58 72 70"),
+  gH("M16 90 32 86M14 104 34 100M18 116 40 112M104 90 88 86M106 104 86 100M102 116 80 112")
+)}
+<path d="M40 62 L80 62 L80 72 L40 72 Z" fill="${BREU}" stroke="${OSSO}" stroke-width="1.9" stroke-linejoin="round"/>
+<path d="M52 62 L52 72M68 62 L68 72" fill="none" stroke="${OSSO}" stroke-width="1.5"/>
+${gOlhoFenda("M36 44 L54 40 L55 52 L37 54 Z", "M42 43 L52 42 L52 51 L43 51 Z")}
+${gOlhoFenda("M84 44 L66 40 L65 52 L83 54 Z", "M78 43 L68 42 L68 51 L77 51 Z")}`},
+
+ogro:{nome:'Ogro Faminto', svg:`
+<g class="contorno">
+  ${gT("M2 118C0 94 18 76 44 70 L80 72C106 78 122 96 120 118 Z")}
+  ${gT("M34 74C24 58 26 34 40 22 54 10 76 12 86 26 96 40 92 62 82 76 Z")}
+  ${gT("M28 44 L14 36 L26 54 Z")}
+  ${gT("M92 44 L106 36 L94 54 Z")}
+</g>
+${gHach(
+  gH("M40 26 44 34M56 20 58 28M74 24 76 32"),
+  gH("M16 92 38 86M12 104 36 98M18 116 44 110M106 92 84 86M110 104 86 98M104 116 78 110")
+)}
+<path d="M36 34C48 28 74 28 88 34" fill="none" stroke="${OSSO}" stroke-width="1.6" stroke-linecap="round"/>
+<path d="M40 60C52 72 74 72 84 60 80 82 42 82 40 60 Z" fill="${BREU}" stroke="${OSSO}" stroke-width="2"/>
+<g fill="${OSSO}">
+  <path d="M46 64 L48 76 L54 65 Z"/><path d="M60 66 L62 80 L68 66 Z"/><path d="M74 64 L78 76 L81 63 Z"/>
+</g>
+${gOlho(46, 44, 4.6)}
+${gOlho(78, 44, 4.6)}`},
+
+necromante:{nome:'Necromante Menor', svg:`
+<g class="contorno">
+  ${gT("M14 118C10 94 24 74 46 66 L78 68C100 78 112 96 110 118 Z")}
+  ${gT("M40 70C30 56 30 34 42 24 L60 8 L80 24C92 34 92 56 82 70 Z")}
+  ${gT("M60 8 L52 22 L60 30 L68 22 Z")}
+  ${gT("M96 62 L104 30 L112 32 L104 66 Z")}
+</g>
+${gHach(
+  gH("M44 34 48 42M58 30 60 38M74 34 76 42"),
+  gH("M26 88 46 82M22 102 44 96M28 114 52 108M96 90 76 84M100 104 78 98M94 116 72 110")
+)}
+<path d="M61 50C66 50 68 55 66 61 64 67 61 69 57 67 54 65 54 58 57 52 59 50 60 50 61 50 Z" fill="${BREU}" stroke="${OSSO}" stroke-width="1.7"/>
+<circle cx="108" cy="26" r="9" fill="${AMBAR}" stroke="${OSSO}" stroke-width="2"/>
+<circle cx="108" cy="26" r="3.6" fill="${BREU}"/>
+${gOlhoFenda("M42 42 L58 38 L59 48 L43 50 Z", "M47 41 L56 40 L56 47 L48 47 Z")}
+${gOlhoFenda("M80 42 L64 38 L63 48 L79 50 Z", "M75 41 L66 40 L66 47 L74 47 Z")}`},
+
+cavaleiro:{nome:'Cavaleiro Caído', svg:`
+<g class="contorno">
+  ${gT("M4 118C2 94 20 76 46 70 L78 72C104 78 120 96 118 118 Z")}
+  ${gT("M34 74 L28 36 L60 18 L92 36 L86 74 Z")}
+  ${gT("M60 18 L52 2 L60 10 L68 2 Z")}
+  ${gT("M28 40 L12 30 L20 48 Z")}
+  ${gT("M92 40 L108 30 L100 48 Z")}
+  ${gT("M96 70 L114 58 L120 74 L104 84 Z")}
+</g>
+${gHach(
+  gH("M40 40 46 46M56 32 58 40M74 34 76 42M84 44 80 50"),
+  gH("M18 92 40 86M14 104 38 98M20 116 46 110M102 94 82 88M106 106 82 100")
+)}
+<path d="M36 60 L84 60" fill="none" stroke="${OSSO}" stroke-width="1.8"/>
+<path d="M40 64C50 74 70 74 80 64 76 80 44 80 40 64 Z" fill="${BREU}" stroke="${OSSO}" stroke-width="2"/>
+<g fill="${OSSO}"><path d="M48 68 L50 78 L55 69 Z"/><path d="M62 70 L64 80 L69 70 Z"/></g>
+${gOlhoFenda("M34 44 L54 40 L55 54 L35 56 Z", "M40 43 L52 42 L52 53 L41 53 Z")}
+${gOlhoFenda("M86 44 L66 40 L65 54 L85 56 Z", "M80 43 L68 42 L68 53 L79 53 Z")}`},
+
+/* ---- Covil do Dragonete ---- */
+imp:{nome:'Diabrete', svg:`
+<g class="contorno">
+  ${gT("M30 68 L6 44 L14 68 L2 70 L20 88 Z")}
+  ${gT("M90 68 L114 44 L106 68 L118 70 L100 88 Z")}
+  ${gT("M60 118C44 118 34 104 34 86 34 68 44 58 60 58 76 58 86 68 86 86 86 104 76 118 60 118 Z")}
+  ${gT("M42 34 L28 12 L48 26 Z")}
+  ${gT("M78 34 L92 12 L72 26 Z")}
+  ${gT("M60 66C44 66 34 54 34 38 34 22 44 12 60 12 76 12 86 22 86 38 86 54 76 66 60 66 Z")}
+</g>
+${gHach(
+  gH("M44 24 48 32M58 18 60 26M74 24 76 32"),
+  gH("M44 74 52 72M42 88 52 86M46 102 56 100M76 74 68 72M78 88 68 86M74 102 64 100"),
+  gH("M30 62 38 66M90 62 82 66")
+)}
+<path d="M42 46C52 56 68 56 78 46 74 62 46 62 42 46 Z" fill="${BREU}" stroke="${OSSO}" stroke-width="1.9"/>
+<g fill="${OSSO}"><path d="M48 50 L50 60 L55 51 Z"/><path d="M65 51 L68 60 L72 49 Z"/></g>
+${gOlho(48, 36, 4.4)}
+${gOlho(72, 36, 4.4)}`},
+
+salamandra:{nome:'Salamandra Ígnea', svg:`
+${gL("M96 78C112 78 118 64 112 52 108 43 100 40 94 44")}
+<g class="contorno">
+  ${gT("M30 56 L36 40 L44 56 L52 36 L60 56 L68 38 L76 56 L84 42 L90 60 Z")}
+  ${gT("M6 74 L16 62 L34 54 L58 52C78 52 94 60 98 72 102 86 92 96 72 96 L36 94C22 92 16 88 12 84 L4 80 Z")}
+  ${gT("M30 92 L24 108 L34 108 L42 94 Z")}
+  ${gT("M72 94 L70 108 L80 108 L84 94 Z")}
+</g>
+${gHach(
+  gH("M42 64 44 74M56 62 58 72M70 62 72 72M82 64 83 74"),
+  gH("M40 82 42 90M56 82 56 90M72 82 72 90"),
+  gH("M104 84 112 82M114 62 120 58")
+)}
+<path d="M6 76 L-8 72 L-2 78 L-8 84 L8 81" fill="none" stroke="${AMBAR}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M8 80 L28 84 L46 86" fill="none" stroke="${OSSO}" stroke-width="1.6" stroke-linecap="round"/>
+${gOlhoFenda("M20 66 L34 62 L35 70 L21 72 Z", "M25 65 L32 64 L32 70 L26 70 Z")}`},
+
+filhote:{nome:'Filhote de Dragão', svg:`
+<g class="contorno">
+  ${gT("M46 76 L14 40 L22 62 L6 60 L20 80 Z")}
+  ${gT("M74 76 L106 40 L98 62 L114 60 L100 80 Z")}
+  ${gT("M60 118C44 118 34 106 34 92 34 76 44 66 60 66 76 66 86 76 86 92 86 106 76 118 60 118 Z")}
+  ${gT("M48 40 L40 16 L58 32 Z")}
+  ${gT("M74 38 L86 16 L82 40 Z")}
+  ${gT("M34 46C34 30 46 20 60 20 74 20 86 30 86 46 86 62 74 72 60 72 46 72 34 62 34 46 Z")}
+</g>
+${gHach(
+  gH("M46 30 50 38M60 26 62 34M74 30 76 38"),
+  gH("M44 80 54 78M42 94 54 92M46 106 58 104M76 80 66 78M78 94 66 92M74 106 62 104"),
+  gH("M40 62 48 66M80 62 72 66")
+)}
+<path d="M44 54C54 62 68 62 78 54 74 68 46 68 44 54 Z" fill="${BREU}" stroke="${OSSO}" stroke-width="1.9"/>
+<g fill="${OSSO}"><path d="M50 58 L52 66 L56 58 Z"/><path d="M66 58 L69 66 L72 57 Z"/></g>
+${gOlho(48, 44, 4.4)}
+${gOlho(72, 44, 4.4)}`},
+
+basilisco:{nome:'Basilisco', svg:`
+<path d="M60 92C36 92 18 100 18 110" fill="none" stroke="${OSSO}" stroke-width="20" stroke-linecap="round"/>
+<path d="M60 92C36 92 18 100 18 110" fill="none" stroke="${MASSA}" stroke-width="15" stroke-linecap="round"/>
+<path d="M62 96C82 96 98 104 100 114" fill="none" stroke="${OSSO}" stroke-width="20" stroke-linecap="round"/>
+<path d="M62 96C82 96 98 104 100 114" fill="none" stroke="${MASSA}" stroke-width="15" stroke-linecap="round"/>
+<path d="M62 100C58 76 56 56 58 40" fill="none" stroke="${OSSO}" stroke-width="24" stroke-linecap="round"/>
+<path d="M62 100C58 76 56 56 58 40" fill="none" stroke="${MASSA}" stroke-width="18" stroke-linecap="round"/>
+<g class="contorno">
+  ${gT("M46 40 L40 20 L52 30 L58 12 L66 30 L78 20 L72 42 Z")}
+  ${gT("M12 44 L28 30 L54 30 L66 42 L60 58 L32 60 L14 54 Z")}
+</g>
+${gHach(
+  gH("M28 38 30 46M40 34 42 42M52 36 53 44"),
+  gH("M56 66 66 68M54 78 66 80M56 90 68 92"),
+  gH("M30 100 42 104M84 102 94 106")
+)}
+<path d="M14 50 L2 48 L6 54 L0 58 L16 56" fill="none" stroke="${OSSO}" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>
+<g fill="${OSSO}"><path d="M20 56 L22 66 L26 57 Z"/><path d="M32 57 L35 67 L38 56 Z"/></g>
+<circle cx="36" cy="42" r="7.5" fill="${AMBAR}" stroke="${OSSO}" stroke-width="1.8"/>
+<circle cx="36" cy="42" r="2.8" fill="${BREU}"/>`},
+
+quimera:{nome:'Quimera', svg:`
+<g class="contorno">
+  ${gT("M98 70 L118 56 L114 80 Z")}
+  ${gT("M14 118C10 96 24 80 46 74 L80 76C102 82 112 98 110 118 Z")}
+  ${gT("M26 74C18 62 20 44 32 38 44 32 54 40 54 52 54 62 44 72 34 76 Z")}
+  ${gT("M30 40 L24 22 L40 34 Z")}
+  ${gT("M46 38 L52 20 L54 40 Z")}
+  ${gT("M96 78C104 68 106 52 96 44 86 36 74 42 74 54 74 64 84 74 92 80 Z")}
+  ${gT("M96 44 L110 30 L106 48 Z")}
+  ${gT("M42 82C32 68 34 42 48 30 62 18 80 22 88 36 96 48 92 72 82 84 Z")}
+</g>
+${gHach(
+  gH("M50 34 54 42M64 28 66 36M80 34 82 42"),
+  gH("M30 50 38 54M88 54 80 58"),
+  gH("M24 92 44 88M20 104 42 100M26 116 50 110M102 92 84 88M106 104 84 100")
+)}
+<path d="M46 60C56 72 76 72 84 60 80 80 46 80 46 60 Z" fill="${BREU}" stroke="${OSSO}" stroke-width="2"/>
+<g fill="${OSSO}"><path d="M52 64 L54 76 L60 65 Z"/><path d="M68 65 L71 77 L76 63 Z"/></g>
+<path d="M18 52 L6 50 L10 56 L4 60 L20 58" fill="none" stroke="${OSSO}" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>
+${gOlho(50, 46, 4.6)}
+${gOlho(80, 46, 4.6)}
+${gOlho(34, 50, 3.4)}
+${gOlho(88, 52, 3.4)}`},
+
+wyvern:{nome:'Wyvern', svg:`
+<g class="contorno">
+  ${gT("M44 76 L0 24 L6 50 L22 58 L26 74 L40 76 Z")}
+  ${gT("M76 76 L120 24 L114 50 L98 58 L94 74 L80 76 Z")}
+  ${gT("M28 118C26 98 34 84 50 78 L74 80C88 90 94 104 92 118 Z")}
+  ${gT("M40 30 L30 6 L52 24 Z")}
+  ${gT("M80 30 L90 6 L68 24 Z")}
+  ${gT("M60 84C46 84 36 72 36 54 36 34 46 20 60 20 74 20 84 34 84 54 84 72 74 84 60 84 Z")}
+</g>
+${gHach(
+  gH("M44 76 6 50M44 76 22 58M44 76 26 74M76 76 114 50M76 76 98 58M76 76 94 74"),
+  gH("M48 28 52 36M60 24 62 32M72 28 74 36"),
+  gH("M38 92 52 88M36 104 54 100M40 116 58 112M84 94 72 90M88 106 74 102")
+)}
+<path d="M44 60C52 68 68 68 76 60 74 78 46 78 44 60 Z" fill="${AMBAR}" stroke="${OSSO}" stroke-width="1.9"/>
+<path d="M48 63 L52 71 L57 63 L62 72 L67 63 L72 70" fill="none" stroke="${BREU}" stroke-width="2.1" stroke-linejoin="round"/>
+${gOlhoFenda("M42 42 L58 38 L59 48 L43 50 Z", "M47 41 L56 40 L56 47 L48 47 Z")}
+${gOlhoFenda("M78 42 L62 38 L61 48 L77 50 Z", "M73 41 L64 40 L64 47 L72 47 Z")}`},
+
+cerbero:{nome:'Cão de Três Cabeças', svg:`
+<g class="contorno">
+  ${gT("M14 118C10 98 24 84 46 78 L76 80C98 86 110 100 108 118 Z")}
+  ${gT("M18 84C10 74 10 58 20 50 30 42 44 46 46 58 48 68 40 80 30 84 Z")}
+  ${gT("M102 84C110 74 110 58 100 50 90 42 76 46 74 58 72 68 80 80 90 84 Z")}
+  ${gT("M22 46 L14 30 L30 40 Z")}
+  ${gT("M98 46 L106 30 L90 40 Z")}
+  ${gT("M46 84C36 70 36 44 48 32 60 20 78 22 86 34 94 46 90 70 80 84 Z")}
+  ${gT("M50 34 L44 14 L60 28 Z")}
+  ${gT("M84 32 L92 12 L92 34 Z")}
+</g>
+${gHach(
+  gH("M54 34 58 42M68 30 70 38M82 36 83 44"),
+  gH("M22 60 30 62M96 60 88 62"),
+  gH("M26 94 44 90M22 106 44 102M28 116 52 112M96 94 80 90M100 106 78 102")
+)}
+<path d="M50 62C60 74 78 74 86 62 82 82 50 82 50 62 Z" fill="${BREU}" stroke="${OSSO}" stroke-width="1.9"/>
+<g fill="${OSSO}"><path d="M56 66 L58 78 L63 67 Z"/><path d="M72 67 L75 79 L79 65 Z"/></g>
+${gOlho(56, 48, 4.4)}
+${gOlho(80, 46, 4.4)}
+${gOlho(24, 60, 3.6)}
+${gOlho(96, 60, 3.6)}`},
+
+golemlava:{nome:'Golem de Lava', svg:`
+<g class="contorno">
+  ${gT("M6 118 L10 84 L36 70 L84 70 L110 84 L114 118 Z")}
+  ${gT("M28 74 L24 34 L44 16 L60 26 L76 16 L96 34 L92 74 Z")}
+  ${gT("M0 94 L14 84 L28 102 L12 112 Z")}
+  ${gT("M120 94 L106 84 L92 102 L108 112 Z")}
+</g>
+${gHach(
+  gH("M32 40 40 46M56 34 58 42M80 40 74 46"),
+  gH("M16 92 34 86M14 106 36 100M20 116 42 110M104 92 86 86M106 106 84 100")
+)}
+<path d="M28 56C40 60 52 62 60 62 70 62 82 60 92 56" fill="none" stroke="${AMBAR}" stroke-width="3" stroke-linecap="round"/>
+<path d="M32 68C44 74 76 74 88 68 84 82 36 82 32 68 Z" fill="${AMBAR}" stroke="${OSSO}" stroke-width="2"/>
+<path d="M36 70 L40 78 L46 71 L52 79 L58 71 L64 79 L70 71 L76 78 L82 70"
+  fill="none" stroke="${BREU}" stroke-width="2.2" stroke-linejoin="round"/>
+${gOlhoFenda("M30 44 L52 40 L53 54 L31 56 Z", "M37 43 L50 42 L50 53 L38 53 Z")}
+${gOlhoFenda("M90 44 L68 40 L67 54 L89 56 Z", "M83 43 L70 42 L70 53 L82 53 Z")}`},
+
+obsidiana:{nome:'Guardião de Obsidiana', svg:`
+<g class="contorno">
+  ${gT("M2 118 L6 86 L34 70 L86 70 L114 86 L118 118 Z")}
+  ${gT("M60 4 L36 34 L60 48 L84 34 Z")}
+  ${gT("M30 74 L26 36 L60 20 L94 36 L90 74 Z")}
+  ${gT("M22 46 L4 34 L10 54 Z")}
+  ${gT("M98 46 L116 34 L110 54 Z")}
+</g>
+${gHach(
+  gH("M60 30 60 68"),
+  gH("M36 44 56 52M36 60 56 66M84 44 64 52M84 60 64 66"),
+  gH("M12 92 34 86M8 106 34 100M14 118 42 112M108 92 86 86M112 106 86 100")
+)}
+<path d="M34 68C46 76 74 76 86 68 82 84 38 84 34 68 Z" fill="${BREU}" stroke="${OSSO}" stroke-width="2"/>
+<g fill="${OSSO}">
+  <path d="M42 72 L44 82 L50 73 Z"/><path d="M56 74 L58 84 L63 74 Z"/><path d="M70 72 L73 82 L77 71 Z"/>
+</g>
+${gOlhoFenda("M34 46 L54 42 L55 56 L35 58 Z", "M40 45 L52 44 L52 55 L41 55 Z")}
+${gOlhoFenda("M86 46 L66 42 L65 56 L85 58 Z", "M80 45 L68 44 L68 55 L79 55 Z")}`},
+
+dragonete:{nome:'Dragonete de Ferro', svg:`
+<g class="contorno">
+  ${gT("M42 78 L-4 20 L2 50 L20 58 L24 76 L38 78 Z")}
+  ${gT("M78 78 L124 20 L118 50 L100 58 L96 76 L82 78 Z")}
+  ${gT("M22 118C20 96 30 82 48 76 L76 78C94 88 100 104 98 118 Z")}
+  ${gT("M34 28 L20 2 L48 22 Z")}
+  ${gT("M86 28 L100 2 L72 22 Z")}
+  ${gT("M44 22 L38 6 L54 18 Z")}
+  ${gT("M76 22 L82 6 L66 18 Z")}
+  ${gT("M60 86C44 86 32 72 32 52 32 30 44 16 60 16 76 16 88 30 88 52 88 72 76 86 60 86 Z")}
+</g>
+${gHach(
+  gH("M42 78 2 50M42 78 20 58M42 78 24 76M78 78 118 50M78 78 100 58M78 78 96 76"),
+  gH("M44 26 48 34M60 22 62 30M76 26 78 34"),
+  gH("M40 46 50 48M80 46 70 48"),
+  gH("M32 92 48 88M28 104 50 100M32 116 56 112M90 94 76 90M94 106 78 102")
+)}
+<path d="M40 58C50 68 70 68 80 58 78 80 42 80 40 58 Z" fill="${AMBAR}" stroke="${OSSO}" stroke-width="2"/>
+<path d="M45 62 L49 71 L54 62 L59 72 L65 62 L70 71 L75 61" fill="none" stroke="${BREU}" stroke-width="2.3" stroke-linejoin="round"/>
+${gOlhoFenda("M36 40 L56 36 L57 48 L37 50 Z", "M42 39 L54 38 L54 47 L43 47 Z")}
+${gOlhoFenda("M84 40 L64 36 L63 48 L83 50 Z", "M78 39 L66 38 L66 47 L77 47 Z")}`}
 };
 
 /* Quem gravou cada chapa. As criaturas que já estavam no bestiário antes
@@ -6810,7 +7564,7 @@ $('#novoAvancar').onclick = () => {
 };
 /* Sobe junto com o arquivo: se a home mostra outra data, o aparelho ainda
    está servindo a versão velha do cache. */
-const VERSAO = 'v30 · 20/08 · o caderno';
+const VERSAO = 'v31 · 20/08 · bestiário completo';
 $('#lbVersao').textContent = VERSAO;
 $('#btnStart').onclick = () => {
   /* Na primeira vez o jogo começa e pronto: escolher classe e distribuir
