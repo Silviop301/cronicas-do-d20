@@ -936,6 +936,43 @@
        some no miúdo porque a essa altura ela vira mancha — o contorno é o
        que carrega o bicho a 32px. */
     .gravura{display:block}
+    /* O vulto: dois olhos que piscam fora de compasso, para não parecerem
+       um par de lâmpadas. */
+    .vulto{display:block}
+    @media (prefers-reduced-motion:no-preference){
+      .vulto-olho{animation:piscaVulto 4.2s ease-in-out infinite;transform-origin:center}
+      .vulto-olho.atrasado{animation-delay:1.7s}
+    }
+    @keyframes piscaVulto{0%,92%,100%{opacity:1}95%{opacity:.15}}
+    .foe-incognito{color:var(--muted);font-style:italic}
+
+    /* O caderno. A chapa começa em branco e vai sendo riscada pelo dedo:
+       cada traço do desenho é um caminho com o tracejado do próprio
+       comprimento, e o que "desenha" é o deslocamento desse tracejado. */
+    .caderno{max-width:400px}
+    .cad-sub{margin:-4px 0 0;font-size:13px;line-height:1.45;color:var(--muted);text-align:center}
+    .cad-chapa{margin:12px auto 10px;width:min(240px,66vw);aspect-ratio:1;border-radius:10px;
+      background:radial-gradient(circle at 50% 55%, rgba(215,168,79,.12), transparent 66%), #14100d;
+      border:1px solid #3a2d23;display:grid;place-items:center;
+      touch-action:none;cursor:crosshair;overflow:hidden}
+    .cad-chapa svg{width:100%;height:100%;display:block}
+    /* Três tempos, na ordem em que se grava de verdade: primeiro o
+       contorno, depois a hachura, e só no fim a tinta cheia. Tudo junto
+       virava rabisco espalhado. */
+    .cad-chapa svg path,.cad-chapa svg circle,.cad-chapa svg ellipse{
+      stroke-dasharray:var(--comp);stroke-dashoffset:calc(var(--comp) * (1 - var(--linha,0)))}
+    .cad-chapa svg .hachura path{
+      stroke-dashoffset:calc(var(--comp) * (1 - var(--hachurado,0)))}
+    /* fill-opacity e não opacity: apagar o elemento inteiro levava junto o
+       traço dele, e a chapa ficava sem contorno no meio do caminho. */
+    .cad-chapa svg [fill]:not([fill="none"]){fill-opacity:var(--tinta,0)}
+    .cad-barra{height:6px;border-radius:999px;background:#241c16;overflow:hidden;margin:0 2px 4px}
+    .cad-progresso{height:100%;width:0;background:linear-gradient(90deg,#8a6f45,var(--gold2));
+      transition:width .12s linear}
+    .cad-chapa.pronta{animation:chapaPronta .5s ease-out}
+    @keyframes chapaPronta{40%{box-shadow:0 0 0 3px rgba(241,204,123,.35)}}
+    @media (prefers-reduced-motion:reduce){
+      .cad-progresso{transition:none} .cad-chapa.pronta{animation:none} }
     .beast-art.gravura .hachura{display:none}
     .beast-art.gravura .contorno path{stroke-width:3.4}
     /* Chapa pela metade: só o contorno, riscado e apagado. Quem gravava
@@ -1227,6 +1264,20 @@
 </div>
 
 <!-- ===== Detalhe de uma peça na forja ===== -->
+<!-- ===== O caderno: onde a criatura recém-abatida vira gravura ===== -->
+<div class="ov acima" id="cadernoOv">
+  <div class="sheet caderno">
+    <h3 id="cadNome">Uma criatura sem nome</h3>
+    <p class="cad-sub" id="cadSub">Risque a chapa com o dedo para gravar o que você viu.</p>
+    <div class="cad-chapa" id="cadChapa"></div>
+    <div class="cad-barra"><div class="cad-progresso" id="cadProgresso"></div></div>
+    <div class="sheet-acoes">
+      <button class="btn" id="cadPular">Deixar em branco</button>
+      <button class="btn primary" id="cadPronto" disabled>Guardar no bestiário</button>
+    </div>
+  </div>
+</div>
+
 <div class="ov acima" id="detOv">
   <div class="sheet">
     <h3 id="detTitulo"></h3>
@@ -1983,6 +2034,36 @@ function assinaturaDe(b){
     : `gravado por <em>${escapeHtml(por)}</em>`;
 }
 
+/* Antes de você derrubar a criatura, ela não tem retrato — porque ninguém
+   voltou para desenhá-la. O que se vê é o que se veria mesmo: dois olhos
+   e um vulto. */
+const conhecida = id => !!(META.bestiario || {})[id];
+function olhosNaEscuridao(cls){
+  /* Um vulto agachado com duas pontas no alto que tanto podem ser orelhas
+     quanto chifres — a ambiguidade é o ponto. Os olhos ficam DENTRO da
+     massa; soltos acima dela viravam dois pontos boiando. */
+  return `<svg class="${cls} vulto" viewBox="0 0 120 120" role="img" aria-label="Algo na escuridão">
+    <defs><radialGradient id="brumaVulto" cx="50%" cy="54%" r="52%">
+      <stop offset="0%" stop-color="#241c15" stop-opacity=".9"/>
+      <stop offset="65%" stop-color="#171210" stop-opacity=".5"/>
+      <stop offset="100%" stop-color="#171210" stop-opacity="0"/>
+    </radialGradient></defs>
+    <ellipse cx="60" cy="64" rx="50" ry="44" fill="url(#brumaVulto)"/>
+    <path d="M18 112 Q16 82 28 64 L33 40 L44 60 Q52 52 60 54 Q68 51 76 60 L88 38 L93 64
+             Q104 82 102 112 Z" fill="#0d0a09"/>
+    <path d="M18 112 Q16 82 28 64 L33 40 L44 60 Q52 52 60 54 Q68 51 76 60 L88 38 L93 64
+             Q104 82 102 112 Z" fill="none" stroke="#2a221b" stroke-width="1.6"/>
+    <g class="vulto-olho">
+      <path d="M36 72 L52 66 L55 75 L39 80 Z" fill="${AMBAR}"/>
+      <path d="M42 71 L50 69 L51 76 L44 77 Z" fill="${BREU}"/>
+    </g>
+    <g class="vulto-olho atrasado">
+      <path d="M84 72 L68 66 L65 75 L81 80 Z" fill="${AMBAR}"/>
+      <path d="M78 71 L70 69 L69 76 L76 77 Z" fill="${BREU}"/>
+    </g>
+  </svg>`;
+}
+
 const PASTA_ARTE = 'img/';
 
 /* Antes a tela desenhava a <img> na esperança e trocava pelo emoji se ela
@@ -2552,6 +2633,7 @@ function carregarMeta(){
   }catch(e){}
 }
 function salvarMeta(){ store.set(MKEY, JSON.stringify(META)); }
+/* Devolve se foi a primeira vez: é o que decide se o caderno abre. */
 function registrarBicho(id){
   const primeira = !META.bestiario[id];
   META.bestiario[id] = (META.bestiario[id] || 0) + 1;
@@ -2563,6 +2645,7 @@ function registrarBicho(id){
     META.gravuras[id] = {por: G.nome};
   }
   salvarMeta();
+  return primeira;
 }
 function marcarOuro(){ META.maiorOuro = Math.max(META.maiorOuro||0, G.ouro); }
 
@@ -3036,6 +3119,105 @@ function voltarAoAcampamento(motivo){
   sortearOfertas();
   G.revelarOfertas = 0;   // as três voltam a se apresentar uma a uma
   anotar(`🏕️ ${motivo} Você volta ao acampamento com <b>${premio} de ouro</b>.`, 'gold');
+}
+
+/* ---------- o caderno ----------
+   A criatura que você acabou de derrubar ainda não existe no bestiário.
+   Ela passa a existir aqui: a chapa abre em branco e o dedo é que risca.
+   Não é habilidade nenhuma — é participação, que é o que faz a página
+   virar sua em vez de aparecer preenchida sozinha. */
+const RISCO_TOTAL = 900;      // pixels de dedo para fechar a gravura
+let caderno = null;
+
+function abrirCaderno(id, aoFechar){
+  const b = bicho(id);
+  if(!b || !GRAVURA[id]){ aoFechar && aoFechar(); return; }
+  caderno = {id, feito:0, aoFechar, pronto:false, ultimo:null};
+
+  $('#cadNome').textContent = 'Chapa em branco';
+  $('#cadSub').textContent = 'Risque com o dedo para gravar o que você acabou de enfrentar.';
+  $('#cadChapa').innerHTML = `<svg viewBox="0 0 120 120" aria-label="Chapa por gravar">${GRAVURA[id].svg}</svg>`;
+  $('#cadChapa').classList.remove('pronta');
+  $('#cadPronto').disabled = true;
+  $('#cadPronto').textContent = 'Guardar no bestiário';
+
+  /* Cada traço precisa saber o próprio comprimento para o tracejado cobrir
+     exatamente ele — um valor fixo cortaria os curtos e deixaria os longos
+     pela metade. */
+  $$('#cadChapa svg path, #cadChapa svg circle, #cadChapa svg ellipse').forEach(el => {
+    let comp = 0;
+    try{ comp = el.getTotalLength(); }catch(e){ comp = 200; }
+    el.style.setProperty('--comp', (comp || 200).toFixed(1));
+  });
+  pintarCaderno();
+  $('#cadernoOv').classList.add('on');
+}
+
+function pintarCaderno(){
+  if(!caderno) return;
+  const p = Math.min(1, caderno.feito / RISCO_TOTAL);
+  const chapa = $('#cadChapa');
+  const entre = (a, b) => Math.max(0, Math.min(1, (p - a) / (b - a)));
+  chapa.style.setProperty('--linha',      entre(0, .58).toFixed(3));
+  chapa.style.setProperty('--hachurado',  entre(.5, .88).toFixed(3));
+  chapa.style.setProperty('--tinta',      entre(.8, 1).toFixed(3));
+  chapa.style.setProperty('--feito', p.toFixed(3));
+  $('#cadProgresso').style.width = (p*100).toFixed(1) + '%';
+  if(p >= 1 && !caderno.pronto) fecharGravura();
+}
+
+function fecharGravura(){
+  caderno.pronto = true;
+  const b = bicho(caderno.id);
+  $('#cadChapa').classList.add('pronta');
+  $('#cadNome').textContent = b.nome;
+  $('#cadSub').innerHTML = `${b.chefe ? 'Guardião. ' : ''}Vida ${b.vida} · Golpe ${b.golpe} · ${b.pts} pontos`;
+  $('#cadPronto').disabled = false;
+  som('brilho');
+  vibrar([12,40,12]);
+}
+
+function riscarCaderno(dx, dy){
+  if(!caderno || caderno.pronto) return;
+  caderno.feito += Math.min(60, Math.hypot(dx, dy));   // um arrastão só não fecha tudo
+  pintarCaderno();
+}
+
+function fecharCaderno(){
+  $('#cadernoOv').classList.remove('on');
+  const volta = caderno && caderno.aoFechar;
+  caderno = null;
+  if(volta) volta();
+}
+
+/* Arrastar é o gesto natural no celular; o toque solto adianta um pedaço,
+   para ninguém ficar preso se o arrasto não pegar. */
+function ligarCaderno(){
+  const chapa = $('#cadChapa');
+  chapa.addEventListener('pointerdown', e => {
+    chapa.setPointerCapture(e.pointerId);
+    caderno && (caderno.ultimo = {x:e.clientX, y:e.clientY});
+    riscarCaderno(26, 0);
+  });
+  chapa.addEventListener('pointermove', e => {
+    if(!caderno || !caderno.ultimo || e.buttons === 0) return;
+    riscarCaderno(e.clientX - caderno.ultimo.x, e.clientY - caderno.ultimo.y);
+    caderno.ultimo = {x:e.clientX, y:e.clientY};
+  });
+  chapa.addEventListener('pointerup', () => { if(caderno) caderno.ultimo = null; });
+  chapa.addEventListener('pointercancel', () => { if(caderno) caderno.ultimo = null; });
+
+  $('#cadPronto').onclick = () => fecharCaderno();
+  /* Deixar em branco é uma saída de verdade: a criatura entra no bestiário
+     do mesmo jeito (você a enfrentou), mas a chapa fica por terminar até
+     você encontrar outra igual. */
+  $('#cadPular').onclick = () => {
+    if(caderno && !caderno.pronto){
+      caderno.feito = RISCO_TOTAL;
+      pintarCaderno();
+    }
+    fecharCaderno();
+  };
 }
 
 /* ---------- descanso no acampamento ----------
@@ -4160,7 +4342,7 @@ function vencer(){
   if(G.sequencia >= 8) progredirMissao('seq8');
   G.ouro += ouro;
   pontuar(pts);
-  registrarBicho(inim.id);
+  const estreia = registrarBicho(inim.id);
   G.grid[G.pos].limpo = true;
   const selo = bonus ? ` <b>Sequência ${G.sequencia}</b> (+${Math.round(bonus*100)}%)` : '';
   anotar(`🏆 <b>${inim.nome} derrotado!</b> +${pts} pontos e ${ouro} de ouro.${selo}`, 'gold');
@@ -4207,6 +4389,10 @@ function vencer(){
   if(inim.final){ vitoria(); return; }
   G.modo = 'mapa';
   if(inim.chefe) voltarAoAcampamento(`👑 ${inim.nome} caiu e a masmorra está limpa.`);
+  /* Criatura nova: o caderno abre por cima de tudo. Fica por último para
+     que o resumo da masmorra, quando houver, já esteja montado atrás —
+     assim fechar a chapa revela o saque em vez de engolir a tela. */
+  if(estreia && GRAVURA[inim.id]) abrirCaderno(inim.id, () => { salvar(); render(); });
 }
 
 /* +12% por abate seguido, até dobrar. A partir do segundo abate, para o
@@ -6109,8 +6295,11 @@ function render(){
     const pct = Math.max(0, (inim.vida/inim.vidaMax)*100);
     mid.innerHTML = `
       <div class="foe">
-        <div class="foe-icon ${inim.chefe?'chefe':''}" id="foeIcon">${arte(bicho(inim.id) || inim, 'foe-art')}</div>
-        <p class="foe-name">${inim.chefe?'👑 ':''}${escapeHtml(inim.nome)}</p>
+        <div class="foe-icon ${inim.chefe?'chefe':''}" id="foeIcon">${
+          conhecida(inim.id) ? arte(bicho(inim.id) || inim, 'foe-art') : olhosNaEscuridao('foe-art')}</div>
+        <p class="foe-name">${conhecida(inim.id)
+          ? (inim.chefe?'👑 ':'') + escapeHtml(inim.nome)
+          : (inim.chefe?'👑 ':'') + '<span class="foe-incognito">algo na escuridão</span>'}</p>
         ${inim.afixo ? `<p class="foe-afixo">${AFIXO[inim.afixo].icone} ${AFIXO[inim.afixo].desc}</p>` : ''}
         ${GUARDIOES[inim.id] ? `<p class="foe-regra">${GUARDIOES[inim.id].icone} <b>${GUARDIOES[inim.id].nome}</b> — ${GUARDIOES[inim.id].desc}</p>` : ''}
         <div class="foe-life">
@@ -6612,6 +6801,7 @@ $('#novoVoltar').onclick = () => {
   if(passoNovo === 0) $('#novoOv').classList.remove('on');
   else irParaPassoNovo(passoNovo - 1);
 };
+ligarCaderno();
 $('#novoAvancar').onclick = () => {
   if(passoNovo < 2){ irParaPassoNovo(passoNovo + 1); return; }
   $('#novoOv').classList.remove('on');
@@ -6620,7 +6810,7 @@ $('#novoAvancar').onclick = () => {
 };
 /* Sobe junto com o arquivo: se a home mostra outra data, o aparelho ainda
    está servindo a versão velha do cache. */
-const VERSAO = 'v29 · 20/08 · gravuras e fogueira';
+const VERSAO = 'v30 · 20/08 · o caderno';
 $('#lbVersao').textContent = VERSAO;
 $('#btnStart').onclick = () => {
   /* Na primeira vez o jogo começa e pronto: escolher classe e distribuir
