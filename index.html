@@ -693,6 +693,15 @@
     .mapaMundo .tinta .fina{stroke-width:1.4;opacity:.65}
     .mapaMundo .tinta circle{fill:none;stroke:var(--tinta);stroke-width:1.4}
     .mapaMundo .serra path{opacity:.75}
+    .mapaMundo .serra .hachura{stroke-width:1.3;opacity:.6}
+    .mapaMundo .idade ellipse{fill:#b79a68;opacity:.16}
+    .mapaMundo .moldura rect{fill:none;stroke:var(--tinta);stroke-width:2;opacity:.5}
+    .mapaMundo .moldura .fina{stroke-width:1;opacity:.35}
+    /* Água de aguada, não de mapa de metrô: o azul entra lavado para não
+       gritar mais alto que a tinta marrom de tudo em volta. */
+    .mapaMundo .agua .curso{fill:none;stroke:#8ea9ac;stroke-width:5.5;stroke-linecap:round;opacity:.7}
+    .mapaMundo .agua .lago{fill:#9db4b4;stroke:#5f7c7e;stroke-width:1.8;opacity:.6}
+    .mapaMundo .agua .lago-linha{fill:none;stroke:#5f7c7e;stroke-width:1.1;opacity:.35}
     .mapaMundo .mato path{fill:#7d9464;stroke:var(--tinta2);stroke-width:1.6;stroke-linejoin:round}
     .mapaMundo .mato circle{fill:#8aa06d;stroke:var(--tinta2);stroke-width:1.6}
     .mapaMundo .mato .tronco{fill:none;stroke:#5b432a;stroke-width:2.4}
@@ -719,7 +728,8 @@
     .mapaMundo .fogo .brasa{fill:url(#luzFogo)}
     .mapaMundo .brilho circle{fill:url(#luzPortal)}
     .mapaMundo .brilho .estrela{fill:#eaf6ff;stroke:none}
-    .mapaMundo .tarja rect{fill:#f0e2c1;stroke:var(--tinta);stroke-width:1.6;opacity:.92}
+    .mapaMundo .tarja rect{fill:#f0e2c1;stroke:var(--tinta);stroke-width:1.6;opacity:.94}
+    .mapaMundo .tarja .interna{fill:none;stroke-width:.9;opacity:.45}
     .mapaMundo .tarja text{fill:var(--tinta2);font:700 15px Georgia,serif;text-anchor:middle}
     .mapaMundo .selo circle{fill:#f0e2c1;stroke:var(--tinta);stroke-width:2}
     .mapaMundo .selo text{fill:var(--tinta2);font:700 15px Georgia,serif;text-anchor:middle}
@@ -1050,6 +1060,10 @@
   <symbol id="i-cristal" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="m12 2.6 6.6 6.2L12 21.4 5.4 8.8 12 2.6Z"/><path d="M5.4 8.8h13.2M12 2.6v18.8"/></g></symbol>
   <symbol id="i-erva" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.4c0-6 2.2-9.8 7.4-11.6.8 6.4-2 11-7.4 11.6Z"/><path d="M11.4 20.4C10.8 15.6 8.4 12.6 4.4 11.4c-.4 4.8 2.2 8.2 7 9Z"/><path d="M12 20.4v-4"/></g></symbol>
   <symbol id="i-essencia" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><circle cx="12" cy="12" r="7.4"/><path d="M9 8.6c-1.2.9-2 2.2-2.2 3.7"/><path d="M14.6 15.4c1.1-.8 1.9-2 2.2-3.4"/></g></symbol>
+  <symbol id="i-mapa" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4.2 3.4 6.4v13.4L9 17.6l6 2.2 5.6-2.2V4.2L15 6.4 9 4.2Z"/><path d="M9 4.2v13.4M15 6.4v13.4"/></g></symbol>
+  <symbol id="i-acampamento" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.4 3.6 19.2h16.8L12 4.4Z"/><path d="M12 4.4v14.8"/><path d="M9 19.2 12 12l3 7.2"/></g></symbol>
+  <symbol id="i-masmorra" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.4 20 12 4.4 20.6 20Z"/><path d="M8.8 20v-4a3.2 3.2 0 0 1 6.4 0v4"/></g></symbol>
+  <symbol id="i-santuario" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20V10.6a5 5 0 0 1 10 0V20"/><path d="M4.6 20h14.8"/><path d="m12 8.8.9 2.5 2.5.9-2.5.9-.9 2.6-.9-2.6-2.5-.9 2.5-.9.9-2.5Z"/></g></symbol>
 </defs></svg>
 <div class="app">
   <header class="hero">
@@ -1388,12 +1402,12 @@ function confirmar(msg){
    a Demônio não era difícil. A curva agora é exponencial e o guardião tem
    o seu próprio multiplicador de vida, para durar uma briga de verdade. */
 const NIVEIS = [
-  {id:'comum',    nome:'Comum',    icone:'⚪', cor:'#9fb0a4', andares:3,  lados:[5,6],   forca:1.0,  chefeVida:1.2, premio:1.0, frags:2, regioes:['campo']},
-  {id:'incomum',  nome:'Incomum',  icone:'🟢', cor:'#7fc98a', andares:4,  lados:[5,6,7], forca:1.5,  chefeVida:1.25,premio:1.5, frags:3,  regioes:['campo','deserto']},
-  {id:'rara',     nome:'Rara',     icone:'🔵', cor:'#79b8e2', andares:5,  lados:[6,7],   forca:2.1,  chefeVida:1.3, premio:2.2, frags:4,  regioes:['deserto','gelo']},
-  {id:'epica',    nome:'Épica',    icone:'🟣', cor:'#b78de2', andares:6,  lados:[6,7,8], forca:3.0,  chefeVida:1.35,premio:3.0, frags:5,  regioes:['gelo','masmorra']},
-  {id:'lendaria', nome:'Lendária', icone:'🟠', cor:'#e8a24d', andares:8,  lados:[7,8],   forca:4.1,  chefeVida:1.45, premio:4.2, frags:7,   regioes:['masmorra','covil']},
-  {id:'demonio',  nome:'Demônio',  icone:'🔴', cor:'#e3564a', andares:10, lados:[7,8],  forca:5.35, chefeVida:1.65, premio:6.0, frags:10,   regioes:['covil'], final:true}
+  {id:'comum',    nome:'Comum',    icone:'⚪', cor:'#9fb0a4', andares:3,  lados:[5,6],   forca:1.0,  chefeVida:1.2, premio:1.0, frags:1, regioes:['campo']},
+  {id:'incomum',  nome:'Incomum',  icone:'🟢', cor:'#7fc98a', andares:4,  lados:[5,6,7], forca:1.5,  chefeVida:1.25,premio:1.5, frags:2,  regioes:['campo','deserto']},
+  {id:'rara',     nome:'Rara',     icone:'🔵', cor:'#79b8e2', andares:5,  lados:[6,7],   forca:2.1,  chefeVida:1.3, premio:2.2, frags:2,  regioes:['deserto','gelo']},
+  {id:'epica',    nome:'Épica',    icone:'🟣', cor:'#b78de2', andares:6,  lados:[6,7,8], forca:3.0,  chefeVida:1.35,premio:3.0, frags:3,  regioes:['gelo','masmorra']},
+  {id:'lendaria', nome:'Lendária', icone:'🟠', cor:'#e8a24d', andares:8,  lados:[7,8],   forca:4.1,  chefeVida:1.45, premio:4.2, frags:4,   regioes:['masmorra','covil']},
+  {id:'demonio',  nome:'Demônio',  icone:'🔴', cor:'#e3564a', andares:10, lados:[7,8],  forca:5.35, chefeVida:1.65, premio:6.0, frags:6,   regioes:['covil'], final:true}
 ];
 
 /* Afixos: o mesmo bestiário de 51 criaturas rende brigas diferentes quando
@@ -1685,12 +1699,54 @@ const BESTIARIO = [
    rodando como arquivo único, ou arte ainda não desenhada), cai no emoji
    automaticamente. Assim dá para ir acrescentando imagens aos poucos. */
 const PASTA_ARTE = 'img/';
+
+/* Antes a tela desenhava a <img> na esperança e trocava pelo emoji se ela
+   falhasse. No Safari isso piscava: no primeiro desenho a imagem ainda não
+   tinha chegado, entrava o emoji, e no desenho seguinte — já com o arquivo
+   em cache — entrava o desenho. Toda criatura nova aparecia duas vezes.
+   Agora ninguém desenha na esperança: a arte é sondada antes, e só vira
+   <img> depois que se sabe que o arquivo existe. */
+const ARTE = {};
+let redesenhoDaArte = null;
+function sondarArte(chave, src){
+  if(ARTE[chave] !== undefined) return;
+  ARTE[chave] = 'sondando';
+  const i = new Image();
+  i.onload = () => {
+    ARTE[chave] = 'ok';
+    /* Um só redesenho para um lote de imagens, e nunca no meio de uma
+       briga: trocar o retrato do inimigo em pleno turno é justamente o
+       susto que estamos tirando da tela. */
+    clearTimeout(redesenhoDaArte);
+    redesenhoDaArte = setTimeout(() => {
+      if(G && G.modo !== 'combate' && typeof render === 'function') render();
+    }, 80);
+  };
+  i.onerror = () => { ARTE[chave] = 'nao'; };
+  i.src = src;
+}
+/* Ao entrar na masmorra a região inteira é sondada de uma vez: quando a
+   primeira criatura aparecer, já se sabe se ela tem retrato. */
+function precarregarArte(regiaoId){
+  BESTIARIO.filter(b => !regiaoId || b.regiao === regiaoId || b.final)
+    .forEach(b => sondarArte(b.id, `${PASTA_ARTE}${b.id}.png`));
+}
 function arte(b, cls){
+  if(ARTE[b.id] !== 'ok'){
+    sondarArte(b.id, `${PASTA_ARTE}${b.id}.png`);
+    return `<span class="${cls}">${b.icone}</span>`;
+  }
   return `<img class="${cls} arte" src="${PASTA_ARTE}${b.id}.png" alt="${escapeHtml(b.nome)}" data-emoji="${b.icone}">`;
 }
 function arteItem(id, emoji, cls, svgNome){
+  const chave = 'item:' + id;
+  if(ARTE[chave] !== 'ok'){
+    sondarArte(chave, `${PASTA_ARTE}itens/${id}.png`);
+    /* Sem imagem, o item mostra o vetor quando tem um, e o emoji quando não. */
+    return `<span class="${cls}">${svgNome ? ico(svgNome) : escapeHtml(emoji || '')}</span>`;
+  }
   /* O reserva é um atributo, e SVG não cabe em atributo: guardamos o nome do
-     ícone e montamos o desenho só se a imagem faltar. */
+     ícone e montamos o desenho só se a imagem sumir depois. */
   const reserva = svgNome ? ` data-ico="${svgNome}"` : '';
   return `<img class="${cls} arte" src="${PASTA_ARTE}itens/${id}.png" alt="" data-emoji="${escapeHtml(emoji || '')}"${reserva}>`;
 }
@@ -2383,6 +2439,25 @@ function faltaPara(r){
   return faltas.join('  ');
 }
 
+/* A faixa de baixo mostrava sempre a última linha do diário, e a última
+   linha te seguia: você alimentava a raposa no acampamento e o recado
+   dela continuava lá no forjador, no mapa e na porta das masmorras. O
+   diário só fala por onde ele é escrito — o acampamento e a masmorra.
+   Nos outros lugares a faixa diz o que aquele lugar é. */
+const RECADO_LUGAR = {
+  mapa:      '🗺️ Quatro lugares. Toque naquele para onde quer ir.',
+  masmorras: '🕳️ Três entradas. Elas só mudam quando você voltar de uma.',
+  forjador:  '⚒️ Aqui o ouro e o material viram equipamento, poção e runa.',
+  santuario: '✨ O que está guardado aqui fica com você mesmo quando o herói cai.'
+};
+function recadoDaTela(){
+  if(G.modo === 'hub'){
+    const r = RECADO_LUGAR[lugarAtual()];
+    if(r) return r;
+  }
+  return G.msg || 'Toque numa sala vizinha para andar.';
+}
+
 /* ---------- diário e pontos ---------- */
 function anotar(msg, tipo=''){
   G.log.unshift({msg, tipo});
@@ -2527,6 +2602,7 @@ function entrarNaMasmorra(idx){
   const n = nivelPorId(of.nivel);
   if(n.final && !confirmar('Esta é uma masmorra Demônio: dez andares e o Dragonete de Ferro no fim. Vencer aqui encerra o jogo — e quase ninguém consegue sem as relíquias no máximo.\n\nEntrar mesmo assim?')) return;
   G.masmorra = {nivel:n.id, regiao:of.regiao, andares:n.andares, clima:of.clima || 'calmaria'};
+  precarregarArte(of.regiao);
   G.andar = 1;
   G.sequencia = 0;
   G.bencaos = [];
@@ -3703,7 +3779,7 @@ function vencer(){
   G.sequencia = (G.sequencia || 0) + 1;
   const bonus = bonusDeSequencia();
   const ouroBase = Math.round(inim.pts * .8) + entre([3,8]) + G.andar*2 + (inim.chefe ? 45 : 0);
-  const ouroMult = 1 + bonus + somaB('ouroPct') + doClima('ouroPct') + bonusPet('ouro')*.08 + (temRuna('cofre') ? .2 : 0)
+  const ouroMult = 1 + bonus + somaB('ouroPct') + doClima('ouroPct') + bonusPet('ouro')*OURO_DO_CORVO + (temRuna('cofre') ? .2 : 0)
                  + (temRumo('bolsa-faro') ? .25 : 0) + (temB('pacto') ? 1 : 0);
   const ouro = Math.round(ouroBase * ouroMult);
   const pts = Math.round(inim.pts * (1 + bonus));
@@ -4649,6 +4725,7 @@ function ligarBotoesDoPet(){
       if(t){
         const partes = Object.entries(t.mats).map(([k,q]) => `${icoMat(k)} ${q} ${MATERIAIS[k].nome}`);
         if(t.ouro) partes.push(`${ico('ouro')} ${t.ouro} de ouro`);
+        if(t.pocoes) partes.push(`🧪 ${t.pocoes} ${t.pocoes===1?'poção':'poções'}`);
         if(t.usavel) partes.push(`${USAVEL[t.usavel].icone} ${USAVEL[t.usavel].nome}`);
         anotar(`${PET[pet().tipo].icone} <b>${PET[pet().tipo].nome} voltou!</b> Trouxe ${partes.join(', ')}.`
              + (t.essencia ? ' <b>E uma Essência!</b>' : ''), 'gold');
@@ -4733,8 +4810,13 @@ function serra(x, y, picos, esc){
   for(let i=0;i<picos;i++){
     const px = x + i*34*esc, h = (26 + (i%3)*11) * esc, w = 22*esc;
     d += `<path d="M${px-w} ${y} L${px} ${y-h} L${px+w} ${y}" />
-          <path class="fina" d="M${px} ${y-h} L${px-w*.45} ${y}" />
-          <path class="fina" d="M${px+w*.35} ${y-h*.42} L${px+w*.1} ${y-h*.62}" />`;
+          <path class="fina" d="M${px} ${y-h} L${px-w*.45} ${y}" />`;
+    /* Hachura na face sombreada: três riscos curtos e paralelos, que é
+       como um mapa antigo diz "isto tem volume" sem pintar nada. */
+    for(let k=1;k<=3;k++){
+      const t = k/4.4, ax = px + w*t*.9, ay = y - h*(1-t);
+      d += `<path class="hachura" d="M${ax} ${ay} L${ax + w*.22} ${ay + h*.16}" />`;
+    }
   }
   return `<g class="tinta serra">${d}</g>`;
 }
@@ -4773,6 +4855,7 @@ function lugarNoMapa(id, x, y, largura, altura, desenho, selo){
     ${desenho}
     <g class="tarja" transform="translate(${x} ${y + altura*.5 + 16})">
       <rect x="${-meia*.86}" y="-13" width="${meia*1.72}" height="24" rx="7"/>
+      <rect class="interna" x="${-meia*.86+3.5}" y="-9.5" width="${meia*1.72-7}" height="17" rx="4"/>
       <text y="4">${l.nome}</text>
     </g>
     ${selo ? `<g class="selo ${selo.alerta?'alerta':''}" transform="translate(${x + meia*.72} ${y - altura*.42})">
@@ -4901,12 +4984,35 @@ function mapaDoMundo(){
       L610 742 L605 966 Q608 984 590 987 L392 993 L206 988 L28 992 Q11 990 13 972 L8 744 L15 512
       L9 288 Z" filter="url(#mnc)"/>
     <rect class="vinheta" x="8" y="6" width="604" height="988" rx="20" fill="url(#vinheta)"/>
+    <!-- manchas de idade: sempre nos mesmos lugares, senão a folha muda de
+         cara a cada desenho e o olho percebe -->
+    <g class="idade">
+      <ellipse cx="120" cy="120" rx="62" ry="40" transform="rotate(-14 120 120)"/>
+      <ellipse cx="520" cy="470" rx="48" ry="34" transform="rotate(22 520 470)"/>
+      <ellipse cx="300" cy="860" rx="88" ry="46" transform="rotate(-8 300 860)"/>
+      <ellipse cx="66" cy="640" rx="34" ry="52"/>
+      <ellipse cx="440" cy="150" rx="40" ry="26" transform="rotate(10 440 150)"/>
+    </g>
+    <!-- moldura interna: duas linhas finas, o detalhe que separa uma folha
+         com desenhos de um mapa de verdade -->
+    <g class="moldura">
+      <rect x="26" y="26" width="568" height="948" rx="10"/>
+      <rect class="fina" x="34" y="34" width="552" height="932" rx="7"/>
+    </g>
+
+    <!-- rio e lago: a metade sul era só pergaminho vazio -->
+    <g class="agua">
+      <path class="curso" d="M196 664 C214 712 206 758 226 800 C238 826 252 838 268 846"/>
+      <ellipse class="lago" cx="316" cy="878" rx="86" ry="40"/>
+      <ellipse class="fina lago-linha" cx="316" cy="878" rx="70" ry="29"/>
+      <ellipse class="fina lago-linha" cx="316" cy="878" rx="52" ry="19"/>
+    </g>
 
     ${serra(330, 150, 4, 1)}
     ${serra(60, 470, 3, .82)}
     ${serra(300, 500, 2, .7)}
     ${serra(96, 902, 3, .9)}
-    ${serra(392, 918, 4, .8)}
+    ${serra(430, 930, 3, .8)}
 
     <g class="trilha">
       <path d="M238 244 C276 276 300 300 322 322 C352 350 384 356 418 360"/>
@@ -5042,9 +5148,14 @@ function mostrarResumoMasmorra(motivo){
 
    O tempo é medido no relógio do aparelho: adiantar o relógio adianta a
    fome, e é isso mesmo — não vale a pena travar o jogo para impedir. */
+/* O corvo dava +8% de ouro por nível: no máximo, +40%, que numa masmorra
+   inteira some no arredondamento. Cuidar do bicho todo dia tem de valer
+   mais do que isso — a +30% por nível, um corvo criado até o fim dobra e
+   meia o ouro da jornada, e aí a fogueira vira parada obrigatória. */
+const OURO_DO_CORVO = .3;
 const BICHOS_PET = [
   {id:'corvo',  nome:'Corvo',   icone:'🐦‍⬛', dom:'ouro',
-   desc:'acha moedas no caminho', efeito:n => `+${n*8}% de ouro na masmorra`},
+   desc:'acha moedas no caminho', efeito:n => `+${Math.round(n*OURO_DO_CORVO*100)}% de ouro na masmorra`},
   {id:'raposa', nome:'Raposa',  icone:'🦊', dom:'material',
    desc:'fareja material escondido', efeito:n => `+${n} material ao vasculhar`},
   {id:'coruja', nome:'Coruja',  icone:'🦉', dom:'pocao',
@@ -5119,6 +5230,15 @@ function mandarBuscar(id){
   som('abrir');
   return true;
 }
+/* Quanto rende, hoje, uma masmorra do seu nível. Serve de régua para a
+   expedição do bicho: sem uma régua, a recompensa é boa no começo do jogo
+   e ridícula no fim. */
+function ouroDeReferencia(){
+  const rel = RELIQUIAS.reduce((soma, r) => soma + nivelRel(r.id), 0);
+  return 150 + rel * 55;
+}
+const FATIA_DA_BUSCA = {curta:.07, media:.22, longa:.55};
+
 /* O que ele traz escala com o nível e com a fome: bicho faminto procura mal. */
 function recolherBusca(){
   const p = pet();
@@ -5127,15 +5247,27 @@ function recolherBusca(){
   const forca = nivelPet();                       // já descontado pela fome
   const achados = {mats:{}, ouro:0, usavel:null, essencia:0};
 
-  const quantos = Math.round((1 + b.horas*1.4) * (0.6 + forca*0.35));
+  /* O bicho traz uma fatia do que UMA MASMORRA SUA rende, não um número
+     fixo. Era horas*18: oito de ouro por uma saída curta, contra cinco mil
+     de uma jornada — a expedição virava enfeite. A referência é o total de
+     relíquias, que é a única medida de progresso que o jogo tem, então a
+     recompensa acompanha o jogador em vez de envelhecer junto com ele. */
+  const dom = PET[p.tipo] ? PET[p.tipo].dom : null;
+  const quantos = Math.round((1 + b.horas*1.4) * (0.6 + forca*0.35) * (dom === 'material' ? 1.5 : 1));
   const regioes = Object.keys(COLHEITA);
   for(let i=0;i<quantos;i++){
     const m = sorteio(COLHEITA[sorteio(regioes)]);
     achados.mats[m] = (achados.mats[m]||0) + 1;
     G.mats[m] = (G.mats[m]||0) + 1;
   }
-  achados.ouro = Math.round(b.horas * 18 * (0.7 + forca*0.3));
+  achados.ouro = Math.round(ouroDeReferencia() * FATIA_DA_BUSCA[b.id]
+                 * (0.55 + forca*0.15) * (dom === 'ouro' ? 1.6 : 1));
   G.ouro += achados.ouro;
+  /* A coruja volta com poção; é o dom dela, e serve tanto quanto ouro. */
+  if(dom === 'pocao'){
+    achados.pocoes = 1 + Math.round(b.horas*.35) + Math.floor(forca/2);
+    G.pocoes += achados.pocoes;
+  }
   /* A busca longa é a única com chance de essência — o material que só cai
      de guardião. Dá ao sumiço de um dia um motivo que a rápida não tem. */
   if(b.id === 'longa' && Math.random() < .07 + forca*.025){
@@ -5250,9 +5382,11 @@ const FAIXAS_MISTERIO = [
 ];
 async function resolverMisterio(valor, reg){
   if(valor === 20){
-    const quantas = Math.max(1, Math.round(nivelAtual().frags/2));
-    for(let k=0;k<quantas;k++) ganharReliquia();
-    anotar(`❓ <b>Relíquia esquecida${quantas>1?'s':''}!</b> Dessas que ficam com você para sempre.`, 'gold');
+    /* Um 20 vale uma, sempre. Escalar com o nível fazia uma Rara render
+       dez níveis de relíquia numa jornada só — relíquia que chove todo dia
+       deixa de ser o motivo de descer mais um andar. */
+    ganharReliquia();
+    anotar('❓ <b>Relíquia esquecida!</b> Dessas que ficam com você para sempre.', 'gold');
     return;
   }
   if(valor >= 17){
@@ -5491,14 +5625,14 @@ function render(){
         b.onkeydown = e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); irPara(b.dataset.lugar); } };
       });
       acts.innerHTML = `
-        <button class="act wide" data-act="voltacamp"><span class="act-t">⛺ Voltar ao acampamento</span></button>`;
+        <button class="act wide" data-act="voltacamp"><span class="act-t">${ico('acampamento','g')} Voltar ao acampamento</span></button>`;
 
     }else if(lugar === 'masmorras'){
       const mostrar = Math.min(G.revelarOfertas || 0, G.ofertas.length);
       mid.innerHTML = `
         <div class="hub">
           ${cenaDoAcampamento('masmorras')}
-          <p class="hub-title">🕳️ Três entradas</p>
+          <p class="hub-title">${ico('masmorra')} Três entradas</p>
           <p class="hub-sub">${mostrar < G.ofertas.length
             ? 'olhando o que tem por aí…'
             : 'só mudam quando você voltar de uma masmorra.'}</p>
@@ -5520,13 +5654,13 @@ function render(){
         }, 0);
       }
       acts.innerHTML = `
-        <button class="act wide" data-act="mapa"><span class="act-t">🗺️ Mapa</span></button>`;
+        <button class="act wide" data-act="mapa"><span class="act-t">${ico('mapa','g')} Mapa</span></button>`;
 
     }else if(lugar === 'forjador'){
       mid.innerHTML = `
         <div class="hub">
           ${cenaDoAcampamento('forjador')}
-          <p class="hub-title">⚒️ Forjador</p>
+          <p class="hub-title">${ico('forja')} Forjador</p>
           <p class="hub-sub">Ouro e material viram equipamento.</p>
           <div class="chips">${Object.entries(MATERIAIS).map(([k,m]) =>
             `<span class="chip">${arteItem('mat-'+k, m.icone, 'mat-art', m.svg)} ${m.nome} <b>${G.mats[k]||0}</b></span>`
@@ -5534,20 +5668,20 @@ function render(){
         </div>`;
       acts.innerHTML = `
         <button class="act main wide" data-act="forja"><span class="act-t">${ico('forja','g')} Abrir a bancada</span><small>${G.ouro} de ouro no bolso</small></button>
-        <button class="act wide" data-act="mapa"><span class="act-t">🗺️ Mapa</span></button>`;
+        <button class="act wide" data-act="mapa"><span class="act-t">${ico('mapa','g')} Mapa</span></button>`;
 
     }else if(lugar === 'santuario'){
       mid.innerHTML = `
         <div class="hub">
           ${cenaDoAcampamento('santuario')}
-          <p class="hub-title">✨ Santuário</p>
+          <p class="hub-title">${ico('santuario')} Santuário</p>
           <p class="hub-sub">O que fica com você quando o herói cai.</p>
           <div class="relics">${tirinhaReliquias(true)}</div>
         </div>`;
       acts.innerHTML = `
         <button class="act" data-act="reliquias"><span class="act-t">${ico('reliquia','g')} Ver tudo</span><small>${RELIQUIAS.filter(r=>nivelRel(r.id)>0).length}/${RELIQUIAS.length} encontradas</small></button>
         <button class="act" data-act="conquistas"><span class="act-t">${ico('conquista','g')} Conquistas</span><small>${Object.keys(META.conquistas||{}).length}/${CONQUISTAS.length}</small></button>
-        <button class="act wide" data-act="mapa"><span class="act-t">🗺️ Mapa</span></button>`;
+        <button class="act wide" data-act="mapa"><span class="act-t">${ico('mapa','g')} Mapa</span></button>`;
 
     }else{
       /* Acampamento: a fogueira e o bicho, com espaço para respirar. */
@@ -5558,7 +5692,7 @@ function render(){
         </div>`;
       ligarBotoesDoPet();
       acts.innerHTML = `
-        <button class="act main wide" data-act="mapa"><span class="act-t">🗺️ Mapa</span><small>masmorras, forjador e santuário</small></button>
+        <button class="act main wide" data-act="mapa"><span class="act-t">${ico('mapa','g')} Mapa</span><small>masmorras, forjador e santuário</small></button>
         <button class="act" data-act="mochila"><span class="act-t">${ico('mochila','g')} Mochila</span><small>equipamento e materiais</small></button>
         <button class="act" data-act="bestiario"><span class="act-t">${ico('bestiario','g')} Bestiário</span><small>${Object.keys(META.bestiario).length}/${BESTIARIO.length} criaturas</small></button>`;
     }
@@ -5713,6 +5847,7 @@ function render(){
       if(t){
         const partes = Object.entries(t.mats).map(([k,q]) => `${icoMat(k)} ${q} ${MATERIAIS[k].nome}`);
         if(t.ouro) partes.push(`${ico('ouro')} ${t.ouro} de ouro`);
+        if(t.pocoes) partes.push(`🧪 ${t.pocoes} ${t.pocoes===1?'poção':'poções'}`);
         if(t.usavel) partes.push(`${USAVEL[t.usavel].icone} ${USAVEL[t.usavel].nome}`);
         anotar(`${PET[pet().tipo].icone} <b>${PET[pet().tipo].nome} voltou!</b> Trouxe ${partes.join(', ')}.`
              + (t.essencia ? ' <b>E uma Essência!</b>' : ''), 'gold');
@@ -5729,7 +5864,7 @@ function render(){
   faixaMsg.classList.toggle('dica', !!dicaAtiva);
   faixaMsg.innerHTML = dicaAtiva
     ? `<span>💡 ${dicaAtiva}</span>`
-    : '<span>' + (G.msg || 'Toque numa sala vizinha para andar.') + '</span>';
+    : '<span>' + recadoDaTela() + '</span>';
   faixaMsg.onclick = dicaAtiva ? dispensarDica : null;
   ligarArte($('#play'));
   dimensionarMapa();
@@ -6108,7 +6243,7 @@ $('#novoAvancar').onclick = () => {
 };
 /* Sobe junto com o arquivo: se a home mostra outra data, o aparelho ainda
    está servindo a versão velha do cache. */
-const VERSAO = 'v27 · 20/08 · mapa em pergaminho';
+const VERSAO = 'v28 · 20/08 · bicho, arte e relíquias';
 $('#lbVersao').textContent = VERSAO;
 $('#btnStart').onclick = () => {
   /* Na primeira vez o jogo começa e pronto: escolher classe e distribuir
