@@ -7558,31 +7558,30 @@ $('#novoVoltar').onclick = () => {
 ligarCaderno();
 $('#novoAvancar').onclick = () => {
   if(passoNovo < 2){ irParaPassoNovo(passoNovo + 1); return; }
+  const estreia = naPrimeiraJornada();
   $('#novoOv').classList.remove('on');
   novaAventura($('#novoNome').value, classeEscolhida, pontosGastos);
   abrirJogo();
+  if(estreia) estrearNaMasmorraMansa();
 };
 /* Sobe junto com o arquivo: se a home mostra outra data, o aparelho ainda
    está servindo a versão velha do cache. */
-const VERSAO = 'v31 · 20/08 · bestiário completo';
+const VERSAO = 'v32 · 20/08 · criar o herói sempre';
 $('#lbVersao').textContent = VERSAO;
-$('#btnStart').onclick = () => {
-  /* Na primeira vez o jogo começa e pronto: escolher classe e distribuir
-     pontos antes de saber o que é um golpe é decidir no escuro. A tela de
-     criação aparece da segunda jornada em diante, quando as palavras já
-     querem dizer alguma coisa. */
-  if(naPrimeiraJornada() && !G) comecarDeCara();
-  else abrirNovoHeroi();
-};
+/* Criar o herói é a primeira coisa que se faz, sempre. Durante um tempo a
+   estreia pulava esta tela e o jogo começava com um nome sorteado — a
+   ideia era não fazer ninguém escolher classe antes de saber o que é um
+   golpe. Na prática o jogo parecia ter começado sem o jogador, que é pior
+   do que escolher no escuro. O que ficou daquela ideia é só a masmorra
+   mansa de estreia, logo abaixo. */
+$('#btnStart').onclick = () => abrirNovoHeroi();
 
 const NOMES_SUGERIDOS = ['Bran','Kira','Túlio','Nina','Vasco','Lia','Ravi','Duda'];
-function comecarDeCara(){
-  novaAventura(sorteio(NOMES_SUGERIDOS), 'guerreiro', {vida:0, golpe:0, defesa:0});
-  /* Uma Comum de campo, em Calmaria: a primeira masmorra da vida de alguém
-     não é hora de sortear Nevasca nem de oferecer três dificuldades. */
+/* A primeira masmorra da vida de alguém não é hora de sortear Nevasca nem
+   de oferecer três dificuldades: uma Comum de campo, em Calmaria, e entra. */
+function estrearNaMasmorraMansa(){
   G.ofertas = [{nivel:'comum', regiao:'campo', clima:'calmaria'}];
   G.revelarOfertas = 1;
-  abrirJogo();
   entrarNaMasmorra(0);
   salvar(); render();
 }
