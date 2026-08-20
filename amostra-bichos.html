@@ -1,223 +1,193 @@
-<title>Bestiário em Vetor</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap">
+<title>Gravuras dos Ancestrais</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap">
 <style>
-  /* Uma tela só, e escura de propósito: a arte tem de ser julgada no chão
-     em que ela vai viver, que é o combate do Climbix. Por isso não há tema
-     claro aqui — há o tema do jogo. */
+  /* Uma tela só, escura de propósito: estas gravuras vão viver na tela de
+     combate do Climbix, e é lá que elas têm de ser julgadas. */
   :root{
-    --bg:#0f0d0c; --panel:#171310; --panel2:#1f1813; --line:#3a2d23;
-    --text:#f6eadc; --muted:#bda995; --gold:#d7a84f; --gold2:#f1cc7b;
-    --serif:'Cinzel', Georgia, 'Times New Roman', serif;
-    --sans:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --breu:#0e0b09; --pedra:#15110e; --pedra2:#1b1613; --veio:#3a2d23;
+    --osso:#d6c3a0; --poeira:#9d8d76; --ambar:#e8a23a;
+    --titulo:'Cinzel', Georgia, serif;
+    --corpo:'EB Garamond', Georgia, 'Times New Roman', serif;
+    --util:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 var(--sans);
-    padding:28px 20px 60px}
-  .folha{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:34px}
+  body{margin:0;background:var(--breu);color:var(--osso);
+    font:17px/1.65 var(--corpo);padding:30px 20px 64px}
+  .livro{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:38px}
 
-  header{display:flex;flex-direction:column;gap:10px}
-  .eyebrow{font:600 11px/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
-  h1{margin:0;font:700 clamp(26px,7vw,38px)/1.15 var(--serif);color:var(--gold2);text-wrap:balance}
-  .lede{margin:0;color:var(--muted);max-width:62ch}
+  header{display:flex;flex-direction:column;gap:12px;text-align:center;align-items:center}
+  .marca{font:600 10px/1 var(--util);letter-spacing:.22em;text-transform:uppercase;color:var(--poeira)}
+  h1{margin:0;font:700 clamp(28px,8vw,42px)/1.1 var(--titulo);color:var(--osso);text-wrap:balance;
+    letter-spacing:.02em}
+  .verso{margin:0;max-width:52ch;color:var(--poeira);font-style:italic}
+  .regua{width:90px;height:1px;background:linear-gradient(90deg,transparent,var(--veio),transparent)}
 
-  section{display:flex;flex-direction:column;gap:14px}
-  h2{margin:0;font:600 clamp(17px,4.6vw,21px)/1.25 var(--serif);color:var(--text)}
-  h2 + .nota{margin-top:-8px}
-  .nota{margin:0;color:var(--muted);font-size:14px;max-width:62ch}
+  /* --- a chapa: cada criatura é uma placa gravada, não um card --- */
+  .chapa{background:var(--pedra);border:1px solid var(--veio);border-radius:4px;
+    padding:22px 20px 18px;display:flex;flex-direction:column;gap:14px;align-items:center;
+    box-shadow:inset 0 0 60px rgba(0,0,0,.6)}
+  .placas{display:flex;flex-direction:column;gap:20px}
+  .gravura{width:100%;max-width:230px;aspect-ratio:1;display:grid;place-items:center;
+    background:radial-gradient(circle at 50% 55%, rgba(215,168,79,.13), transparent 66%)}
+  .gravura svg{width:100%;height:100%;filter:drop-shadow(0 6px 16px rgba(0,0,0,.8))}
+  .legenda{display:flex;flex-direction:column;gap:5px;align-items:center;text-align:center}
+  .legenda b{font:700 19px/1.2 var(--titulo);letter-spacing:.02em}
+  .mao{font-style:italic;color:var(--poeira);font-size:15px;max-width:44ch}
+  .mao em{font-style:normal;color:var(--osso)}
 
-  /* --- o confronto: o que está no jogo hoje, e o que entraria --- */
-  .duelo{display:flex;flex-direction:column;gap:12px}
-  .par{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:stretch}
-  .lado{background:var(--panel);border:1px solid var(--line);border-radius:16px;
-    padding:16px 12px 12px;display:flex;flex-direction:column;align-items:center;gap:10px}
-  .lado.vetor{border-color:#5a4526;background:linear-gradient(180deg,#1c1611,#171310)}
-  .palco{width:100%;aspect-ratio:1;display:grid;place-items:center;border-radius:14px;
-    background:radial-gradient(circle at 50% 55%, rgba(215,168,79,.14), transparent 68%)}
-  .palco svg{width:clamp(96px,26vw,140px);height:clamp(96px,26vw,140px);
-    filter:drop-shadow(0 6px 14px rgba(0,0,0,.7)) drop-shadow(0 0 16px rgba(241,204,123,.22))}
-  .palco .emoji{font-size:clamp(62px,18vw,100px);line-height:1;
-    filter:drop-shadow(0 10px 22px rgba(0,0,0,.55))}
-  .selo{font:600 10px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-  .lado.vetor .selo{color:var(--gold)}
-  .bicho-nome{font:700 15px/1.2 var(--serif);color:var(--text);text-align:center}
-  .bicho-tag{font-size:12px;color:var(--muted);text-align:center;margin-top:-6px}
+  /* --- a escada de tamanhos, na mesma chapa --- */
+  .escadinha{display:flex;gap:18px;align-items:center;padding-top:12px;
+    border-top:1px solid var(--veio);width:100%;justify-content:center}
+  .escadinha span{font:600 10px/1 var(--util);letter-spacing:.12em;text-transform:uppercase;color:var(--poeira)}
+  .escadinha svg{filter:none}
+  .e64{width:64px;height:64px}.e30{width:30px;height:30px}
+  .e64 .hachura{opacity:.55}.e30 .hachura{display:none}
+  .e64 .contorno{stroke-width:3}.e30 .contorno{stroke-width:3.4}
 
-  /* --- a escada de tamanhos: onde vetor costuma quebrar --- */
-  .escada{background:var(--panel);border:1px solid var(--line);border-radius:16px;
-    padding:16px;display:flex;flex-direction:column;gap:14px;overflow-x:auto;
-    /* a fileira de 140px é mais larga que um celular de propósito: encolher
-       para caber seria mentir sobre o tamanho que se está julgando */
-    scrollbar-color:var(--line) transparent}
-  .degrau{display:flex;align-items:center;gap:16px;min-width:max-content}
-  .degrau .rot{font:600 11px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;
-    color:var(--muted);width:120px;flex:none}
-  .degrau .fila{display:flex;gap:14px;align-items:center}
-  .g140 svg{width:118px;height:118px}
-  .g64 svg{width:64px;height:64px}
-  .g30 svg{width:30px;height:30px}
-
-  ul{margin:0;padding-left:20px;color:var(--muted);display:flex;flex-direction:column;gap:8px}
-  ul b{color:var(--text);font-weight:600}
-  footer{border-top:1px solid var(--line);padding-top:18px;color:var(--muted);font-size:14px}
-  @media (max-width:520px){ .degrau{flex-direction:column;align-items:flex-start;gap:8px}
-    .degrau .rot{width:auto} }
+  section{display:flex;flex-direction:column;gap:12px}
+  h2{margin:0;font:600 clamp(19px,5vw,23px)/1.25 var(--titulo);color:var(--osso)}
+  .nota{margin:0;color:var(--poeira);max-width:58ch}
+  ol{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:12px;color:var(--poeira)}
+  ol b{color:var(--osso);font-weight:400;font-family:var(--titulo);font-size:15px;
+    letter-spacing:.02em;display:block;margin-bottom:2px}
+  footer{border-top:1px solid var(--veio);padding-top:20px;color:var(--poeira);font-size:15px;font-style:italic}
 </style>
 
-<div class="folha">
+<div class="livro">
   <header>
-    <span class="eyebrow">Climbix · amostra de arte</span>
-    <h1>Bestiário em Vetor</h1>
-    <p class="lede">Quatro criaturas desenhadas em SVG, no fundo e no tamanho do combate.
-      À esquerda o emoji que está no jogo hoje; à direita o que entraria no lugar.</p>
+    <span class="marca">Climbix · Santuário</span>
+    <h1>Gravuras dos Ancestrais</h1>
+    <span class="regua"></span>
+    <p class="verso">Antes de você, outros desceram atrás das relíquias. Poucos voltaram.
+      O que sobrou deles são estas chapas — o que viram, riscado na pressa, com o que tinham à mão.</p>
   </header>
 
-  <section>
-    <h2>Lado a lado</h2>
-    <p class="nota">Mesmo palco, mesma luz, mesmo tamanho que a tela de briga usa.</p>
-    <div class="duelo" id="duelo"></div>
-  </section>
+  <div class="placas" id="placas"></div>
 
   <section>
-    <h2>Nos três tamanhos que o jogo usa</h2>
-    <p class="nota">O teste que importa é o de baixo: é onde arte vetorial costuma virar mancha.
-      A primeira fileira é mais larga que a tela — arraste para o lado.</p>
-    <div class="escada" id="escada"></div>
+    <h2>O que a história resolve</h2>
+    <p class="nota">Não é só enfeite. Se as gravuras são de quem morreu lá embaixo,
+      quatro coisas passam a fazer sentido sozinhas:</p>
+    <ol>
+      <li><b>O traço tosco vira personagem</b>
+        Uma gravura feita às pressas, no escuro, por alguém que estava fugindo, tem
+        direito de ser dura e angulosa. O estilo deixa de ser limitação e vira voz.</li>
+      <li><b>A página incompleta explica o desconhecido</b>
+        Criatura que você nunca encontrou aparece pela metade — quem desenhava não
+        voltou para terminar. Ao derrubar a primeira, a linha que faltava é riscada
+        na sua frente.</li>
+      <li><b>A assinatura dá escala à masmorra</b>
+        Cada chapa leva o nome de quem a gravou e o andar em que ele parou. Você
+        aprende que existe um 8º andar porque alguém morreu nele — sem uma linha
+        de texto explicando.</li>
+      <li><b>Suas mortes entram no livro</b>
+        Quando o seu herói cai, o nome dele passa a assinar a próxima gravura que
+        você completar. O bestiário deixa de ser uma lista e vira o registro de
+        todo mundo que tentou, inclusive você.</li>
+    </ol>
   </section>
 
-  <section>
-    <h2>O que isso custa e o que resolve</h2>
-    <ul>
-      <li><b>Nada a carregar.</b> O desenho vai dentro do index.html, então não pisca, não falha
-        em rede ruim e não depende de pasta no servidor.</li>
-      <li><b>Nítido em qualquer tela.</b> É o mesmo arquivo no bestiário de 30px e no combate
-        de 140px — sem versão @2x, sem borrado no iPhone.</li>
-      <li><b>Cabe no orçamento do arquivo.</b> Estas quatro somam cerca de 8 KB. As 51 criaturas
-        ficariam perto de 100 KB, um terço do que o jogo já pesa.</li>
-      <li><b>Anima de graça.</b> Como são formas e não pixels, dá para fazer o olho brilhar, a
-        asa bater ou o guardião respirar sem desenhar quadro nenhum.</li>
-      <li><b>O custo é o traço.</b> Este é um estilo achatado, de contorno grosso — legível e
-        coerente, mas não é pintura. Se você quer textura e luz de verdade, Midjourney ganha.</li>
-    </ul>
-  </section>
-
-  <footer>Se o traço servir, o caminho é por região: Campo Aberto primeiro (11 criaturas),
-    e o jogo passa a usar vetor onde não houver PNG — a arte que você pintar continua ganhando.</footer>
+  <footer>O mapa em pergaminho já é da mesma mão. Se as gravuras entrarem,
+    o Santuário deixa de guardar só relíquias e passa a guardar o caderno.</footer>
 </div>
 
 <script>
+const OSSO='#d6c3a0', AMBAR='#e8a23a', MASSA='#171310', BREU='#0e0b09';
+const T = (d, extra='') => `<path d="${d}" fill="${MASSA}" stroke="${OSSO}" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" ${extra}/>`;
+const L = d => `<path d="${d}" fill="none" stroke="${OSSO}" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>`;
 const BICHOS = {
-rato:`
-<path d="M93 82C113 80 117 58 105 44 99 37 91 35 85 39" fill="none" stroke="#171210" stroke-width="11" stroke-linecap="round"/>
-<path d="M93 82C113 80 117 58 105 44 99 37 91 35 85 39" fill="none" stroke="#8a7361" stroke-width="7" stroke-linecap="round"/>
-<circle cx="55" cy="41" r="11" fill="#5b4d40" stroke="#171210" stroke-width="3"/><circle cx="55" cy="41" r="5.5" fill="#a9736f"/>
-<circle cx="34" cy="46" r="10.5" fill="#6b5c4d" stroke="#171210" stroke-width="3"/><circle cx="34" cy="46" r="5.4" fill="#a9736f"/>
-<path d="M52 99C34 101 22 96 18 86 14 74 24 58 44 54 66 50 88 56 96 68 104 80 98 96 82 100 72 102 62 102 52 99Z" fill="#6b5c4d" stroke="#171210" stroke-width="3.2" stroke-linejoin="round"/>
-<path d="M40 96C38 92 44 86 56 84 70 82 82 86 84 92 86 98 76 102 62 102 50 102 42 100 40 96Z" fill="#8d7c69"/>
-<ellipse cx="50" cy="101" rx="8" ry="5" fill="#3d332b" stroke="#171210" stroke-width="2.4"/>
-<ellipse cx="82" cy="101" rx="9" ry="5.4" fill="#3d332b" stroke="#171210" stroke-width="2.4"/>
-<path d="M48 56C42 44 28 40 18 46 6 53 2 68 8 76 14 84 30 84 40 76 48 70 51 63 48 56Z" fill="#7a6957" stroke="#171210" stroke-width="3.2" stroke-linejoin="round"/>
-<path d="M14 74 18 82 23 74Z" fill="#f4ecdd" stroke="#171210" stroke-width="1.6"/>
-<path d="M23 74 28 82 32 74Z" fill="#f4ecdd" stroke="#171210" stroke-width="1.6"/>
-<ellipse cx="8" cy="66" rx="5" ry="4.2" fill="#c98f8a" stroke="#171210" stroke-width="2.4"/>
-<g stroke="#d8c8b0" stroke-width="1.6" stroke-linecap="round" opacity=".85">
-<path d="M10 60 -2 52"/><path d="M9 66 -3 66"/><path d="M11 72 0 79"/></g>
-<circle cx="28" cy="60" r="4.6" fill="#171210"/><circle cx="29.6" cy="58.4" r="1.5" fill="#f6eadc"/>`,
+lobo:{nome:'Lobo Faminto', svg:`
+<g class="contorno">
+  ${T("M74 26 L82 6 L95 30 L82 39 Z")}
+  ${T("M80 54 L95 62 L86 70 L104 78 L93 86 L110 96 L98 102 L108 116 L92 105 L84 116 L70 104 L62 116 L48 103 L40 116 L28 102 L24 90 L36 88 L28 78 L42 76 L36 68 L50 70 Z")}
+  ${T("M55 30 L51 5 L72 24 Z")}
+  ${T("M10 62 L18 54 L36 48 L46 44 L54 30 L72 28 L84 42 L80 60 L64 74 L40 72 L20 68 Z")}
+</g>
+<g class="hachura" fill="none" stroke="${OSSO}" stroke-width="1.15" stroke-linecap="round">
+  <path d="M22 52 24 58M26 50 28 56M30 49 32 55M35 47 37 53M40 46 42 52"/>
+  <path d="M57 32 60 38M63 31 66 37M69 31 71 37"/>
+  <path d="M64 44 70 48M66 52 73 56M68 60 73 63"/>
+  <path d="M58 14 62 22M63 17 66 24M80 14 82 22M85 17 86 25"/>
+  <path d="M56 78 50 92M64 78 62 94M72 80 74 95M80 84 84 97M88 90 94 100"/>
+  <path d="M44 82 38 96M52 88 48 104M60 90 58 106M70 92 71 108M80 96 82 110"/>
+</g>
+<path d="M10 62 L18 54 L24 61 L16 66 Z" fill="${OSSO}"/>
+<path d="M10 64 L24 69 L42 71 L62 73" fill="none" stroke="${OSSO}" stroke-width="1.9" stroke-linecap="round"/>
+<g fill="${OSSO}"><path d="M20 67 L22 78 L26 68 Z"/><path d="M30 69 L33 81 L37 70 Z"/></g>
+<path d="M46 40 L57 35 L61 40 L51 45 Z" fill="${AMBAR}" stroke="${OSSO}" stroke-width="1.6" stroke-linejoin="round"/>
+<path d="M51 38 L57 37 L56 42 L52 42 Z" fill="${BREU}"/>`},
 
-lobo:`
-<path d="M84 70C94 56 110 52 118 60 116 74 102 84 88 82Z" fill="#39414d" stroke="#171210" stroke-width="3" stroke-linejoin="round"/>
-<path d="M92 70C98 62 106 58 112 60" fill="none" stroke="#5a6472" stroke-width="3" stroke-linecap="round" opacity=".8"/>
-<path d="M38 78 34 106 44 106 48 82Z" fill="#39414d" stroke="#171210" stroke-width="3" stroke-linejoin="round"/>
-<path d="M78 76 82 106 92 106 88 78Z" fill="#39414d" stroke="#171210" stroke-width="3" stroke-linejoin="round"/>
-<path d="M30 62C30 48 44 40 62 40 82 40 96 50 96 66 96 82 82 92 62 92 42 92 30 80 30 62Z" fill="#4a5361" stroke="#171210" stroke-width="3.2" stroke-linejoin="round"/>
-<path d="M44 82 40 106 50 106 54 84Z" fill="#4a5361" stroke="#171210" stroke-width="3" stroke-linejoin="round"/>
-<path d="M72 82 76 106 86 106 82 84Z" fill="#4a5361" stroke="#171210" stroke-width="3" stroke-linejoin="round"/>
-<path d="M40 74C44 84 56 90 68 88 60 92 44 92 38 84Z" fill="#68737f"/>
-<path d="M34 34 30 14 48 28Z" fill="#39414d" stroke="#171210" stroke-width="3" stroke-linejoin="round"/>
-<path d="M62 30 68 10 76 30Z" fill="#39414d" stroke="#171210" stroke-width="3" stroke-linejoin="round"/>
-<path d="M50 30C34 30 22 42 22 56 22 68 30 76 42 78 40 70 38 60 40 52 34 56 28 54 28 48 28 42 36 38 46 40 50 34 52 30 50 30Z" fill="#5a6472" stroke="#171210" stroke-width="3.2" stroke-linejoin="round"/>
-<path d="M50 28C36 28 26 40 26 54 26 66 36 76 50 76 64 76 74 66 74 52 74 38 64 28 50 28Z" fill="#5a6472" stroke="#171210" stroke-width="3.2" stroke-linejoin="round"/>
-<path d="M28 52C18 52 6 58 4 66 2 74 12 78 24 76 36 74 42 66 40 58 39 53 34 52 28 52Z" fill="#6b7686" stroke="#171210" stroke-width="3.2" stroke-linejoin="round"/>
-<path d="M8 70C12 76 24 78 34 74 32 80 18 82 10 78Z" fill="#22272e" stroke="#171210" stroke-width="2"/>
-<path d="M10 71 12 78 15 72 18 78 22 72 25 78 29 73" fill="none" stroke="#f2ece0" stroke-width="2.6" stroke-linejoin="round"/>
-<ellipse cx="5" cy="64" rx="4.6" ry="3.8" fill="#171210"/>
-<path d="M30 56 42 52 40 62 31 63Z" fill="#e8b845" stroke="#171210" stroke-width="2.2" stroke-linejoin="round"/>
-<path d="M33 57 39 55 38 61 34 61Z" fill="#171210"/>
-<path d="M52 50 62 46 60 56 53 56Z" fill="#e8b845" stroke="#171210" stroke-width="2.2" stroke-linejoin="round"/>
-<path d="M55 51 60 49 59 54 55 54Z" fill="#171210"/>`,
+rato:{nome:'Rato Gigante', svg:`
+${L("M88 84C104 82 112 62 104 48 99 39 91 36 85 40")}
+<g class="contorno">
+  ${T("M64 33C68 26 77 26 80 33 84 40 79 46 72 46 65 46 60 40 64 33 Z")}
+  ${T("M34 96 L29 108 L36 111 L44 100 Z")}
+  ${T("M72 98 L72 110 L82 112 L86 99 Z")}
+  ${T("M5 68 L14 58 L26 51 L42 44C58 36 78 40 89 52 100 65 96 86 80 95 66 103 46 102 34 94 25 88 20 79 18 72 L10 71 Z")}
+  ${T("M48 38C53 30 63 30 67 38 71 46 66 53 58 53 50 53 44 46 48 38 Z")}
+</g>
+<g class="hachura" fill="none" stroke="${OSSO}" stroke-width="1.15" stroke-linecap="round">
+  <path d="M52 36 54 43M60 35 62 42M69 32 71 38M76 32 77 38"/>
+  <path d="M28 52 30 58M36 50 38 56"/>
+  <path d="M52 48 53 56M62 48 62 56M72 51 71 59M82 57 79 64M89 66 85 72"/>
+  <path d="M32 66 30 76M42 70 41 80M52 72 52 83M62 73 63 84M72 74 74 84M82 76 85 84"/>
+  <path d="M24 60 20 66"/>
+  <path d="M92 80 99 76M101 68 105 62"/>
+</g>
+<path d="M12 74 L16 83 L21 74 Z" fill="${OSSO}"/><path d="M21 74 L26 83 L30 74 Z" fill="${OSSO}"/>
+<path d="M5 68 L14 58 L18 65 L11 73 Z" fill="${OSSO}"/>
+<g stroke="${OSSO}" stroke-width="1.15" stroke-linecap="round" opacity=".9">
+  <path d="M8 61 -2 53"/><path d="M4 68 -6 68"/><path d="M8 75 0 83"/></g>
+<path d="M6 70 L16 75 L28 77" fill="none" stroke="${OSSO}" stroke-width="1.7" stroke-linecap="round"/>
+<circle cx="30" cy="59" r="4.6" fill="${AMBAR}" stroke="${OSSO}" stroke-width="1.5"/>
+<circle cx="30.6" cy="59.4" r="2" fill="${BREU}"/>`},
 
-javali:`
-<path d="M95 62C103 59 107 65 104 70 102 73 98 72 98 69" fill="none" stroke="#171210" stroke-width="7" stroke-linecap="round"/>
-<path d="M95 62C103 59 107 65 104 70 102 73 98 72 98 69" fill="none" stroke="#4a3a2c" stroke-width="3.6" stroke-linecap="round"/>
-<path d="M44 82 40 106 50 106 54 84Z" fill="#2f2419" stroke="#171210" stroke-width="3" stroke-linejoin="round"/>
-<path d="M76 82 80 106 90 106 86 84Z" fill="#2f2419" stroke="#171210" stroke-width="3" stroke-linejoin="round"/>
-<path d="M42 30 50 16 58 30 68 18 74 34 84 26 90 46" fill="none" stroke="#171210" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M42 30 50 16 58 30 68 18 74 34 84 26 90 46" fill="none" stroke="#33281b" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M40 46C60 34 88 40 96 58 104 76 94 94 72 96 50 98 34 88 32 72 30 60 33 50 40 46Z" fill="#4a3a2c" stroke="#171210" stroke-width="3.2" stroke-linejoin="round"/>
-<path d="M46 88C48 78 62 72 78 74 90 76 96 84 94 90 90 96 72 98 58 96 50 95 45 92 46 88Z" fill="#5f4b37"/>
-<path d="M40 42C22 42 8 54 6 70 4 84 14 94 28 94 42 94 50 84 50 68 50 54 48 42 40 42Z" fill="#54422f" stroke="#171210" stroke-width="3.2" stroke-linejoin="round"/>
-<path d="M22 78C12 78 4 84 4 90 4 96 14 98 22 94 29 91 30 78 22 78Z" fill="#7a6047" stroke="#171210" stroke-width="3" stroke-linejoin="round"/>
-<ellipse cx="10" cy="88" rx="4.4" ry="3.6" fill="#231a11"/>
-<path d="M18 80C8 76 2 64 8 54 8 64 14 72 22 74Z" fill="#efe4c6" stroke="#171210" stroke-width="2.6" stroke-linejoin="round"/>
-<path d="M32 84C22 88 10 82 10 72 14 80 24 82 32 78Z" fill="#efe4c6" stroke="#171210" stroke-width="2.6" stroke-linejoin="round"/>
-<path d="M40 48 30 40 44 38Z" fill="#33281b" stroke="#171210" stroke-width="2.4" stroke-linejoin="round"/>
-<circle cx="34" cy="60" r="4.4" fill="#171210"/><circle cx="35.4" cy="58.6" r="1.4" fill="#e8c06a"/>`,
-
-dragonete:`
-<path d="M60 62 12 18 20 44 6 46 22 64 14 70 38 76Z" fill="#333940" stroke="#171210" stroke-width="3" stroke-linejoin="round"/>
-<path d="M60 62 108 18 100 44 114 46 98 64 106 70 82 76Z" fill="#333940" stroke="#171210" stroke-width="3" stroke-linejoin="round"/>
-<g stroke="#171210" stroke-width="2" opacity=".6" fill="none">
-<path d="M60 62 20 44M60 62 22 64M60 62 38 76M60 62 100 44M60 62 98 64M60 62 82 76"/></g>
-<path d="M74 96C92 100 104 94 110 84" fill="none" stroke="#171210" stroke-width="12" stroke-linecap="round"/>
-<path d="M74 96C92 100 104 94 110 84" fill="none" stroke="#4d545e" stroke-width="8" stroke-linecap="round"/>
-<path d="M104 80 118 76 110 93Z" fill="#2b2f34" stroke="#171210" stroke-width="2.6" stroke-linejoin="round"/>
-<path d="M46 92 42 108 54 108 56 94Z" fill="#3f454e" stroke="#171210" stroke-width="3" stroke-linejoin="round"/>
-<path d="M74 92 78 108 90 108 86 94Z" fill="#3f454e" stroke="#171210" stroke-width="3" stroke-linejoin="round"/>
-<path d="M46 102C34 100 30 88 34 78 40 66 56 62 70 64 84 66 92 76 90 88 88 100 74 106 60 104Z" fill="#4d545e" stroke="#171210" stroke-width="3.2" stroke-linejoin="round"/>
-<path d="M44 92C48 84 58 80 68 82 78 84 84 90 82 96 74 104 56 104 48 100 44 98 43 95 44 92Z" fill="#6a727d"/>
-<g stroke="#171210" stroke-width="1.8" opacity=".45" fill="none"><path d="M47 92 57 89M49 97 61 94M56 101 68 98"/></g>
-<path d="M52 76C44 64 40 54 40 46" fill="none" stroke="#171210" stroke-width="17" stroke-linecap="round"/>
-<path d="M52 76C44 64 40 54 40 46" fill="none" stroke="#5a626d" stroke-width="12" stroke-linecap="round"/>
-<path d="M46 32 40 12 56 26Z" fill="#2b2f34" stroke="#171210" stroke-width="2.8" stroke-linejoin="round"/>
-<path d="M58 28 67 10 67 30Z" fill="#2b2f34" stroke="#171210" stroke-width="2.8" stroke-linejoin="round"/>
-<path d="M44 30C56 28 66 34 68 44 70 54 62 61 50 61 40 61 32 57 26 53 20 49 14 47 12 45 16 41 24 39 30 39 34 33 38 31 44 30Z" fill="#5a626d" stroke="#171210" stroke-width="3.2" stroke-linejoin="round"/>
-<path d="M13 47C21 51 33 55 45 55 43 61 27 59 17 53 13 51 12 49 13 47Z" fill="#1d1410" stroke="#171210" stroke-width="2"/>
-<path d="M16 48 19 54 23 50 27 56 32 52 37 57 42 54" fill="none" stroke="#f0912a" stroke-width="2.8" stroke-linejoin="round"/>
-<path d="M37 40 50 38 49 48 38 48Z" fill="#f0912a" stroke="#171210" stroke-width="2.2" stroke-linejoin="round"/>
-<path d="M41 41 47 40 46 46 41 46Z" fill="#171210"/>
-<circle cx="24" cy="43" r="2" fill="#171210"/>`
+dragonete:{nome:'Dragonete de Ferro', svg:`
+<g class="contorno">
+  ${T("M52 78 L4 26 L18 52 L14 66 L30 70 L34 82 Z")}
+  ${T("M70 78 L118 26 L104 52 L108 66 L92 70 L88 82 Z")}
+  ${T("M36 116C38 96 44 82 56 72 L74 76C82 86 86 100 88 116 Z")}
+  ${T("M62 34 L74 8 L78 34 Z")}
+  ${T("M76 38 L96 20 L86 46 Z")}
+  ${T("M6 60 L18 50 L40 43 L50 32 L68 30 L82 44 L80 62 L66 72 L40 70 L14 66 Z")}
+</g>
+<g class="hachura" fill="none" stroke="${OSSO}" stroke-width="1.15" stroke-linecap="round">
+  <path d="M52 78 18 52M52 78 30 70M12 38 24 52"/>
+  <path d="M70 78 104 52M70 78 92 70M110 38 98 52"/>
+  <path d="M22 52 24 58M28 50 30 56M34 48 36 54M42 45 44 51"/>
+  <path d="M54 34 57 41M62 32 64 39M70 33 71 40M78 39 78 46"/>
+  <path d="M66 50 74 54M64 58 72 61"/>
+  <path d="M46 86 56 82M44 96 56 92M42 106 56 102M40 114 56 110"/>
+  <path d="M72 84 82 82M74 94 84 92M76 104 86 102M78 112 88 110"/>
+  <path d="M68 12 70 26M90 26 84 38"/>
+</g>
+<path d="M6 62 L20 67 L40 70 L62 72" fill="none" stroke="${OSSO}" stroke-width="1.9" stroke-linecap="round"/>
+<g fill="${MASSA}" stroke="${OSSO}" stroke-width="2" stroke-linejoin="round">
+  <path d="M74 74 L88 70 L79 82 Z"/><path d="M80 88 L95 86 L84 97 Z"/><path d="M85 102 L100 102 L88 112 Z"/>
+</g>
+<path d="M9 63C19 66 31 68 44 69 42 74 26 72 15 68 10 66 8 64 9 63 Z" fill="${AMBAR}"/>
+<path d="M12 65 15 70 19 66 23 71 28 67 33 71 38 68" fill="none" stroke="${BREU}" stroke-width="1.9" stroke-linejoin="round"/>
+<path d="M6 60 L18 50 L23 57 L14 64 Z" fill="${OSSO}"/>
+<path d="M52 40 L66 37 L65 48 L53 48 Z" fill="${AMBAR}" stroke="${OSSO}" stroke-width="1.6" stroke-linejoin="round"/>
+<path d="M57 41 L63 40 L62 46 L57 46 Z" fill="${BREU}"/>`}
 };
-const FICHA = {
-  rato:      {nome:'Rato Gigante',       emoji:'\uD83D\uDC00', tag:'Campo Aberto · comum'},
-  lobo:      {nome:'Lobo Faminto',       emoji:'\uD83D\uDC3A', tag:'Campo Aberto · comum'},
-  javali:    {nome:'Javali Ancião',      emoji:'\uD83D\uDC17', tag:'Campo Aberto · guardião'},
-  dragonete: {nome:'Dragonete de Ferro', emoji:'\uD83D\uDC09', tag:'Covil · chefe final'}
+const MAOS = {
+  lobo:      {mao:'Aldo, o Primeiro', andar:'não voltou do 2º andar'},
+  rato:      {mao:'mão desconhecida', andar:'a chapa não tem assinatura'},
+  dragonete: {mao:'Vesper de Ferro',  andar:'não voltou do 10º andar'}
 };
-const ids = Object.keys(FICHA);
-const svg = id => `<svg viewBox="0 0 120 120" role="img" aria-label="${FICHA[id].nome}">${BICHOS[id]}</svg>`;
+const ordem = ['rato','lobo','dragonete'];
+const svg = (k, cls='') => `<svg class="${cls}" viewBox="0 0 120 120" role="img" aria-label="${BICHOS[k].nome}">${BICHOS[k].svg}</svg>`;
 
-document.getElementById('duelo').innerHTML = ids.map(id => `
-  <div class="par">
-    <div class="lado">
-      <span class="selo">hoje</span>
-      <div class="palco"><span class="emoji">${FICHA[id].emoji}</span></div>
-      <span class="bicho-nome">${FICHA[id].nome}</span>
-      <span class="bicho-tag">${FICHA[id].tag}</span>
+document.getElementById('placas').innerHTML = ordem.map(k => `
+  <figure class="chapa">
+    <div class="gravura">${svg(k)}</div>
+    <figcaption class="legenda">
+      <b>${BICHOS[k].nome}</b>
+      <span class="mao">gravado por <em>${MAOS[k].mao}</em>, que ${MAOS[k].andar}</span>
+    </figcaption>
+    <div class="escadinha">
+      <span>no jogo</span>${svg(k,'e64')}${svg(k,'e30')}
     </div>
-    <div class="lado vetor">
-      <span class="selo">vetor</span>
-      <div class="palco">${svg(id)}</div>
-      <span class="bicho-nome">${FICHA[id].nome}</span>
-      <span class="bicho-tag">${FICHA[id].tag}</span>
-    </div>
-  </div>`).join('');
-
-document.getElementById('escada').innerHTML = [
-  ['140px — combate', 'g140'],
-  ['64px — resumo',   'g64'],
-  ['30px — bestiário','g30']
-].map(([rot, cls]) => `
-  <div class="degrau ${cls}">
-    <span class="rot">${rot}</span>
-    <span class="fila">${ids.map(svg).join('')}</span>
-  </div>`).join('');
+  </figure>`).join('');
 </script>
